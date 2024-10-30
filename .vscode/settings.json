@@ -1,0 +1,11 @@
+{
+    "java.compile.nullAnalysis.mode": "disabled",
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "cSpell.words": [
+        "firstname",
+        "lastname",
+        "rabbitmq",
+        "routingkey",
+        "urlbank"
+    ],
+}

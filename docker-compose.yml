@@ -1,0 +1,57 @@
+version: "3.8"
+services:
+  service-config:
+    build: ./service-config
+    ports:
+      - "8888:8888"
+    environment:
+      - SPRING_APPLICATION_NAME=service-config
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/gedeontiga/cloud-conf-inf4047
+    networks:
+      - microservices_network
+  service-registry:
+    build: ./service-registry
+    depends_on:
+      - service-config # Commande: [.//wait-for-it]
+    ports:
+      - "8761:8761" # service d'enregistrement
+    environment:
+      - SPRING_APPLICATION_NAME=service-registry
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888 #Utilisation du nomde service
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+    networks:
+      - microservices_network
+  service-user:
+    build: ./service-user
+    depends_on:
+      - service-config # Commande: [.//wait-for-it]
+    ports:
+      - "8081" #port interne, ne pas mappper ici # Mappage duport 8083 a l'interieur duconteneur vers le port 8081 sur l'hote
+    environment:
+      - SPRING_APPLICATION_NAME=service-user
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888 #Utilisation du nomde service
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+    networks:
+      - microservices_network
+  service-proxy:
+    build: ./service-proxy
+    depends_on:
+      - service-config # Commande: [.//wait-for-it]
+    ports:
+      - "8075:8075" # service d'enregistrement
+    environment:
+      - SPRING_APPLICATION_NAME=service-proxy
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888 #Utilisation du nomde service
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+    networks:
+      - microservices_network
+  rabbitmq:
+    image: rabbitmq:4.0-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - microservices_network
+networks:
+  microservices_network:
+    driver: bridge
