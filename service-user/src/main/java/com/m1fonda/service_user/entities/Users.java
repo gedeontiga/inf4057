@@ -8,14 +8,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-@Data
-@EqualsAndHashCode(callSuper = false)
 public class Users extends Client {
 
     @Id
@@ -27,6 +23,18 @@ public class Users extends Client {
     @Builder
     public Users(String email, String cni, String nom, String prenom, String password, Long tel) {
         super(cni, nom, prenom, password, tel);
+        this.email = email;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
         this.email = email;
     }
 }

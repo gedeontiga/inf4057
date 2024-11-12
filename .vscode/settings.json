@@ -2,10 +2,12 @@
     "java.compile.nullAnalysis.mode": "disabled",
     "java.configuration.updateBuildConfiguration": "automatic",
     "cSpell.words": [
+        "configserver",
         "firstname",
         "lastname",
         "rabbitmq",
         "routingkey",
+        "springframework",
         "urlbank"
     ],
 }

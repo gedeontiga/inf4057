@@ -1,4 +1,4 @@
-package com.m1fonda.service_user.manager.services;
+package com.m1fonda.service_user.services;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import com.m1fonda.service_user.entities.Users;
-import com.m1fonda.service_user.manager.repositories.UserRepository;
+import com.m1fonda.service_user.repositories.UserRepository;
 
 import lombok.AllArgsConstructor;
 

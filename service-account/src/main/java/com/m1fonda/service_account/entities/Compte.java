@@ -1,19 +1,17 @@
 package com.m1fonda.service_account.entities;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.m1fonda.entities.Account;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@Entity
+@Document(collection = "comptes")
 public class Compte extends Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Builder

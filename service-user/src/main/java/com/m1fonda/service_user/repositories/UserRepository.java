@@ -1,4 +1,4 @@
-package com.m1fonda.service_user.manager.repositories;
+package com.m1fonda.service_user.repositories;
 
 import java.util.Optional;
 

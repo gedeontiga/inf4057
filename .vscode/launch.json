@@ -53,6 +53,16 @@
             "projectName": "service-account",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ServiceUserApplication<service_user>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.m1fonda.service_user.ServiceUserApplication",
+            "projectName": "service_user",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

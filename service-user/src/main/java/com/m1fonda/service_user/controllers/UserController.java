@@ -1,9 +1,9 @@
-package com.m1fonda.service_user.manager.controllers;
+package com.m1fonda.service_user.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 
 import com.m1fonda.service_user.entities.Users;
-import com.m1fonda.service_user.manager.services.UserService;
+import com.m1fonda.service_user.services.UserService;
 
 import lombok.AllArgsConstructor;
 
@@ -22,6 +22,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class UserController {
 
     private UserService userService;
+
+    @GetMapping("/")
+    public List<Users> getUsers() {
+        return userService.getUsers();
+    }
 
     @PostMapping("/add")
     public List<Users> postMethodName(@RequestBody Users user) {
