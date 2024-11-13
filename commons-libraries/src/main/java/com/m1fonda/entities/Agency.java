@@ -14,18 +14,22 @@ public class Agency implements Serializable {
     private double tauxDepotOperateur;
     private double tauxDepotAutreOperateur;
     private double tauxRetrait;
-    private String urlbank;
+    private Bank banque;
+    private Client gestionnaire;
+    private String address;
 
     protected Agency() {
     }
 
     protected Agency(String nom, double capital, double tauxDepotOperateur, double tauxDepotAutreOperateur,
-            double tauxRetrait, String urlbank) {
+            double tauxRetrait, Bank banque, Client gestionnaire, String address) {
         this.nom = nom;
         this.capital = capital;
         this.tauxDepotOperateur = tauxDepotOperateur;
         this.tauxDepotAutreOperateur = tauxDepotAutreOperateur;
         this.tauxRetrait = tauxRetrait;
-        this.urlbank = urlbank;
+        this.banque = banque;
+        this.address = address;
+        this.gestionnaire = gestionnaire;
     }
 }

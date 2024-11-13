@@ -45,6 +45,16 @@ services:
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
     networks:
       - microservices_network
+  service-transactions:
+    build: ./service-transactions
+    ports:
+      - "8182:8182"
+    depends_on:
+      - service-config
+    environment:
+      - SPRING_APPLICATION_NAME=service-transactions
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888 #Utilisation du nomde service
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
   rabbitmq:
     image: rabbitmq:4.0-management
     ports:
@@ -52,6 +62,3 @@ services:
       - "15672:15672"
     networks:
       - microservices_network
-networks:
-  microservices_network:
-    driver: bridge
