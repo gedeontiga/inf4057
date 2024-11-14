@@ -63,6 +63,16 @@
             "projectName": "service_user",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ServiceNotifApplication<service-notif>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.m1fonda.service_notif.ServiceNotifApplication",
+            "projectName": "service-notif",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

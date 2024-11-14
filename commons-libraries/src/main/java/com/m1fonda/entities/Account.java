@@ -2,11 +2,9 @@ package com.m1fonda.entities;
 
 import java.io.Serializable;
 
-import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
 
 @Data
-@MappedSuperclass
 public class Account implements Serializable {
 
     private String numero;
