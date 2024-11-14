@@ -11,21 +11,23 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.m1fonda.config.RabbitMQConstants;
+
 @Configuration
 public class RabbitMQConfig {
     @Bean
     Queue agencyQueue() {
-        return new Queue("agencyQueue", true);
+        return new Queue(RabbitMQConstants.AGENCY_QUEUE);
     }
 
     @Bean
-    DirectExchange demandeExchange() {
-        return new DirectExchange("demandeExchange");
+    DirectExchange agencyExchange() {
+        return new DirectExchange(RabbitMQConstants.AGENCY_EXCHANGE);
     }
 
     @Bean
-    Binding bindingAgencyQueue() {
-        return BindingBuilder.bind(agencyQueue()).to(demandeExchange()).with("agency.routing.key");
+    Binding bindingAgency() {
+        return BindingBuilder.bind(agencyQueue()).to(agencyExchange()).with(RabbitMQConstants.AGENCY_KEY);
     }
 
     @Bean

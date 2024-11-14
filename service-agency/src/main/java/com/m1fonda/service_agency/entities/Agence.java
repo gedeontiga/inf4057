@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class Agence extends Agency {
 
     @Id
-    private Long id;
+    private Long code;
 
     @Builder
     public Agence(String nom, double capital, double tauxDepotOperateur, double tauxDepotAutreOperateur,

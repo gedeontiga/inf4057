@@ -39,7 +39,7 @@ public class CompteService {
 
     public void creerCompteFallback(Demand demand, Throwable throwable) {
         // Logique de repli en cas d'échec du Circuit Breaker
-        System.out.println("Fallback - Demande a échoué : " + demand);
+        System.out.println("Fallback - Demande a échoué : " + demand.toString());
         System.out.println("Cause de l'échec : " + throwable.getMessage());
     }
 }
