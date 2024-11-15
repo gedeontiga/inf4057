@@ -10,7 +10,6 @@ import java.util.Date;
 import org.springframework.data.annotation.CreatedDate;
 
 import com.m1fonda.entities.Account;
-import com.m1fonda.service_account.entities.Compte;
 
 import jakarta.persistence.*;
 

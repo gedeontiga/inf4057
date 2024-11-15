@@ -8,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import java.util.Objects;
 
 
 @Entity
