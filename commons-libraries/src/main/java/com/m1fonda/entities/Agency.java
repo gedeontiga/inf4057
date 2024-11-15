@@ -2,6 +2,7 @@ package com.m1fonda.entities;
 
 import java.io.Serializable;
 
+import jakarta.persistence.*;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
 
@@ -14,6 +15,8 @@ public class Agency implements Serializable {
     private double tauxDepotOperateur;
     private double tauxDepotAutreOperateur;
     private double tauxRetrait;
+    @ManyToOne
+    @JoinColumn(name = "bank_id")
     private Bank banque;
     private Client gestionnaire;
     private String address;
