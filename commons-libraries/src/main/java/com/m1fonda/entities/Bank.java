@@ -2,16 +2,20 @@ package com.m1fonda.entities;
 
 import java.io.Serializable;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class Bank implements Serializable {
-    private String nom;
+    private String name;
+    private String logo;
 
-    protected Bank() {
+    protected Bank(String name, String logo) {
+        this.name = name;
+        this.logo = logo;
     }
 
-    protected Bank(String nom) {
-        this.nom = nom;
+    protected Bank() {
     }
 }

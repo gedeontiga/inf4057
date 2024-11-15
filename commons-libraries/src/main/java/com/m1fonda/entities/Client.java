@@ -3,24 +3,28 @@ package com.m1fonda.entities;
 import java.io.Serializable;
 
 import jakarta.persistence.MappedSuperclass;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @MappedSuperclass
 public class Client implements Serializable {
 
     private String cni;
-    private String nom;
-    private String prenom;
+    private String firstName;
+    private String lastName;
+    protected String email;
     private String password;
-    private Long tel;
+    private Long phoneNumber;
 
-    protected Client(String cni, String nom, String prenom, String password, Long tel) {
+    protected Client(String cni, String firstName, String lastName, String email, String password, Long phoneNumber) {
         this.cni = cni;
-        this.nom = nom;
-        this.prenom = prenom;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
         this.password = password;
-        this.tel = tel;
+        this.phoneNumber = phoneNumber;
     }
 
     protected Client() {

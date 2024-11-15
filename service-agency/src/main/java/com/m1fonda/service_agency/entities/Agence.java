@@ -13,12 +13,11 @@ import lombok.NoArgsConstructor;
 public class Agence extends Agency {
 
     @Id
-    private Long code;
+    private Long id;
 
     @Builder
-    public Agence(String nom, double capital, double tauxDepotOperateur, double tauxDepotAutreOperateur,
-            double tauxRetrait, String urlbank) {
-
-        super(nom, capital, tauxDepotOperateur, tauxDepotAutreOperateur, tauxRetrait, urlbank);
+    public Agence(String agencyNumber, String name, double capital, double depositBankRate, double withdrawalBankRate,
+            String address) {
+        super(agencyNumber, name, capital, depositBankRate, withdrawalBankRate, address);
     }
 }

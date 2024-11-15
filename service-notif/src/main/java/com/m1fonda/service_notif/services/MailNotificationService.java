@@ -9,8 +9,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.m1fonda.config.RabbitMQConstants;
+import com.m1fonda.entities.Client;
 import com.m1fonda.service_notif.entities.Notification;
-import com.m1fonda.service_notif.entities.Users;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
@@ -25,22 +25,22 @@ public class MailNotificationService {
 
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE)
-    public void sendActivationCodeMail(Users user, String codeActivation) {
+    public void sendActivationCodeMail(Client user, String codeActivation) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         String text = String.format(
                 "Salut %s, \n votre code d'activation est %s.\n Merci d'utiliser l'application et a bientôt.",
-                user.getNom(),
+                user.getFirstName(),
                 codeActivation);
         Notification notification = Notification.builder()
-                .titre(CODE_ACTIVATION)
+                .title(CODE_ACTIVATION)
                 .description(text)
-                .dateEnvoi(new Date())
-                .users(user)
-                .pj(null)
+                .createAt(new Date())
+                .email(user.getEmail())
+                .picture(null)
                 .build();
         mailMessage.setFrom("no-reply@atg-bank.com");
         mailMessage.setTo(user.getEmail());
-        mailMessage.setSubject(notification.getTitre());
+        mailMessage.setSubject(notification.getTitle());
 
         mailMessage.setText(notification.getDescription());
         javaMailSender.send(mailMessage);
@@ -48,7 +48,7 @@ public class MailNotificationService {
 
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.EMAIL_DEPOSIT_NOTIFICATION_QUEUE)
-    public void sendDepositMail(Users user) {
+    public void sendDepositMail(Client user) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom("no-reply@atg-bank.com");
         // TODO more here
@@ -56,13 +56,13 @@ public class MailNotificationService {
 
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.EMAIL_WITHDRAWAL_NOTIFICATION_QUEUE)
-    public void sendWithdrawalMail(Users user) {
+    public void sendWithdrawalMail(Client user) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom("no-reply@atg-bank.com");
         // TODO more here
     }
 
-    public void sendMailFallback(Users user, Throwable throwable) {
+    public void sendMailFallback(Client user, Throwable throwable) {
         System.out.println("Fallback - Mail non envoyé : " + user.toString());
         System.out.println("Cause de l'échec : " + throwable.getMessage());
     }

@@ -16,19 +16,9 @@ public class Notification extends Announce {
 
     @Id
     private Long id;
-    private Users users;
-
-    public Users getUsers() {
-        return users;
-    }
-
-    public void setUsers(Users users) {
-        this.users = users;
-    }
 
     @Builder
-    public Notification(String titre, String description, Date dateEnvoi, String pj, Users users) {
-        super(titre, description, dateEnvoi, pj);
-        this.users = users;
+    public Notification(String title, String description, Date createAt, String picture, String email) {
+        super(title, description, createAt, picture, email);
     }
 }

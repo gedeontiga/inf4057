@@ -2,34 +2,37 @@ package com.m1fonda.entities;
 
 import java.io.Serializable;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class Demand implements Serializable {
-    private String nom;
-    private String prenom;
+    private String firstName;
+    private String lastName;
     private String email;
     private String password;
     private String status; // PENDING, APPROVED, REJECTED
     private String cni;
-    private Long tel;
-    private Double solde;
+    private Long phoneNumber;
+    private Double balance;
     private String urlRectoCni;
     private String urlVersoCni;
+    private String numAgency;
 
-    protected Demand(String nom, String prenom, String email, String password, String status, double solde, String cni,
-            Long tel,
-            String urlRectoCni, String urlVersoCni) {
-        this.nom = nom;
-        this.prenom = prenom;
+    protected Demand(String firstName, String lastName, String email, String password, String status, String cni,
+            Long phoneNumber, Double balance, String urlRectoCni, String urlVersoCni, String numAgency) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.status = status;
         this.cni = cni;
-        this.tel = tel;
-        this.solde = solde;
+        this.phoneNumber = phoneNumber;
+        this.balance = balance;
         this.urlRectoCni = urlRectoCni;
         this.urlVersoCni = urlVersoCni;
+        this.numAgency = numAgency;
     }
 
     protected Demand() {

@@ -1,8 +1,12 @@
+com/m1fonda/dto/ClientDTO.class
 com/m1fonda/entities/Account.class
+com/m1fonda/dto/AgencyDTO.class
+com/m1fonda/dto/AccountDTO.class
 com/m1fonda/entities/Status.class
 com/m1fonda/entities/Announce.class
 com/m1fonda/entities/Client.class
 com/m1fonda/entities/Agency.class
+com/m1fonda/dto/AnnounceDTO.class
 com/m1fonda/entities/Demand.class
 com/m1fonda/entities/Bank.class
 com/m1fonda/config/RabbitMQConstants.class

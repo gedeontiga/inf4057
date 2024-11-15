@@ -10,4 +10,6 @@ import com.m1fonda.service_agency.entities.Agence;
 @Repository
 public interface AgencyRepository extends MongoRepository<Agence, Long> {
     Optional<Agence> findById(Long id);
+
+    Optional<Agence> findByNumAgency(String numAgency);
 }

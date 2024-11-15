@@ -1,8 +1,12 @@
 /home/gedeon-tiga/Documents/App/inf4057/commons-libraries/src/main/java/com/m1fonda/entities/Agency.java
+/home/gedeon-tiga/Documents/App/inf4057/commons-libraries/src/main/java/com/m1fonda/dto/ClientDTO.java
+/home/gedeon-tiga/Documents/App/inf4057/commons-libraries/src/main/java/com/m1fonda/dto/AccountDTO.java
+/home/gedeon-tiga/Documents/App/inf4057/commons-libraries/src/main/java/com/m1fonda/dto/AnnounceDTO.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libraries/src/main/java/com/m1fonda/entities/Announce.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libraries/src/main/java/com/m1fonda/entities/Client.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libraries/src/main/java/com/m1fonda/entities/Demand.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libraries/src/main/java/com/m1fonda/config/RabbitMQConstants.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libraries/src/main/java/com/m1fonda/entities/Status.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libraries/src/main/java/com/m1fonda/entities/Account.java
+/home/gedeon-tiga/Documents/App/inf4057/commons-libraries/src/main/java/com/m1fonda/dto/AgencyDTO.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libraries/src/main/java/com/m1fonda/entities/Bank.java

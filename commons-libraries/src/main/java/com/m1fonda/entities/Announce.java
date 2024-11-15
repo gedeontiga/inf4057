@@ -3,22 +3,26 @@ package com.m1fonda.entities;
 import java.io.Serializable;
 import java.util.Date;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class Announce implements Serializable {
-    private String titre;
+    private String title;
     private String description;
-    private Date dateEnvoi;
-    private String pj;
+    private Date createAt;
+    private String picture;
+    private String email;
 
-    protected Announce() {
+    protected Announce(String title, String description, Date createAt, String picture, String email) {
+        this.title = title;
+        this.description = description;
+        this.createAt = createAt;
+        this.picture = picture;
+        this.email = email;
     }
 
-    protected Announce(String titre, String description, Date dateEnvoi, String pj) {
-        this.titre = titre;
-        this.description = description;
-        this.dateEnvoi = dateEnvoi;
-        this.pj = pj;
+    protected Announce() {
     }
 }

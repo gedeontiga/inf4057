@@ -21,20 +21,7 @@ public class Users extends Client {
     private String email;
 
     @Builder
-    public Users(String email, String cni, String nom, String prenom, String password, Long tel) {
-        super(cni, nom, prenom, password, tel);
-        this.email = email;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public Users(String cni, String firstName, String lastName, String email, String password, Long phoneNumber) {
+        super(cni, firstName, lastName, email, password, phoneNumber);
     }
 }

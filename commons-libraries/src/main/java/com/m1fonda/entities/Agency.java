@@ -2,28 +2,31 @@ package com.m1fonda.entities;
 
 import java.io.Serializable;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class Agency implements Serializable {
 
-    private String nom;
+    private String numAgency;
+    private String name;
     private double capital;
-    private double tauxDepotOperateur;
-    private double tauxDepotAutreOperateur;
-    private double tauxRetrait;
-    private String urlbank;
+    private double depositBankRate;
+    private double withdrawalBankRate;
+    private String address;
 
-    protected Agency() {
+    protected Agency(String numAgency, String name, double capital, double depositBankRate,
+            double withdrawalBankRate,
+            String address) {
+        this.numAgency = numAgency;
+        this.name = name;
+        this.capital = capital;
+        this.depositBankRate = depositBankRate;
+        this.withdrawalBankRate = withdrawalBankRate;
+        this.address = address;
     }
 
-    protected Agency(String nom, double capital, double tauxDepotOperateur, double tauxDepotAutreOperateur,
-            double tauxRetrait, String urlbank) {
-        this.nom = nom;
-        this.capital = capital;
-        this.tauxDepotOperateur = tauxDepotOperateur;
-        this.tauxDepotAutreOperateur = tauxDepotAutreOperateur;
-        this.tauxRetrait = tauxRetrait;
-        this.urlbank = urlbank;
+    protected Agency() {
     }
 }

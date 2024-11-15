@@ -3,19 +3,23 @@ package com.m1fonda.entities;
 import java.io.Serializable;
 import java.util.Date;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class Account implements Serializable {
 
-    private String numero;
-    private Double solde;
+    private String accountNumber;
+    private Double balance;
     private Status status;
     private Date createAt = new Date();
 
-    protected Account(String numero, Double solde) {
-        this.numero = numero;
-        this.solde = solde;
+    protected Account(String accountNumber, Double balance, Status status, Date createAt) {
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+        this.status = status;
+        this.createAt = createAt;
     }
 
     protected Account() {
