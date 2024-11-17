@@ -28,7 +28,7 @@ public class WithdrawalService {
     public void pendingWithdrawal(WithdrawalRequest request){
         Withdrawal withdrawal = Withdrawal.builder().account(request.account()).amount(request.amount()).build();
         withdrawalRepository.save(withdrawal);
-        rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE, RabbitMQConstants.EMAIL_WITHDRAWAL_NOTIFICATION_KEY, request);
+        rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_WITHDRAWAL_KEY, request);
     }
 
     public void withdrawalFallback(){

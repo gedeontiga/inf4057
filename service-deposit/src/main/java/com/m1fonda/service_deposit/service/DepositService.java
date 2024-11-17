@@ -26,7 +26,7 @@ public class DepositService {
     public void newDeposit(DepositRequest request){
         Deposit deposit = Deposit.builder().account(request.account()).amount(request.amount()).build();
         depositRepository.save(deposit);
-        rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE, RabbitMQConstants.EMAIL_DEPOSIT_NOTIFICATION_KEY, request);
+        rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.EMAIL_DEPOSIT_NOTIFICATION_KEY, request);
     }
 
     public void depositFallback(){

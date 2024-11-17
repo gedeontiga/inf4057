@@ -28,7 +28,7 @@ public class TransferService {
     public void pendingTransfer(TransferRequest request){
         Transfer transfer = Transfer.builder().senderAccount(request.senderAccount()).receiverAccount(request.receiverAccount()).amount(request.amount()).build();
         transferRepository.save(transfer);
-        rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE, RabbitMQConstants.EMAIL_TRANSFER_NOTIFICATION_KEY, request);
+        rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_TRANSFER_KEY, request);
     }
 
     public void transferFallback(){
