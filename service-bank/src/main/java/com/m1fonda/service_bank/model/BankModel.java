@@ -2,6 +2,7 @@ package com.m1fonda.service_bank.model;
 import java.util.Date;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.m1fonda.entities.Bank;
 
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 import com.m1fonda.service_user.entities.Users;
 
+@Document(collection = "banks")
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

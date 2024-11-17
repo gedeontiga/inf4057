@@ -7,24 +7,19 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import com.m1fonda.config.*;
 
 @Configuration
 public class RabbitMQConfig {
 
     @Bean
     public Queue depositPendingQueue(){
-        return new Queue("depositPendingQueue", true);
-    }
-
-    @Bean
-    public Queue depositApprovedQueue(){
-        return new Queue("depositApprovedQueue", true);
+        return new Queue(RabbitMQConstants.DEPOSIT_QUEUE, true);
     }
 
     @Bean
     public TopicExchange transactionExchange(){
-        return new TopicExchange("transactionExchange");
+        return new TopicExchange(RabbitMQConstants.DEPOSIT_EXCHANGE);
     }
 
     @Bean
@@ -32,15 +27,7 @@ public class RabbitMQConfig {
         return BindingBuilder
             .bind(depositPendingQueue())
             .to(transactionExchange())
-            .with("depositPendingQueue.routing.key");
-    }
-
-    @Bean
-    public Binding bindingOut(){
-        return BindingBuilder
-            .bind(depositApprovedQueue())
-            .to(transactionExchange())
-            .with("depositApprovedQueue.routing.key");
+            .with(RabbitMQConstants.DEPOSIT_KEY);
     }
 
     @Bean

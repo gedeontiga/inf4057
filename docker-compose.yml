@@ -2,15 +2,17 @@ version: "3.8"
 services:
   service-config:
     build: ./service-config
+    image: gedeontiga/inf4057-service-config:latest
     ports:
       - "8888:8888"
     environment:
       - SPRING_APPLICATION_NAME=service-config
-      - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/gedeontiga/cloud-conf-inf4047
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/gedeontiga/cloud-conf-inf4057
     networks:
       - microservices_network
   service-registry:
     build: ./service-registry
+    image: gedeontiga/inf4057-service-registry:latest
     depends_on:
       - service-config # Commande: [.//wait-for-it]
     ports:
@@ -23,6 +25,7 @@ services:
       - microservices_network
   service-user:
     build: ./service-user
+    image: gedeontiga/inf4057-service-user:latest
     depends_on:
       - service-config # Commande: [.//wait-for-it]
     ports:
@@ -35,6 +38,8 @@ services:
       - microservices_network
   service-proxy:
     build: ./service-proxy
+    image: gedeontiga/inf4057-service-proxy:latest
+
     depends_on:
       - service-config # Commande: [.//wait-for-it]
     ports:

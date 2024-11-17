@@ -1,0 +1,205 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: microservices
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-config
+  namespace: microservices
+spec:
+  replicas: 1
+  selector:
+  matchLabels:
+    app: service-config
+  template:
+    metadata:
+      labels:
+        app: service-config
+    spec:
+      containers:
+        - name: service-config
+          image: gedeontiga/inf4057-service-config:latest
+          ports:
+            - containerPort: 8888
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: "service-config"
+            - name: SPRING_CLOUD_CONFIG_SERVER_GIT_URI
+              value: "https://github.com/gedeontiga/cloud-conf-inf4057"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-config
+  namespace: microservices
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8888
+      targetPort: 8888
+  selector:
+    app: service-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-registry
+  namespace: microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-registry
+  template:
+    metadata:
+      labels:
+        app: service-registry
+    spec:
+      containers:
+        - name: service-registry
+          image: gedeontiga/inf4057-service-registry:latest
+          ports:
+            - containerPort: 8761
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: "service-registry"
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: "http://service-config:8888"
+            - name: SPRING_CONFIG_IMPORT
+              value: "configserver:http://service-config:8888"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-registry
+  namespace: microservices
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8761
+      targetPort: 8761
+  selector:
+    app: service-registry
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-user
+  namespace: microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-user
+  template:
+    metadata:
+      labels:
+        app: service-user
+    spec:
+      containers:
+        - name: service-user
+          image: gedeontiga/inf4057-service-user:latest
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: "service-user"
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: "http://service-config:8888"
+            - name: SPRING_CONFIG_IMPORT
+              value: "configserver:http://service-config:8888"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-user
+  namespace: microservices
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8181
+      targetPort: 8081
+  selector:
+    app: service-user
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-proxy
+  namespace: microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-proxy
+  template:
+    metadata:
+      labels:
+        app: service-proxy
+    spec:
+      containers:
+        - name: service-proxy
+          image: gedeontiga/inf4057-service-proxy:latest
+          ports:
+            - containerPort: 8075
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: "service-proxy"
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: "http://service-config:8888"
+            - name: SPRING_CONFIG_IMPORT
+              value: "configserver:http://service-config:8888"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-proxy
+  namespace: microservices
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8060
+      targetPort: 8075
+  selector:
+    app: service-proxy
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  namespace: microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:management
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  namespace: microservices
+spec:
+  type: LoadBalancer
+  ports:
+    - name: rabbitmq
+      port: 5672
+      targetPort: 5672
+    - name: rabbitmq-management
+      port: 15672
+      targetPort: 15672
+  selector:
+    app: rabbitmq

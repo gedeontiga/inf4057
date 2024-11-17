@@ -1,5 +1,7 @@
 package com.m1fonda.dto;
 
-public record DepositRequest(double amount, String accountNumber) {
+import com.m1fonda.entities.Account;
+
+public record DepositRequest(Account account, double amount) {
 
 }

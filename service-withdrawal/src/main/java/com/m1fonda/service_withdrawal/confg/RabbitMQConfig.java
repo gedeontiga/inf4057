@@ -7,6 +7,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import com.m1fonda.config.*;
 
 
 @Configuration
@@ -14,33 +15,20 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue withdrawalPendingQueue(){
-        return new Queue("withdrawalPendingQueue", true);
-    }
-
-    @Bean
-    public Queue withdrawalApprovedQueue(){
-        return new Queue("withdrawalApprovedQueue", true);
+        return new Queue(RabbitMQConstants.WITHDRAW_QUEUE, true);
     }
 
     @Bean
     public TopicExchange transactionExchange(){
-        return new TopicExchange("transactionExchange");
+        return new TopicExchange(RabbitMQConstants.WITHDRAW_EXCHANGE);
     }
 
     @Bean
-    public Binding bindingIn(){
+    public Binding binding(){
         return BindingBuilder
             .bind(withdrawalPendingQueue())
             .to(transactionExchange())
-            .with("withdrawalPendingQueue.routing.key");
-    }
-
-    @Bean
-    public Binding bindingOut(){
-        return BindingBuilder
-            .bind(withdrawalApprovedQueue())
-            .to(transactionExchange())
-            .with("withdrawalApprovedQueue.routing.key");
+            .with(RabbitMQConstants.WITHDRAW_KEY);
     }
 
     @Bean

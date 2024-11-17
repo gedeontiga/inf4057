@@ -1,29 +1,25 @@
 package com.m1fonda.service_agency.entities;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.m1fonda.entities.Agency;
 import com.m1fonda.service_bank.model.BankModel;
 import com.m1fonda.service_user.entities.Users;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-@Entity
 @NoArgsConstructor
+@Document(collection = "agences")
 @AllArgsConstructor
 @Builder
 public class Agence extends Agency {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long code;
 
     @ManyToOne
     @JoinColumn(name = "bank_id")

@@ -3,11 +3,9 @@ package com.m1fonda.entities;
 import java.io.Serializable;
 
 import jakarta.persistence.*;
-import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
 
 @Data
-@MappedSuperclass
 public class Agency implements Serializable {
 
     private String nom;
