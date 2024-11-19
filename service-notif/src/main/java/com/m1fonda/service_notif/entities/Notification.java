@@ -5,7 +5,7 @@ import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.m1fonda.entities.Announce;
+import com.m1fonda.commons_libs.entities.Announce;
 
 import lombok.Builder;
 import lombok.NoArgsConstructor;

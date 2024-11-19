@@ -6,8 +6,9 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-import com.m1fonda.config.RabbitMQConstants;
-import com.m1fonda.entities.Demand;
+import com.m1fonda.commons_libs.config.RabbitMQConstants;
+import com.m1fonda.commons_libs.dto.RegistrationRequest;
+import com.m1fonda.commons_libs.entities.Demand;
 import com.m1fonda.service_account.entities.Compte;
 import com.m1fonda.service_account.repositories.CompteRepository;
 
@@ -37,8 +38,15 @@ public class CompteService {
                     .numAgency(numAgency)
                     .build();
 
-            rabbitTemplate.convertAndSend(RabbitMQConstants.USER_EXCHANGE, RabbitMQConstants.USER_REGISTRATION_KEY,
-                    demand);
+            rabbitTemplate.convertAndSend(RabbitMQConstants.AUTH_EXCHANGE, RabbitMQConstants.AUTH_REGISTER_KEY,
+                    RegistrationRequest.builder()
+                            .cni(demand.getCni())
+                            .email(demand.getEmail())
+                            .lastName(demand.getLastName())
+                            .phoneNumber(demand.getPhoneNumber())
+                            .firstName(demand.getFirstName())
+                            .password(demand.getPassword())
+                            .build());
 
             try {
                 c = compteRepository.save(c);

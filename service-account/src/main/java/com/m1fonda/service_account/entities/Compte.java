@@ -4,8 +4,8 @@ import java.util.Date;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.m1fonda.entities.Account;
-import com.m1fonda.entities.Status;
+import com.m1fonda.commons_libs.entities.Account;
+import com.m1fonda.commons_libs.entities.Status;
 
 import jakarta.persistence.Id;
 import lombok.Builder;

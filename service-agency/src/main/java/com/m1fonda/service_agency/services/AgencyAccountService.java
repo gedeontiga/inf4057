@@ -3,7 +3,7 @@ package com.m1fonda.service_agency.services;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-import com.m1fonda.config.RabbitMQConstants;
+import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.service_agency.entities.Agence;
 import com.m1fonda.service_agency.entities.Demande;
 import com.m1fonda.service_agency.repositories.AgencyRepository;

@@ -3,7 +3,7 @@ package com.m1fonda.service_agency.entities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.m1fonda.entities.Demand;
+import com.m1fonda.commons_libs.entities.Demand;
 
 import lombok.Builder;
 import lombok.NoArgsConstructor;

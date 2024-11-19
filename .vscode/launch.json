@@ -2,6 +2,19 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ServiceAuthApplication",
+            "request": "launch",
+            "mainClass": "com.m1fonda.service_auth.ServiceAuthApplication",
+            "projectName": "service-auth"
+        },
+        {
+            "type": "java",
+            "name": "CommonsLibsApplication",
+            "request": "launch",
+            "mainClass": "com.m1fonda.commons_libs.CommonsLibsApplication"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-ServiceConfigApplication",
             "request": "launch",
             "cwd": "${workspaceFolder}",
@@ -21,17 +34,6 @@
             "args": "",
             "envFile": "${workspaceFolder}/.env",
             "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=34853 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=service_registry"
-        },
-        {
-            "type": "java",
-            "name": "Spring Boot-ServiceDemandsApplication",
-            "request": "launch",
-            "cwd": "${workspaceFolder}",
-            "mainClass": "com.m1fonda.service_demands.ServiceDemandsApplication",
-            "projectName": "service-demands",
-            "args": "",
-            "envFile": "${workspaceFolder}/.env",
-            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=44847 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=service-demands"
         },
         {
             "type": "java",
