@@ -1,4 +1,4 @@
-package com.m1fonda.service_bank.config;
+package com.m1fonda.service_withdrawal.confg;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +14,9 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/bank/**") .hasRole("ADMIN")
+                        .requestMatchers("/api/withdrawal/**").authenticated()
                         .anyRequest().authenticated());
         return http.build();
     }
 }
+
