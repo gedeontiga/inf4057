@@ -47,7 +47,7 @@ public class RegisterService {
             throw new RuntimeException("Email already registered");
         }
 
-        Role role = new Role(RoleType.USER);
+        Role role = roleRepository.findByType(RoleType.USER);
 
         // Création de l'utilisateur
         Users user = Users.builder()
@@ -60,7 +60,6 @@ public class RegisterService {
                 .enabled(false)
                 .role(role)
                 .build();
-        roleRepository.save(role);
         userRepository.save(user);
 
         // Génération et envoi du code d'activation

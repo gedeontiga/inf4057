@@ -45,8 +45,7 @@ public class UserService {
     @CircuitBreaker(name = USER_CREATION_CIRCUIT_BREAKER, fallbackMethod = USER_CREATION_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.USER_CREATION_QUEUE)
     public UserResponse create(UserRequest request) {
-        Role role = new Role(RoleType.USER);
-        roleRepository.save(role);
+        Role role = roleRepository.findByType(RoleType.USER);
         Users user = Users.builder()
                 .cni(request.cni())
                 .email(request.email())

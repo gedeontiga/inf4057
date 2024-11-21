@@ -6,11 +6,13 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor
 public class Role {
 
@@ -20,8 +22,4 @@ public class Role {
 
     @Enumerated(EnumType.STRING)
     private RoleType type;
-
-    public Role(RoleType type) {
-        this.type = type;
-    }
 }
