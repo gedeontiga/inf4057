@@ -11,22 +11,35 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.m1fonda.commons_libs.config.RabbitMQConstants;
+
 @Configuration
 public class RabbitMQConfig {
 
     @Bean
-    Queue compteQueue() {
-        return new Queue("compteQueue");
+    Queue compteCreationQueue() {
+        return new Queue(RabbitMQConstants.ACCOUNT_CREATION_QUEUE);
+    }
+
+    @Bean
+    Queue compteUpdateQueue() {
+        return new Queue(RabbitMQConstants.ACCOUNT_UPDATE_QUEUE);
     }
 
     @Bean
     TopicExchange compteExchange() {
-        return new TopicExchange("compteExchange");
+        return new TopicExchange(RabbitMQConstants.ACCOUNT_EXCHANGE);
     }
 
     @Bean
-    Binding bindingCompte() {
-        return BindingBuilder.bind(compteQueue()).to(compteExchange()).with("compte.routing.key");
+    Binding bindingCompteCreation() {
+        return BindingBuilder.bind(compteCreationQueue()).to(compteExchange())
+                .with(RabbitMQConstants.ACCOUNT_CREATION_KEY);
+    }
+
+    @Bean
+    Binding bindingCompteUpdate() {
+        return BindingBuilder.bind(compteUpdateQueue()).to(compteExchange()).with(RabbitMQConstants.ACCOUNT_UPDATE_KEY);
     }
 
     @Bean

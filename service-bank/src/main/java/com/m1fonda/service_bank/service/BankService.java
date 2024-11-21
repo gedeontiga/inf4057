@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.m1fonda.config.RabbitMQConstants;
 import com.m1fonda.dto.AgencyCreateRequest;
 import com.m1fonda.dto.AgencyUpdateRequest;
+import com.m1fonda.service_bank.model.Agence;
 import com.m1fonda.service_bank.model.BankModel;
 import com.m1fonda.service_bank.repository.BankRepository;
 
@@ -33,7 +34,7 @@ public class BankService {
         return rabbitTemplate.convertSendAndReceive(RabbitMQConstants.AGENCY_EXCHANGE, RabbitMQConstants.AGENCY_CREATION_KEY, agency);
     }
 
-    public Object updateAgency(AgencyUpdateRequest agency) {
+    public Object updateAgency(Agence agency) {
         return rabbitTemplate.convertSendAndReceive(RabbitMQConstants.AGENCY_EXCHANGE, RabbitMQConstants.AGENCY_UPDATE_KEY, agency);
     }
 

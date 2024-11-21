@@ -10,6 +10,7 @@ services:
       - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/gedeontiga/cloud-conf-inf4057
     networks:
       - microservices_network
+
   service-registry:
     build: ./service-registry
     image: gedeontiga/inf4057-service-registry:latest
@@ -23,6 +24,21 @@ services:
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
     networks:
       - microservices_network
+
+  service-auth:
+    build: ./service-auth
+    image: gedeontiga/inf4057-service-auth:latest
+    depends_on:
+      - service-config # Commande: [.//wait-for-it]
+    ports:
+      - "9090"
+    environment:
+      - SPRING_APPLICATION_NAME=service-auth
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888 #Utilisation du nomde service
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+    networks:
+      - microservices_network
+
   service-user:
     build: ./service-user
     image: gedeontiga/inf4057-service-user:latest
@@ -36,10 +52,52 @@ services:
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
     networks:
       - microservices_network
+
+  service-notif:
+    build: ./service-notif
+    image: gedeontiga/inf4057-service-notif:latest
+    depends_on:
+      - service-config # Commande: [.//wait-for-it]
+    ports:
+      - "3025"
+    environment:
+      - SPRING_APPLICATION_NAME=service-notif
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888 #Utilisation du nomde service
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+    networks:
+      - microservices_network
+
+  service-agency:
+    build: ./service-agency
+    image: gedeontiga/inf4057-service-agency:latest
+    depends_on:
+      - service-config # Commande: [.//wait-for-it]
+    ports:
+      - "8088"
+    environment:
+      - SPRING_APPLICATION_NAME=service-agency
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888 #Utilisation du nomde service
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+    networks:
+      - microservices_network
+
+  service-account:
+    build: ./service-account
+    image: gedeontiga/inf4057-service-account:latest
+    depends_on:
+      - service-config # Commande: [.//wait-for-it]
+    ports:
+      - "8085"
+    environment:
+      - SPRING_APPLICATION_NAME=service-account
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888 #Utilisation du nomde service
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+    networks:
+      - microservices_network
+
   service-proxy:
     build: ./service-proxy
     image: gedeontiga/inf4057-service-proxy:latest
-
     depends_on:
       - service-config # Commande: [.//wait-for-it]
     ports:
@@ -50,6 +108,7 @@ services:
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
     networks:
       - microservices_network
+<<<<<<< HEAD
   service-transactions:
     build: ./service-transactions
     ports:
@@ -60,6 +119,29 @@ services:
       - SPRING_APPLICATION_NAME=service-transactions
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888 #Utilisation du nomde service
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+=======
+
+  postgresql:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=gedeon
+      - POSTGRES_PASSWORD=gedeon
+    networks:
+      - microservices_network
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=gedeon
+      - MONGO_INITDB_ROOT_PASSWORD=gedeon
+    networks:
+      - microservices_network
+
+>>>>>>> origin/gedeon
   rabbitmq:
     image: rabbitmq:4.0-management
     ports:
@@ -67,3 +149,18 @@ services:
       - "15672:15672"
     networks:
       - microservices_network
+<<<<<<< HEAD
+=======
+
+  smtp4dev:
+    image: rnwood/smtp4dev
+    ports:
+      - "2525:25"
+      - "30:80"
+    networks:
+      - microservices_network
+
+networks:
+  microservices_network:
+    driver: bridge
+>>>>>>> origin/gedeon

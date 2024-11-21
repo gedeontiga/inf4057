@@ -3,7 +3,7 @@ package com.m1fonda.service_agency.entities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.m1fonda.entities.Demand;
+import com.m1fonda.commons_libs.entities.Demand;
 
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -16,8 +16,9 @@ public class Demande extends Demand {
     private Long id;
 
     @Builder
-    public Demande(String nom, String prenom, String email, String password, String status, double solde, String cni,
-            Long tel, String urlRectoCni, String urlVersoCni) {
-        super(nom, prenom, email, password, status, solde, cni, tel, urlRectoCni, urlVersoCni);
+    public Demande(String firstName, String lastName, String email, String password, String status, String cni,
+            Long phoneNumber, Double balance, String urlRectoCni, String urlVersoCni, String numAgency) {
+        super(firstName, lastName, email, password, status, cni, phoneNumber, balance, urlRectoCni, urlVersoCni,
+                numAgency);
     }
 }

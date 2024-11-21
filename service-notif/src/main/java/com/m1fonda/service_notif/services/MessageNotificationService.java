@@ -5,9 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+<<<<<<< HEAD
 import com.m1fonda.config.RabbitMQConstants;
 import com.m1fonda.dto.AccountDepositWithdrawalResponse;
 import com.m1fonda.dto.AccountTransferResponse;
+=======
+import com.m1fonda.commons_libs.config.RabbitMQConstants;
+import com.m1fonda.commons_libs.dto.AccountDepositWithdrawalResponse;
+import com.m1fonda.commons_libs.dto.AccountTransferResponse;
+>>>>>>> origin/gedeon
 
 @Service
 public class MessageNotificationService {
@@ -17,6 +23,7 @@ public class MessageNotificationService {
 
     @RabbitListener(queues = RabbitMQConstants.MESSAGE_DEPOSIT_NOTIFICATION_QUEUE)
     public void listenDeposits(AccountDepositWithdrawalResponse response) {
+<<<<<<< HEAD
         String message = "Dépot Effectué :"+
                             "\n Compte :"+response.numeroCompte()+
                             "\n Utilisateur :"+response.userName()+
@@ -43,6 +50,36 @@ public class MessageNotificationService {
                             "\n Montant: "+response.transactionAmount()+
                             "\n Nouveau Solde: "+response.newBalanceSender()+
                             "\n Date : "+response.createdAt();
+=======
+        String message = "Dépôt Effectué :" +
+                "\n Compte :" + response.numeroCompte() +
+                "\n Utilisateur :" + response.userName() +
+                "\n Montant: " + response.transactionAmount() +
+                "\n Nouveau Solde: " + response.newBalance() +
+                "\n Date : " + response.createdAt();
+        template.convertAndSend("/topic/notifications", message);
+    }
+
+    @RabbitListener(queues = RabbitMQConstants.MESSAGE_WITHDRAWAL_NOTIFICATION_QUEUE)
+    public void listenWithdrawals(AccountDepositWithdrawalResponse response) {
+        String message = "Retrait Effectué :" +
+                "\n Compte :" + response.numeroCompte() +
+                "\n Utilisateur :" + response.userName() +
+                "\n Montant: " + response.transactionAmount() +
+                "\n Nouveau Solde: " + response.newBalance() +
+                "\n Date : " + response.createdAt();
+        template.convertAndSend("/topic/notifications", message);
+    }
+
+    @RabbitListener(queues = RabbitMQConstants.MESSAGE_TRANSFER_NOTIFICATION_QUEUE)
+    public void listenTransfers(AccountTransferResponse response) {
+        String message = "Transfer Effectué :" +
+                "\n Vers le Compte :" + response.receiverAccountNumber() +
+                "\n Nom :" + response.receiverUserName() +
+                "\n Montant: " + response.transactionAmount() +
+                "\n Nouveau Solde: " + response.newBalanceSender() +
+                "\n Date : " + response.createdAt();
+>>>>>>> origin/gedeon
         template.convertAndSend("/topic/notifications", message);
     }
 }

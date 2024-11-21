@@ -1,6 +1,7 @@
 package com.m1fonda.service_notif.services;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +9,19 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+<<<<<<< HEAD
 import com.m1fonda.config.RabbitMQConstants;
 import com.m1fonda.dto.AccountDepositWithdrawalResponse;
 import com.m1fonda.dto.AccountTransferResponse;
 import com.m1fonda.service_notif.entities.Notification;
 import com.m1fonda.service_notif.entities.Users;
+=======
+import com.m1fonda.commons_libs.config.RabbitMQConstants;
+import com.m1fonda.commons_libs.dto.AccountDepositWithdrawalResponse;
+import com.m1fonda.commons_libs.dto.AccountTransferResponse;
+import com.m1fonda.commons_libs.dto.ActivationCodeRequest;
+import com.m1fonda.commons_libs.entities.Announce;
+>>>>>>> origin/gedeon
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
@@ -27,23 +36,28 @@ public class MailNotificationService {
 
 
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
+<<<<<<< HEAD
     @RabbitListener(queues = RabbitMQConstants.EMAIL_NOTIFICATION_ACTIVATION_QUEUE)
     public void sendActivationCodeMail(Users user, String codeActivation) {
+=======
+    @RabbitListener(queues = RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE)
+    public void sendActivationCodeMail(ActivationCodeRequest activationInfo) {
+>>>>>>> origin/gedeon
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         String text = String.format(
                 "Salut %s, \n votre code d'activation est %s.\n Merci d'utiliser l'application et a bientôt.",
-                user.getNom(),
-                codeActivation);
-        Notification notification = Notification.builder()
-                .titre(CODE_ACTIVATION)
+                activationInfo.firstName(),
+                activationInfo.code());
+        Announce notification = Announce.builder()
+                .title(CODE_ACTIVATION)
                 .description(text)
-                .dateEnvoi(new Date())
-                .users(user)
-                .pj(null)
+                .createAt(new Date())
+                .email(activationInfo.email())
+                .picture("/assets/images/bank-logo.ico")
                 .build();
         mailMessage.setFrom("no-reply@atg-bank.com");
-        mailMessage.setTo(user.getEmail());
-        mailMessage.setSubject(notification.getTitre());
+        mailMessage.setTo(activationInfo.email());
+        mailMessage.setSubject(notification.getTitle());
 
         mailMessage.setText(notification.getDescription());
         javaMailSender.send(mailMessage);
@@ -52,11 +66,19 @@ public class MailNotificationService {
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.EMAIL_DEPOSIT_NOTIFICATION_QUEUE)
     public void sendDepositMail(AccountDepositWithdrawalResponse response) {
+<<<<<<< HEAD
         String message = "Compte :"+response.numeroCompte()+
                             "\n Utilisateur :"+response.userName()+
                             "\n Montant: "+response.transactionAmount()+
                             "\n Nouveau Solde: "+response.newBalance()+
                             "\n Date : "+response.createdAt();
+=======
+        String message = "Compte :" + response.numeroCompte() +
+                "\n Utilisateur :" + response.userName() +
+                "\n Montant: " + response.transactionAmount() +
+                "\n Nouveau Solde: " + response.newBalance() +
+                "\n Date : " + response.createdAt();
+>>>>>>> origin/gedeon
         String title = "DEPOT EFFECTUE";
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
@@ -75,6 +97,7 @@ public class MailNotificationService {
         mailMessage.setFrom("no-reply@atg-bank.com");
         mailMessage.setTo(response.email());
         mailMessage.setSubject("RETRAIT EFFECTUE");
+<<<<<<< HEAD
         mailMessage.setText("Compte :"+response.numeroCompte()+
                             "\n Utilisateur :"+response.userName()+
                             "\n Montant: "+response.transactionAmount()+
@@ -94,11 +117,33 @@ public class MailNotificationService {
                             "\n Montant: "+response.transactionAmount()+
                             "\n Nouveau Solde: "+response.newBalanceSender()+
                             "\n Date : "+response.createdAt());
+=======
+        mailMessage.setText("Compte :" + response.numeroCompte() +
+                "\n Utilisateur :" + response.userName() +
+                "\n Montant: " + response.transactionAmount() +
+                "\n Nouveau Solde: " + response.newBalance() +
+                "\n Date : " + response.createdAt());
+>>>>>>> origin/gedeon
         javaMailSender.send(mailMessage);
     }
 
-    public void sendMailFallback(Users user, Throwable throwable) {
-        System.out.println("Fallback - Mail non envoyé : " + user.toString());
+    @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
+    @RabbitListener(queues = RabbitMQConstants.EMAIL_WITHDRAWAL_NOTIFICATION_QUEUE)
+    public void sendTransferMail(AccountTransferResponse response) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom("no-reply@atg-bank.com");
+        mailMessage.setTo(response.senderEmail());
+        mailMessage.setSubject("RETRAIT EFFECTUE");
+        mailMessage.setText("Compte :" + response.senderAccountNumber() +
+                "\n Utilisateur :" + response.senderUserName() +
+                "\n Montant: " + response.transactionAmount() +
+                "\n Nouveau Solde: " + response.newBalanceSender() +
+                "\n Date : " + response.createdAt());
+        javaMailSender.send(mailMessage);
+    }
+
+    public void sendMailFallback(Map<String, Object> infoMap, Throwable throwable) {
+        System.out.println("Fallback - Mail non envoyé : " + infoMap.toString());
         System.out.println("Cause de l'échec : " + throwable.getMessage());
     }
 }

@@ -1,11 +1,10 @@
 package com.m1fonda.service_agency.entities;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.m1fonda.entities.Agency;
-import com.m1fonda.service_bank.model.BankModel;
-import com.m1fonda.service_user.entities.Users;
+import com.m1fonda.commons_libs.entities.Agency;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,12 +18,15 @@ import lombok.NoArgsConstructor;
 public class Agence extends Agency {
 
     @Id
-    private Long code;
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "bank_id")
-    private BankModel banque;
+    @DBRef
+    private Banque banque;
 
-    @OneToOne
-    private Users gestionnaire;
+    @Builder
+    public Agence(String numAgency, String name, double capital, double depositBankRate, double withdrawalBankRate,
+            String address, Banque banque) {
+        super(numAgency, name, capital, depositBankRate, withdrawalBankRate, address);
+        this.banque = banque;
+    }
 }

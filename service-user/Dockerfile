@@ -1,4 +1,4 @@
 FROM openjdk:21
-EXPOSE 8888
-ADD target/service_user.jar service_user.jar
-ENTRYPOINT [ "java", "-jar", "/service_user.jar"]
+EXPOSE 8881
+ADD target/service-user.jar service-user.jar
+ENTRYPOINT [ "java", "-jar", "/service-user.jar"]

@@ -1,4 +1,4 @@
 FROM openjdk:21
-EXPOSE 8888
-ADD target/service_proxy.jar service_proxy.jar
-ENTRYPOINT [ "java", "-jar", "/service_proxy.jar"]
+EXPOSE 8075
+ADD target/service-proxy.jar service-proxy.jar
+ENTRYPOINT [ "java", "-jar", "/service-proxy.jar"]
