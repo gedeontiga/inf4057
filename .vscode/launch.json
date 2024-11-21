@@ -73,6 +73,16 @@
             "projectName": "service-notif",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ServiceBankApplication<service-bank>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.m1fonda.service_bank.ServiceBankApplication",
+            "projectName": "service-bank",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
