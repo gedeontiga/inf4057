@@ -10,7 +10,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
-import com.m1fonda.service_notif.entities.Notification;
+import com.m1fonda.commons_libs.dto.AccountDepositWithdrawalResponse;
+import com.m1fonda.commons_libs.dto.AccountTransferResponse;
+import com.m1fonda.commons_libs.dto.ActivationCodeRequest;
+import com.m1fonda.commons_libs.entities.Announce;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
@@ -25,22 +28,21 @@ public class MailNotificationService {
 
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE)
-    public void sendActivationCodeMail(Map<String, Object> activationInfo) {
+    public void sendActivationCodeMail(ActivationCodeRequest activationInfo) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         String text = String.format(
                 "Salut %s, \n votre code d'activation est %s.\n Merci d'utiliser l'application et a bientôt.",
-                activationInfo.get(
-                        "firstName"),
-                activationInfo.get("code"));
-        Notification notification = Notification.builder()
+                activationInfo.firstName(),
+                activationInfo.code());
+        Announce notification = Announce.builder()
                 .title(CODE_ACTIVATION)
                 .description(text)
                 .createAt(new Date())
-                .email(activationInfo.get("email").toString())
-                .picture(null)
+                .email(activationInfo.email())
+                .picture("/assets/images/bank-logo.ico")
                 .build();
         mailMessage.setFrom("no-reply@atg-bank.com");
-        mailMessage.setTo(activationInfo.get("email").toString());
+        mailMessage.setTo(activationInfo.email());
         mailMessage.setSubject(notification.getTitle());
 
         mailMessage.setText(notification.getDescription());
@@ -49,18 +51,51 @@ public class MailNotificationService {
 
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.EMAIL_DEPOSIT_NOTIFICATION_QUEUE)
-    public void sendDepositMail(Map<String, Object> user) {
+    public void sendDepositMail(AccountDepositWithdrawalResponse response) {
+        String message = "Compte :" + response.numeroCompte() +
+                "\n Utilisateur :" + response.userName() +
+                "\n Montant: " + response.transactionAmount() +
+                "\n Nouveau Solde: " + response.newBalance() +
+                "\n Date : " + response.createdAt();
+        String title = "DEPOT EFFECTUE";
+
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom("no-reply@atg-bank.com");
-        // TODO more here
+        mailMessage.setTo(response.email());
+        mailMessage.setSubject(title);
+        mailMessage.setText(message);
+        javaMailSender.send(mailMessage);
+
     }
 
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.EMAIL_WITHDRAWAL_NOTIFICATION_QUEUE)
-    public void sendWithdrawalMail(Map<String, Object> user) {
+    public void sendWithdrawalMail(AccountDepositWithdrawalResponse response) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom("no-reply@atg-bank.com");
-        // TODO more here
+        mailMessage.setTo(response.email());
+        mailMessage.setSubject("RETRAIT EFFECTUE");
+        mailMessage.setText("Compte :" + response.numeroCompte() +
+                "\n Utilisateur :" + response.userName() +
+                "\n Montant: " + response.transactionAmount() +
+                "\n Nouveau Solde: " + response.newBalance() +
+                "\n Date : " + response.createdAt());
+        javaMailSender.send(mailMessage);
+    }
+
+    @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
+    @RabbitListener(queues = RabbitMQConstants.EMAIL_WITHDRAWAL_NOTIFICATION_QUEUE)
+    public void sendTransferMail(AccountTransferResponse response) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom("no-reply@atg-bank.com");
+        mailMessage.setTo(response.senderEmail());
+        mailMessage.setSubject("RETRAIT EFFECTUE");
+        mailMessage.setText("Compte :" + response.senderAccountNumber() +
+                "\n Utilisateur :" + response.senderUserName() +
+                "\n Montant: " + response.transactionAmount() +
+                "\n Nouveau Solde: " + response.newBalanceSender() +
+                "\n Date : " + response.createdAt());
+        javaMailSender.send(mailMessage);
     }
 
     public void sendMailFallback(Map<String, Object> infoMap, Throwable throwable) {

@@ -10,18 +10,24 @@ import lombok.Setter;
 @Setter
 public class Account implements Serializable {
 
-    private String accountNumber;
+    private String numAccount;
     private Double balance;
     private Status status;
     private Date createAt = new Date();
+    private String numAgency;
 
-    protected Account(String accountNumber, Double balance, Status status, Date createAt) {
-        this.accountNumber = accountNumber;
+    protected Account(String numAccount, Double balance, Status status, Date createAt, String numAgency) {
+        this.numAccount = numAccount;
         this.balance = balance;
         this.status = status;
         this.createAt = createAt;
+        this.numAgency = numAgency;
     }
 
     protected Account() {
+    }
+
+    public void setStatus(String status) {
+        this.status = Status.valueOf(status);
     }
 }

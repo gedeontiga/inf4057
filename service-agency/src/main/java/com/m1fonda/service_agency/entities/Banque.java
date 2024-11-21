@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.m1fonda.commons_libs.entities.Bank;
+import com.m1fonda.commons_libs.entities.Client;
 
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ public class Banque extends Bank {
     private Long id;
 
     @Builder
-    public Banque(String name, String logo) {
-        super(name, logo);
+    public Banque(String name, String logo, Client owner, String type, Double capital, String contact) {
+        super(name, logo, owner, type, capital, contact);
     }
 }

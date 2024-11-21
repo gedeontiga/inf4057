@@ -19,5 +19,5 @@ public enum PermissionType {
     USER_GET_ALL_SERVICES;
 
     @Getter
-    private String permisson;
+    private String permission;
 }

@@ -6,9 +6,12 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
-import com.m1fonda.commons_libs.dto.RegistrationRequest;
+import com.m1fonda.commons_libs.dto.UserRequest;
 import com.m1fonda.service_user.dto.UserResponse;
+import com.m1fonda.service_user.entities.Role;
+import com.m1fonda.service_user.entities.RoleType;
 import com.m1fonda.service_user.entities.Users;
+import com.m1fonda.service_user.repositories.RoleRepository;
 import com.m1fonda.service_user.repositories.UserRepository;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -21,13 +24,14 @@ public class UserService {
     private static final String USER_CREATION_FALLBACK = "userCreationFallback";
     private static final String USER_CREATION_CIRCUIT_BREAKER = "userCreationCircuitBreaker";
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     public UserResponse read(String email) {
         Users user = userRepository.findByEmail(email).orElseThrow();
         return UserResponse.fromUser(user);
     }
 
-    public UserResponse update(RegistrationRequest request) {
+    public UserResponse update(UserRequest request) {
         Users user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setFirstName(Optional.ofNullable(request.firstName()).orElse(user.getFirstName()));
@@ -40,7 +44,9 @@ public class UserService {
 
     @CircuitBreaker(name = USER_CREATION_CIRCUIT_BREAKER, fallbackMethod = USER_CREATION_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.USER_CREATION_QUEUE)
-    public UserResponse create(RegistrationRequest request) {
+    public UserResponse create(UserRequest request) {
+        Role role = new Role(RoleType.USER);
+        roleRepository.save(role);
         Users user = Users.builder()
                 .cni(request.cni())
                 .email(request.email())
@@ -48,11 +54,12 @@ public class UserService {
                 .firstName(request.firstName())
                 .password(request.password())
                 .phoneNumber(request.phoneNumber())
+                .role(role)
                 .build();
         return UserResponse.fromUser(userRepository.save(user));
     }
 
-    public void userCreationFallback(RegistrationRequest request, Throwable throwable) {
+    public void userCreationFallback(UserRequest request, Throwable throwable) {
         System.out.println("Fallback - Demande de création d'utilisateur a échoué : " + request.toString());
         System.out.println("Cause de l'échec : " + throwable.getMessage());
     }

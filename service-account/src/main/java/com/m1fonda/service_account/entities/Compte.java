@@ -21,11 +21,9 @@ public class Compte extends Account {
 
     @Id
     private Long id;
-    private String numAgency;
 
     @Builder
     public Compte(String accountNumber, Double balance, Status status, Date createAt, String numAgency) {
-        super(accountNumber, balance, status, createAt);
-        this.numAgency = numAgency;
+        super(accountNumber, balance, status, createAt, numAgency);
     }
 }

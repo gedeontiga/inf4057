@@ -22,7 +22,8 @@ public class GatewayConfig {
 
                                 // Routes protégées
                                 .route("service-user", r -> r
-                                                .path("/api/user/**")
+                                                .path("/api/user/**", "/api/manager/**",
+                                                                "/api/admin/**")
                                                 .filters(f -> f.filter(authFilter))
                                                 .uri("lb://service-user"))
 
@@ -40,6 +41,7 @@ public class GatewayConfig {
                                                 .path("/api/bank/**")
                                                 .filters(f -> f.filter(authFilter))
                                                 .uri("lb://service-bank"))
+
                                 .build();
         }
 }

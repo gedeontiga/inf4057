@@ -12,7 +12,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import com.m1fonda.service_auth.entities.Jwt;
-import com.m1fonda.service_auth.repositories.UserRepository;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,8 +25,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver handlerExceptionResolver;
-    private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final AuthService authService;
 
     @Override
     protected void doFilterInternal(@NonNull final HttpServletRequest request,
@@ -49,8 +48,7 @@ public class JwtFilter extends OncePerRequestFilter {
             if (!isTokenExpired
                     && jwtLoaded.getUser().getEmail().equals(email)
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
-                final UserDetails userDetails = userRepository.findByEmail(email)
-                        .orElseThrow(() -> new RuntimeException("User not found"));
+                final UserDetails userDetails = authService.loadUserByUsername(email);
                 final UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authToken);

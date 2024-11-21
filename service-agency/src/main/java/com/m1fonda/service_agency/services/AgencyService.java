@@ -1,5 +1,6 @@
 package com.m1fonda.service_agency.services;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ public class AgencyService {
 
     @CircuitBreaker(name = AGENCY_UPDATE_SERVICE, fallbackMethod = AGENCY_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.AGENCY_UPDATE_QUEUE)
-    public Agence updateAgencyInfo(AgencyDTO agency) {
+    public AgencyDTO updateAgencyInfo(AgencyDTO agency) {
         Agence agence = agencyRepository.findByNumAgency(agency.numAgency())
                 .orElseThrow(() -> new RuntimeException("Agency not found"));
         agence.setName(Optional.ofNullable(agency.name()).orElse(agence.getName()));
@@ -43,29 +44,32 @@ public class AgencyService {
         agence.setWithdrawalBankRate(
                 Optional.ofNullable(agency.withdrawalBankRate()).orElse(agence.getWithdrawalBankRate()));
         agence.setAddress(Optional.ofNullable(agency.address()).orElse(agence.getAddress()));
-        return agencyRepository.save(agence);
+        return AgencyDTO.fromAgency(agencyRepository.save(agence));
     }
 
     @CircuitBreaker(name = AGENCY_FIND_ALL_SERVICE, fallbackMethod = AGENCY_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.AGENCY_FIND_ALL_QUEUE)
-    public Set<Agence> getAllAgencies(Long id) {
+    public Set<AgencyDTO> getAllAgencies(Long id) {
         Banque banque = bankRepository.findById(id).orElseThrow(() -> new RuntimeException("Bank not found"));
-        return agencyRepository.findAllByBanque(banque);
+        Set<AgencyDTO> allAgencies = new HashSet<>();
+        agencyRepository.findAllByBanque(banque).forEach(agency -> allAgencies.add(AgencyDTO.fromAgency(agency)));
+        return allAgencies;
     }
 
     @CircuitBreaker(name = AGENCY_DELETE_SERVICE, fallbackMethod = AGENCY_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.AGENCY_DELETE_QUEUE)
-    public void deleteAgency(Long code) {
-        agencyRepository.deleteById(code);
+    public void deleteAgency(AgencyDTO agency) {
+        agencyRepository.deleteByNumAgency(agency.numAgency());
     }
 
     @CircuitBreaker(name = AGENCY_CREATION_SERVICE, fallbackMethod = AGENCY_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.AGENCY_CREATION_QUEUE)
-    public Agence createAgency(Agence agence) {
-        return agencyRepository.save(agence);
+    public AgencyDTO createAgency(Agence agence) throws RuntimeException {
+        return AgencyDTO.fromAgency(agencyRepository.save(agence));
     }
 
-    public void agencyFallback() {
-        System.out.println("AGENCY SERVICE NOT WORKING");
+    public void agencyFallback(Object object, Throwable throwable) {
+        System.out.println(
+                "AGENCY SERVICE NOT WORKING: " + throwable.getMessage() + " caused by: " + throwable.getCause());
     }
 }

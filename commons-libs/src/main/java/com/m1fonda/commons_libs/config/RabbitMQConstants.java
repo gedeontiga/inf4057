@@ -44,4 +44,23 @@ public final class RabbitMQConstants {
     public static final String EMAIL_DEPOSIT_NOTIFICATION_KEY = "notification.email.deposit.key";
     public static final String EMAIL_WITHDRAWAL_NOTIFICATION_QUEUE = "notification.email.queue";
     public static final String EMAIL_WITHDRAWAL_NOTIFICATION_KEY = "notification.email.withdrawal.key";
+
+    public static final String MESSAGE_DEPOSIT_NOTIFICATION_QUEUE = "message.deposit.email.queue";
+    public static final String MESSAGE_DEPOSIT_NOTIFICATION_KEY = "message.email.deposit.key";
+    public static final String MESSAGE_WITHDRAWAL_NOTIFICATION_QUEUE = "message.email.withdrawal.queue";
+    public static final String MESSAGE_WITHDRAWAL_NOTIFICATION_KEY = "message.email.withdrawal.key";
+    public static final String MESSAGE_TRANSFER_NOTIFICATION_QUEUE = "message.email.transfer.queue";
+    public static final String MESSAGE_TRANSFER_NOTIFICATION_KEY = "message.email.transfer.key";
+
+    // Deposit, Withdrawal and Transfer queues & routing keys
+
+    public static final String DEPOSIT_QUEUE = "depositQueue";
+    public static final String DEPOSIT_EXCHANGE = "depositExchange";
+    public static final String DEPOSIT_KEY = "depositKey";
+    public static final String WITHDRAW_EXCHANGE = "withdrawExchange";
+    public static final String WITHDRAW_QUEUE = "withdrawQueue";
+    public static final String WITHDRAW_KEY = "withdrawKey";
+    public static final String TRANSFER_EXCHANGE = "transferExchange";
+    public static final String TRANSFER_QUEUE = "transferQueue";
+    public static final String TRANSFER_KEY = "transferKey";
 }

@@ -2,7 +2,6 @@ package com.m1fonda.service_auth.services;
 
 import java.security.SecureRandom;
 import java.time.Instant;
-import java.util.Map;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -11,7 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
-import com.m1fonda.commons_libs.dto.RegistrationRequest;
+import com.m1fonda.commons_libs.dto.ActivationCodeRequest;
+import com.m1fonda.commons_libs.dto.UserRequest;
 import com.m1fonda.service_auth.entities.Validation;
 import com.m1fonda.service_auth.entities.Role;
 import com.m1fonda.service_auth.entities.RoleType;
@@ -41,7 +41,7 @@ public class RegisterService {
 
     @CircuitBreaker(name = SERVICE_USER_CIRCUIT_BREAKER, fallbackMethod = REGISTER_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.AUTH_REGISTER_QUEUE)
-    public void register(RegistrationRequest request) {
+    public void register(UserRequest request) {
         // Validation
         if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new RuntimeException("Email already registered");
@@ -88,13 +88,14 @@ public class RegisterService {
             user.setEnabled(true);
             user = userRepository.save(user);
             rabbitTemplate.convertAndSend(RabbitMQConstants.USER_EXCHANGE, RabbitMQConstants.USER_CREATION_KEY,
-                    RegistrationRequest.fromUser(user));
+                    UserRequest.fromUser(user));
         }
     }
 
     private String generateActivationCode() {
+        SecureRandom random = new SecureRandom();
         return String.format("%0" + ACTIVATION_CODE_LENGTH + "d",
-                new SecureRandom().nextInt((int) Math.pow(10, ACTIVATION_CODE_LENGTH)));
+                random.nextInt((int) Math.pow(10, ACTIVATION_CODE_LENGTH)));
     }
 
     private void saveActivationCode(String email, String code) {
@@ -113,10 +114,7 @@ public class RegisterService {
     private void sendActivationEmail(String firstName, String email, String code) {
         rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
                 RabbitMQConstants.EMAIL_NOTIFICATION_ACTIVATION_KEY,
-                Map.of(
-                        "firstName", firstName,
-                        "email", email,
-                        "code", code));
+                ActivationCodeRequest.activationCodeFactory(firstName, email, code));
     }
 
     @Scheduled(cron = "@daily") // Nettoyage toutes les jours
@@ -124,7 +122,7 @@ public class RegisterService {
         validationRepository.deleteByExpiredBefore(Instant.now());
     }
 
-    public void registerFallback(RegistrationRequest registrationRequest, Throwable throwable) {
+    public void registerFallback(UserRequest registrationRequest, Throwable throwable) {
         System.out.println("Fallback - Inscription échouée: " + throwable.getCause());
     }
 }

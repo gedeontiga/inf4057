@@ -2,7 +2,7 @@ package com.m1fonda.service_auth.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.m1fonda.commons_libs.dto.RegistrationRequest;
+import com.m1fonda.commons_libs.dto.UserRequest;
 import com.m1fonda.service_auth.dto.ActivationRequest;
 import com.m1fonda.service_auth.dto.LoginRequest;
 import com.m1fonda.service_auth.services.LoginService;
@@ -27,7 +27,7 @@ public class AuthController {
     private LoginService loginService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegistrationRequest request) {
+    public ResponseEntity<String> register(@RequestBody UserRequest request) {
         userSecurityService.register(request);
         return ResponseEntity.ok("Registration successful. Check your email for activation code.");
     }

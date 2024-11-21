@@ -8,7 +8,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.m1fonda.commons_libs.services.SecurityFilter;
+import com.m1fonda.service_user.services.SecurityFilter;
 
 import lombok.AllArgsConstructor;
 
@@ -16,16 +16,21 @@ import lombok.AllArgsConstructor;
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfig {
-    @Bean
-    SecurityFilterChain publicFilterChain(HttpSecurity http,
-            SecurityFilter securityFilter) throws Exception {
-        http
-                .securityMatcher("/api/user/**")
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
+        @Bean
+        SecurityFilterChain publicFilterChain(HttpSecurity http,
+                        SecurityFilter securityFilter) throws Exception {
+                http
+                                .csrf(csrf -> csrf.disable())
+                                .authorizeHttpRequests(
+                                                authorize -> authorize
+                                                                .requestMatchers("/api/user/**").authenticated()
+                                                                .requestMatchers("/api/manager/**").hasRole("MANAGER")
+                                                                .requestMatchers("/api/admin/**").hasRole("ADMIN"))
+                                .sessionManagement(
+                                                httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
+                                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+                return http.build();
+        }
 }

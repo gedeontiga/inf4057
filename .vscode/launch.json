@@ -5,7 +5,8 @@
             "name": "ServiceAuthApplication",
             "request": "launch",
             "mainClass": "com.m1fonda.service_auth.ServiceAuthApplication",
-            "projectName": "service-auth"
+            "projectName": "service-auth",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=39513 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=service-auth"
         },
         {
             "type": "java",
@@ -54,7 +55,8 @@
             "mainClass": "com.m1fonda.service_account.ServiceAccountApplication",
             "projectName": "service-account",
             "args": "",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=35033 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=service-account"
         },
         {
             "type": "java",
@@ -64,7 +66,8 @@
             "mainClass": "com.m1fonda.service_user.ServiceUserApplication",
             "projectName": "service_user",
             "args": "",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=36227 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=service_user"
         },
         {
             "type": "java",
@@ -73,6 +76,17 @@
             "cwd": "${workspaceFolder}",
             "mainClass": "com.m1fonda.service_notif.ServiceNotifApplication",
             "projectName": "service-notif",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=43251 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=service-notif"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ServiceProxyApplication<service-proxy>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.m1fonda.service_proxy.ServiceProxyApplication",
+            "projectName": "service-proxy",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }
