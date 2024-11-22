@@ -20,7 +20,7 @@ import lombok.Setter;
 public class Compte extends Account {
 
     @Id
-    private Long id;
+    private String id;
 
     @Builder
     public Compte(String accountNumber, Double balance, Status status, Date createAt, String numAgency) {

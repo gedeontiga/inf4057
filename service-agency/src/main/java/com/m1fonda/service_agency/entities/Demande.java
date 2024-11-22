@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class Demande extends Demand {
 
     @Id
-    private Long id;
+    private String id;
 
     @Builder
     public Demande(String firstName, String lastName, String email, String password, String status, String cni,

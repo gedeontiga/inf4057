@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 
 import com.m1fonda.service_auth.dto.LoginRequest;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class LoginService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;

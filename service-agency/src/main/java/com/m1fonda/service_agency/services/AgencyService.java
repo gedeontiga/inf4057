@@ -10,9 +10,7 @@ import org.springframework.stereotype.Service;
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.AgencyDTO;
 import com.m1fonda.service_agency.entities.Agence;
-import com.m1fonda.service_agency.entities.Banque;
 import com.m1fonda.service_agency.repositories.AgencyRepository;
-import com.m1fonda.service_agency.repositories.BankRepository;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
@@ -27,7 +25,6 @@ public class AgencyService {
     private static final String AGENCY_UPDATE_SERVICE = "AGENCY_UPDATE_SERVICE";
     private static final String AGENCY_FALLBACK = "agencyFallback";
     private AgencyRepository agencyRepository;
-    private BankRepository bankRepository;
 
     public Agence getAgency(Long code) {
         return agencyRepository.findById(code).orElseThrow();
@@ -49,10 +46,9 @@ public class AgencyService {
 
     @CircuitBreaker(name = AGENCY_FIND_ALL_SERVICE, fallbackMethod = AGENCY_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.AGENCY_FIND_ALL_QUEUE)
-    public Set<AgencyDTO> getAllAgencies(Long id) {
-        Banque banque = bankRepository.findById(id).orElseThrow(() -> new RuntimeException("Bank not found"));
+    public Set<AgencyDTO> getAllAgencies(String numBank) {
         Set<AgencyDTO> allAgencies = new HashSet<>();
-        agencyRepository.findAllByBanque(banque).forEach(agency -> allAgencies.add(AgencyDTO.fromAgency(agency)));
+        agencyRepository.findAllByNumBank(numBank).forEach(agency -> allAgencies.add(AgencyDTO.fromAgency(agency)));
         return allAgencies;
     }
 

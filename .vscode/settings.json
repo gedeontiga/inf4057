@@ -3,6 +3,9 @@
     "java.configuration.updateBuildConfiguration": "automatic",
     "cSpell.words": [
         "configserver",
+        "datname",
+        "dblink",
+        "dbname",
         "firstname",
         "lastname",
         "rabbitmq",
