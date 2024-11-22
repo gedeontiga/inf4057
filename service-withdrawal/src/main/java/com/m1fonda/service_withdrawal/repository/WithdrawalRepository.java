@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.m1fonda.service_withdrawal.model.Withdrawal;
 
 @Repository
-public interface WithdrawalRepository extends MongoRepository<Withdrawal, Long> {
+public interface WithdrawalRepository extends MongoRepository<Withdrawal, String> {
 
 }

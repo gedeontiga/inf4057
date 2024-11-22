@@ -10,7 +10,6 @@ import java.util.Date;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.m1fonda.entities.Account;
 
 import jakarta.persistence.*;
 
@@ -25,14 +24,17 @@ public class Withdrawal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
+
+    @Column( nullable = false, unique = true)
+    private String transactionNum;
 
     @Column( nullable = false)
     private double amount;
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Account account;
+    private String accountNum;
 
     @CreatedDate
     private Date createdAt;

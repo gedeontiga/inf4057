@@ -10,7 +10,6 @@ import java.util.Date;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.m1fonda.entities.Account;
 
 import jakarta.persistence.*;
 
@@ -24,18 +23,21 @@ public class Transfer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
+
+    @Column( nullable = false, unique = true)
+    private String transactionNum;
 
     @Column( nullable = false)
     private double amount;
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Account senderAccount;
+    private String senderAccountNum;
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Account receiverAccount;
+    private String receiverAccountNum;
 
     @CreatedDate
     private Date createdAt;

@@ -14,6 +14,13 @@ public final class RabbitMQConstants {
     public static final String ACCOUNT_CREATION_KEY = "account.creation.key";
     public static final String ACCOUNT_UPDATE_KEY = "account.update.key";
 
+    public static final String ACCOUNT_DEPOSIT_QUEUE = "account.deposit.queue";
+    public static final String ACCOUNT_DEPOSIT_KEY = "account.deposit.key";
+    public static final String ACCOUNT_WITHDRAW_QUEUE = "account.withdraw.queue";
+    public static final String ACCOUNT_WITHDRAW_KEY = "account.withdraw.key";
+    public static final String ACCOUNT_TRANSFER_QUEUE = "account.transfer.queue";
+    public static final String ACCOUNT_TRANSFER_KEY = "account.transfer.key";
+    
     // Agency Queues & Routing Keys
     public static final String AGENCY_QUEUE = "agency.queue";
     public static final String AGENCY_UPDATE_QUEUE = "agency.update.queue";
@@ -40,10 +47,12 @@ public final class RabbitMQConstants {
     public static final String EMAIL_NOTIFICATION_QUEUE = "notification.email.queue";
     public static final String EMAIL_NOTIFICATION_ACTIVATION_KEY = "notification.email.activation.key";
     public static final String EMAIL_NOTIFICATION_CREATION_KEY = "notification.email.creation.key";
-    public static final String EMAIL_DEPOSIT_NOTIFICATION_QUEUE = "notification.email.queue";
+    public static final String EMAIL_DEPOSIT_NOTIFICATION_QUEUE = "notification.email.deposit.queue";
     public static final String EMAIL_DEPOSIT_NOTIFICATION_KEY = "notification.email.deposit.key";
-    public static final String EMAIL_WITHDRAWAL_NOTIFICATION_QUEUE = "notification.email.queue";
+    public static final String EMAIL_WITHDRAWAL_NOTIFICATION_QUEUE = "notification.email.withdrawal.queue";
     public static final String EMAIL_WITHDRAWAL_NOTIFICATION_KEY = "notification.email.withdrawal.key";
+    public static final String EMAIL_TRANSFER_NOTIFICATION_QUEUE = "notification.email.transfer.queue";
+    public static final String EMAIL_TRANSFER_NOTIFICATION_KEY = "notification.email.transfer.key";
 
     public static final String MESSAGE_DEPOSIT_NOTIFICATION_QUEUE = "message.deposit.email.queue";
     public static final String MESSAGE_DEPOSIT_NOTIFICATION_KEY = "message.email.deposit.key";

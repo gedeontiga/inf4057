@@ -15,6 +15,7 @@
 /home/brunel/Seminar - Microservices/Project/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/entities/Status.java
 /home/brunel/Seminar - Microservices/Project/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/entities/Agency.java
 /home/brunel/Seminar - Microservices/Project/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/AnnounceDTO.java
+/home/brunel/Seminar - Microservices/Project/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/BankWithAgenciesDTO.java
 /home/brunel/Seminar - Microservices/Project/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/AccountTransferResponse.java
 /home/brunel/Seminar - Microservices/Project/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/BankDTO.java
 /home/brunel/Seminar - Microservices/Project/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/WithdrawalRequest.java

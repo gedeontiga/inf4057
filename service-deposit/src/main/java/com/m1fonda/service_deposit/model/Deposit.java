@@ -10,8 +10,6 @@ import java.util.Date;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.m1fonda.entities.Account;
-
 import jakarta.persistence.*;
 
 @Document( collection = "deposits")
@@ -24,14 +22,14 @@ public class Deposit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column( nullable = false)
+    @Column(unique = true, nullable = false)
+    private String transactionNum;
+
     private double amount;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Account account;
+    private String accountNum;
 
     @CreatedDate
     private Date createdAt;

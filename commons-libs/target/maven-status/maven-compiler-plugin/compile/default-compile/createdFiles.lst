@@ -10,6 +10,7 @@ com/m1fonda/commons_libs/entities/Announce$AnnounceBuilder.class
 com/m1fonda/commons_libs/dto/BankDTO.class
 com/m1fonda/commons_libs/entities/Bank.class
 com/m1fonda/Main.class
+main/java/com/m1fonda/commons_libs/dto/BankWithAgenciesDTO.class
 com/m1fonda/commons_libs/dto/AgencyDTO.class
 com/m1fonda/commons_libs/dto/AccountDTO.class
 com/m1fonda/commons_libs/dto/AccountTransferResponse.class

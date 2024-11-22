@@ -108,18 +108,6 @@ services:
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
     networks:
       - microservices_network
-<<<<<<< HEAD
-  service-transactions:
-    build: ./service-transactions
-    ports:
-      - "8182:8182"
-    depends_on:
-      - service-config
-    environment:
-      - SPRING_APPLICATION_NAME=service-transactions
-      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888 #Utilisation du nomde service
-      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
-=======
 
   postgresql:
     image: postgres
@@ -141,7 +129,6 @@ services:
     networks:
       - microservices_network
 
->>>>>>> origin/gedeon
   rabbitmq:
     image: rabbitmq:4.0-management
     ports:
@@ -149,8 +136,6 @@ services:
       - "15672:15672"
     networks:
       - microservices_network
-<<<<<<< HEAD
-=======
 
   smtp4dev:
     image: rnwood/smtp4dev
@@ -163,4 +148,3 @@ services:
 networks:
   microservices_network:
     driver: bridge
->>>>>>> origin/gedeon

@@ -7,7 +7,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.m1fonda.config.*;
+import com.m1fonda.commons_libs.config.*;;
 
 @Configuration
 public class RabbitMQConfig {

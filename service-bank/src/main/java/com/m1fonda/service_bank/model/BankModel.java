@@ -4,27 +4,49 @@ import java.util.Date;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.m1fonda.entities.Bank;
+import com.m1fonda.commons_libs.entities.*;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-import com.m1fonda.service_user.entities.Users;
 
 @Document(collection = "banks")
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 public class BankModel extends Bank {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @OneToOne
-    private Users gestionnaire;
+    @Column(unique = true, nullable = false)
+    private String ownerEmail;
 
     @CreatedDate
     private Date dateCreation;
+
+    @Builder
+    public BankModel(String bankNumber,  String name, String logo, String ownerEmail, String type, Double capital, String contact) {
+        super(bankNumber, name, logo, type, capital, contact);
+        this.ownerEmail = ownerEmail;
+    }
+
+    public String getOwnerEmail() {
+        return this.ownerEmail;
+    }
+
+    public void setOwnerEmail(String ownerEmail) {
+        this.ownerEmail = ownerEmail;
+    }
+
+    public Date getDateCreation() {
+        return this.dateCreation;
+    }
+
+    public void setDateCreation(Date dateCreation) {
+        this.dateCreation = dateCreation;
+    }
+
+
 }

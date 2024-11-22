@@ -2,11 +2,12 @@ package com.m1fonda.service_bank.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.m1fonda.dto.AgencyCreateRequest;
-import com.m1fonda.service_bank.model.BankModel;
+import com.m1fonda.service_bank.dto.AgencyDTO;
+import com.m1fonda.service_bank.dto.BankDTO;
+import com.m1fonda.service_bank.dto.BankDTOResponse;
+import com.m1fonda.service_bank.dto.BankWithAgenciesDTO;
 import com.m1fonda.service_bank.service.BankService;
 
 import lombok.AllArgsConstructor;
@@ -24,17 +25,17 @@ public class BankController {
     private final BankService bankService;
 
     @GetMapping("/new")
-    public ResponseEntity<BankModel> newBank(@RequestBody BankModel bank) {
+    public ResponseEntity<BankDTOResponse> newBank(@RequestBody BankDTO bank) {
         return ResponseEntity.ok(bankService.createBank(bank));
     }
     @PostMapping("/agency/add")
-    public ResponseEntity<Object> addAgency(@RequestBody AgencyCreateRequest agency) {
+    public ResponseEntity<BankWithAgenciesDTO> addAgency(@RequestBody AgencyDTO agency) {
         return ResponseEntity.ok(bankService.addAgency(agency));
     }
 
-    @PostMapping("/agency/remove/{agencyId}")
-    public void removeAgency(@RequestParam Long agencyId) {
-        bankService.removeAgency(agencyId);
+    @PostMapping("/agency/remove")
+    public boolean removeAgency(@RequestBody AgencyDTO agency) {
+        return bankService.removeAgency(agency);
     }
     
     
