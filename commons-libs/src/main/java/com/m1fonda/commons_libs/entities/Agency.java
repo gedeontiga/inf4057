@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class Agency implements Serializable {
 
-    private String numAgency;
+    protected String numAgency;
     private String name;
     private double capital;
     private double depositBankRate;

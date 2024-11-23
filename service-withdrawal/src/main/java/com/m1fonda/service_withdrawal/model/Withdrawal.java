@@ -32,8 +32,7 @@ public class Withdrawal {
     @Column( nullable = false)
     private double amount;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @Column(nullable = false)
     private String accountNum;
 
     @CreatedDate

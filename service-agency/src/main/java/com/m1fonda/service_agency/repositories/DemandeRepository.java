@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.m1fonda.service_agency.entities.Demande;
 
 @Repository
-public interface DemandeRepository extends MongoRepository<Demande, Long> {
+public interface DemandeRepository extends MongoRepository<Demande, String> {
 }

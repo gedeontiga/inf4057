@@ -12,7 +12,7 @@
 	<artifactId>service-bank</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>service-bank</name>
-	<description>Bank Service</description>u
+	<description>Bank Service</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -71,14 +71,14 @@
 
 		<dependency>
 			<groupId>com.m1fonda</groupId>
-			<artifactId>commons-libraries</artifactId>
+			<artifactId>commons-libs</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.m1fonda</groupId>
 			<artifactId>service_user</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+		</dependency> -->
 
 
 		<dependency>

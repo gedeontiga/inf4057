@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-// import com.studor.orientation_student.entities.RefreshToken;
 
 import com.m1fonda.service_auth.entities.Jwt;
 import com.m1fonda.service_auth.entities.Users;

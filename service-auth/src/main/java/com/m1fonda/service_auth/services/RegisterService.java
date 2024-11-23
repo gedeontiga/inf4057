@@ -21,7 +21,6 @@ import com.m1fonda.service_auth.repositories.RoleRepository;
 import com.m1fonda.service_auth.repositories.UserRepository;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -47,7 +46,7 @@ public class RegisterService {
             throw new RuntimeException("Email already registered");
         }
 
-        Role role = roleRepository.findByType(RoleType.USER);
+        Role role = roleRepository.findByType(RoleType.USER).orElseThrow();
 
         // Création de l'utilisateur
         Users user = Users.builder()
@@ -68,7 +67,6 @@ public class RegisterService {
         sendActivationEmail(request.firstName(), request.email(), code);
     }
 
-    @Transactional
     public void activate(String email, String code) {
         // Vérification du code
         Validation activationCode = validationRepository

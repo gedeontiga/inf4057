@@ -10,6 +10,6 @@ import com.m1fonda.service_user.entities.Users;
 
 @Repository
 // @RepositoryRestResource
-public interface UserRepository extends MongoRepository<Users, Long> {
+public interface UserRepository extends MongoRepository<Users, String> {
     public Optional<Users> findByEmail(String email);
 }

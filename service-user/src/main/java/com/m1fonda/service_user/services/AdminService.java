@@ -20,7 +20,7 @@ public class AdminService {
     private final RoleRepository roleRepository;
 
     public UserResponse createManager(UserRequest request) {
-        Role role = roleRepository.findByType(RoleType.MANAGER);
+        Role role = roleRepository.findByType(RoleType.MANAGER).orElseThrow();
         Users user = Users.builder()
                 .cni(request.cni())
                 .email(request.email())

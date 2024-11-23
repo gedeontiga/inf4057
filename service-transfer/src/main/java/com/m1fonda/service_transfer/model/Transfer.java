@@ -31,12 +31,10 @@ public class Transfer {
     @Column( nullable = false)
     private double amount;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @Column(nullable = false)
     private String senderAccountNum;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @Column(nullable = false)
     private String receiverAccountNum;
 
     @CreatedDate

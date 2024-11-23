@@ -109,13 +109,14 @@ services:
     networks:
       - microservices_network
 
-  postgresql:
-    image: postgres
+  mysql:
+    image: mysql:latest
     ports:
-      - "5432:5432"
+      - "3306:3306"
     environment:
-      - POSTGRES_USER=gedeon
-      - POSTGRES_PASSWORD=gedeon
+      - MYSQL_ROOT_PASSWORD=gedeon
+      - MYSQL_USER=gedeon
+      - MYSQL_PASSWORD=gedeon
     networks:
       - microservices_network
 

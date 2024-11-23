@@ -22,9 +22,9 @@ public class AgencyAdminController {
     private final AgencyService agencyService;
 
     @PreAuthorize("hasAuthority('ADMIN_READ_ALL')")
-    @GetMapping("/get-agencies/{bankId}")
-    public Set<AgencyDTO> getAllAgencies(@PathVariable Long bankId) {
-        return agencyService.getAllAgencies(bankId);
+    @GetMapping("/get-agencies/{numBank}")
+    public Set<AgencyDTO> getAllAgencies(@PathVariable String numBank) {
+        return agencyService.getAllAgencies(numBank);
     }
 
 }

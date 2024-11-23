@@ -3,7 +3,9 @@ package com.m1fonda.service_user.entities;
 import java.util.Collection;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,13 +20,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@Document(collection = "users")
 public class Users extends Client implements UserDetails {
 
     @Id
-    private Long id;
+    private String id;
     @Field("users_email")
+    @Indexed(unique = true)
     private String email;
-    @DBRef
+    @DocumentReference
     private Role role;
 
     @Builder
