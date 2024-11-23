@@ -109,6 +109,69 @@ services:
     networks:
       - microservices_network
 
+  service-bank:
+    build:
+      context: ./service-bank
+    depends_on:
+      - service-config
+      - mongodb
+    ports:
+      - "8181:8181"
+    environment:
+      - SPRING_APPLICATION_NAME=service-bank
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888 #Utilisation du nomde service
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+    networks:
+      - microservices_network
+
+  service-deposit:
+    build:
+      context: ./service-deposit
+    depends_on:
+      - service-config
+      - rabbitmq
+      - mongodb
+    ports:
+      - "8183:8183"
+    environment:
+      - SPRING_APPLICATION_NAME=service-deposit
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888 #Utilisation du nomde service
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+    networks:
+      - microservices_network
+
+  service-withdrawal:
+    build:
+      context: ./service-withdrawal
+    depends_on:
+      - service-config
+      - rabbitmq
+      - mongodb
+    ports:
+      - "8184:8184"
+    environment:
+      - SPRING_APPLICATION_NAME=service-withdrawal
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888 #Utilisation du nomde service
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+    networks:
+      - microservices_network
+
+  service-transfer:
+    build:
+      context: ./service-transfer
+    depends_on:
+      - service-config
+      - rabbitmq
+      - mongodb
+    ports:
+      - "8185:8185"
+    environment:
+      - SPRING_APPLICATION_NAME=service-transfer
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888 #Utilisation du nomde service
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+    networks:
+      - microservices_network
+
   mysql:
     image: mysql:latest
     ports:
