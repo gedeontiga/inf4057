@@ -15,13 +15,16 @@ public class Account implements Serializable {
     private Status status;
     private Date createAt = new Date();
     private String numAgency;
+    protected String userEmail;
 
-    protected Account(String numAccount, Double balance, Status status, Date createAt, String numAgency) {
+    protected Account(String numAccount, Double balance, Status status, Date createAt, String numAgency,
+            String userEmail) {
         this.numAccount = numAccount;
         this.balance = balance;
         this.status = status;
         this.createAt = createAt;
         this.numAgency = numAgency;
+        this.userEmail = userEmail;
     }
 
     protected Account() {

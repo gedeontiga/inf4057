@@ -31,6 +31,10 @@ public class UserService {
         return UserResponse.fromUser(user);
     }
 
+    public boolean isEmailAlreadyExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
     public UserResponse update(UserRequest request) {
         Users user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new RuntimeException("User not found"));

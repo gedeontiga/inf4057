@@ -16,7 +16,7 @@ public class CompteController {
     private final CompteService accountService;
 
     @PostMapping(path = "/get-account")
-    public AccountDTO getAccount(@RequestBody String numAccount) {
-        return accountService.getAccount(numAccount);
+    public AccountDTO getAccount(@RequestBody String userEmail) {
+        return accountService.getAccount(userEmail);
     }
 }

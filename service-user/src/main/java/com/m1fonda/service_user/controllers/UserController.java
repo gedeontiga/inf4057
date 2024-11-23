@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @AllArgsConstructor
@@ -30,4 +32,10 @@ public class UserController {
     public ResponseEntity<UserResponse> getUserByEmail(@RequestBody String email) {
         return ResponseEntity.ok(userService.read(email));
     }
+
+    @GetMapping("/check-email")
+    public ResponseEntity<Boolean> checkEmail(@PathVariable String email) {
+        return ResponseEntity.ok(userService.isEmailAlreadyExists(email));
+    }
+
 }

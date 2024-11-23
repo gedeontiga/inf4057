@@ -34,7 +34,8 @@ public class CompteService {
         String uuid = UUID.randomUUID().toString().replace("-", "");
         String numAccount = uuid.substring(0, 8);
         Compte c = Compte.builder()
-                .accountNumber(numAccount)
+                .userEmail(demand.getEmail())
+                .numAccount(numAccount)
                 .balance(demand.getBalance())
                 .numAgency(numAgency)
                 .build();
@@ -54,7 +55,7 @@ public class CompteService {
     @CircuitBreaker(name = SERVICE_COMPTE_CIRCUIT_BREAKER, fallbackMethod = UPDATE_COMPTE_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.ACCOUNT_UPDATE_QUEUE)
     public AccountDTO updateAccount(AccountDTO account) {
-        Compte c = compteRepository.findByNumAccount(account.numAccount())
+        Compte c = compteRepository.findByUserEmailOrNumAccount(account.userEmail(), account.numAccount())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
         c.setBalance(Optional.ofNullable(account.balance()).orElse(c.getBalance()));
@@ -63,8 +64,8 @@ public class CompteService {
         return AccountDTO.fromAccount(compteRepository.save(c));
     }
 
-    public AccountDTO getAccount(String numAccount) {
-        return AccountDTO.fromAccount(compteRepository.findByNumAccount(numAccount)
+    public AccountDTO getAccount(String email) {
+        return AccountDTO.fromAccount(compteRepository.findByUserEmail(email)
                 .orElseThrow(() -> new RuntimeException("No account found")));
     }
 
