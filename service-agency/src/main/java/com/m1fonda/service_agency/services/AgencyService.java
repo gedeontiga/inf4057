@@ -26,8 +26,8 @@ public class AgencyService {
     private static final String AGENCY_FALLBACK = "agencyFallback";
     private AgencyRepository agencyRepository;
 
-    public Agence getAgency(Long code) {
-        return agencyRepository.findById(code).orElseThrow();
+    public AgencyDTO getAgency(String numAgency) {
+        return AgencyDTO.fromAgency(agencyRepository.findByNumAgency(numAgency).orElseThrow());
     }
 
     @CircuitBreaker(name = AGENCY_UPDATE_SERVICE, fallbackMethod = AGENCY_FALLBACK)

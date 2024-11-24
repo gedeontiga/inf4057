@@ -1,5 +1,6 @@
 package com.m1fonda.service_auth.repositories;
 
+import java.time.Instant;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +13,7 @@ import com.m1fonda.service_auth.entities.Users;
 public interface JwtRepository extends JpaRepository<Jwt, Long> {
     Optional<Jwt> findByToken(String token);
 
-    void deleteAllByExpiredIsTrue();
+    void deleteAllByExpiredIsBefore(Instant instant);
 
-    Optional<Jwt> findByUserAndExpiredIsFalse(Users user);
+    Optional<Jwt> findByUserAndExpiredIsAfter(Users user, Instant now);
 }

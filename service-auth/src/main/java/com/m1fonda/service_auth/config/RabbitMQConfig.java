@@ -26,10 +26,6 @@ public class RabbitMQConfig {
     TopicExchange exchange() {
         return new TopicExchange(RabbitMQConstants.AUTH_EXCHANGE);
     }
-    // @Bean
-    // TopicExchange userExchange() {
-    // return new TopicExchange("userExchange");
-    // }
 
     // Liaison entre l’échange et la file d'attente avec une cle de routage
     @Bean

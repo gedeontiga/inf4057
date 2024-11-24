@@ -17,20 +17,16 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class SecurityConfig {
         @Bean
-        SecurityFilterChain publicFilterChain(HttpSecurity http,
-                        SecurityFilter securityFilter) throws Exception {
-                http
+        SecurityFilterChain publicFilterChain(HttpSecurity http, SecurityFilter securityFilter) throws Exception {
+                return http
                                 .csrf(csrf -> csrf.disable())
-                                .authorizeHttpRequests(
-                                                authorize -> authorize
-                                                                .requestMatchers("/api/user/**").authenticated()
-                                                                .requestMatchers("/api/manager/**").hasRole("MANAGER")
-                                                                .requestMatchers("/api/admin/**").hasRole("ADMIN"))
-                                .sessionManagement(
-                                                httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
-                                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
-
-                return http.build();
+                                .authorizeHttpRequests(authorize -> authorize
+                                                .requestMatchers("/api/user/**").authenticated()
+                                                .requestMatchers("/api/manager/**").hasRole("MANAGER")
+                                                .requestMatchers("/api/admin/**").hasRole("ADMIN"))
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                                .build();
         }
 }

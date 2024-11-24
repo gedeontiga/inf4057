@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.m1fonda.commons_libs.entities.Account;
 import com.m1fonda.commons_libs.entities.Status;
@@ -24,6 +25,7 @@ public class Compte extends Account {
     private String id;
 
     @Indexed(unique = true)
+    @Field("comptes_user_email")
     private String userEmail;
 
     @Builder

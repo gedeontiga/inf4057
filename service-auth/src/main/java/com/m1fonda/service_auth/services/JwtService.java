@@ -57,13 +57,19 @@ public class JwtService {
 
     public Boolean isTokenExpired(final String token) {
         final Date expiration = getClaim(token, Claims::getExpiration);
-        return expiration != null && expiration.before(new Date());
+        if (expiration != null && expiration.before(new Date())) {
+            Jwt jwt = jwtRepository.findByToken(token).orElseThrow();
+            jwt.setExpiredAt(Instant.now());
+            jwtRepository.save(jwt);
+            return true;
+        }
+        return false;
     }
 
     @Scheduled(cron = "@daily")
     public void removeUselessJwt() {
         log.info("Removing token at {}", Instant.now());
-        this.jwtRepository.deleteAllByExpiredIsTrue();
+        this.jwtRepository.deleteAllByExpiredIsBefore(Instant.now());
     }
 
     private <T> T getClaim(final String token, final Function<Claims, T> claimsResolver) {
@@ -92,11 +98,11 @@ public class JwtService {
                 .signWith(SECRET_KEY)
                 .compact();
 
-        Jwt jwt = jwtRepository.findByUserAndExpiredIsFalse(user)
+        Jwt jwt = jwtRepository.save(jwtRepository.findByUserAndExpiredIsAfter(user, Instant.now())
                 .orElse(
-                        jwtRepository.save(Jwt.builder()
+                        Jwt.builder()
                                 .token(bearer)
-                                .expired(false)
+                                .expiredAt(Instant.now())
                                 .user(user)
                                 .build()));
         return new HashMap<>(Map.of(BEARER, jwt.getToken()));
