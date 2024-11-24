@@ -14,6 +14,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -24,10 +27,21 @@ public class BankController {
 
     private final BankService bankService;
 
-    @GetMapping("/new")
+    @PostMapping("/new")
     public ResponseEntity<BankDTOResponse> newBank(@RequestBody BankDTO bank) {
         return ResponseEntity.ok(bankService.createBank(bank));
     }
+
+    @GetMapping("/get/{param}")
+    public ResponseEntity<BankWithAgenciesDTO> getBank(@RequestParam String param) {
+        return ResponseEntity.ok(bankService.getBank(param));
+    }
+    
+    @PutMapping("/update")
+    public ResponseEntity<AgencyDTO> updateAgency(@RequestBody AgencyDTO entity) {
+        return ResponseEntity.ok(bankService.updateAgency(entity));
+    }
+
     @PostMapping("/agency/add")
     public ResponseEntity<BankWithAgenciesDTO> addAgency(@RequestBody AgencyDTO agency) {
         return ResponseEntity.ok(bankService.addAgency(agency));
@@ -38,6 +52,4 @@ public class BankController {
         return bankService.removeAgency(agency);
     }
     
-    
-
 }
