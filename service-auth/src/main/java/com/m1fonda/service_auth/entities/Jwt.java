@@ -1,5 +1,7 @@
 package com.m1fonda.service_auth.entities;
 
+import java.time.Instant;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +27,7 @@ public class Jwt {
     private Long id;
 
     private String token;
-    private Boolean expired;
+    private Instant expiredAt;
 
     @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE })
     private Users user;

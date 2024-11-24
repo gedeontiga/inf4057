@@ -2,7 +2,9 @@ package com.m1fonda.service_account.entities;
 
 import java.util.Date;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.m1fonda.commons_libs.entities.Account;
 import com.m1fonda.commons_libs.entities.Status;
@@ -22,8 +24,13 @@ public class Compte extends Account {
     @Id
     private String id;
 
+    @Indexed(unique = true)
+    @Field("comptes_user_email")
+    private String userEmail;
+
     @Builder
-    public Compte(String accountNumber, Double balance, Status status, Date createAt, String numAgency) {
-        super(accountNumber, balance, status, createAt, numAgency);
+    public Compte(String numAccount, Double balance, Status status, Date createAt, String numAgency, String userEmail) {
+        super(numAccount, balance, status, createAt, numAgency, userEmail);
+        this.userEmail = userEmail;
     }
 }

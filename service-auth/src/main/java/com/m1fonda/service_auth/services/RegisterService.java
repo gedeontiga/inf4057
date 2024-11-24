@@ -38,6 +38,10 @@ public class RegisterService {
     private static final int ACTIVATION_CODE_LENGTH = 6;
     private static final long ACTIVATION_HOURS_VALIDITY = 24 * 3600 * 1000;
 
+    public boolean isEmailAlreadyExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
     @CircuitBreaker(name = SERVICE_USER_CIRCUIT_BREAKER, fallbackMethod = REGISTER_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.AUTH_REGISTER_QUEUE)
     public void register(UserRequest request) {

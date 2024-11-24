@@ -7,8 +7,13 @@
         "dblink",
         "dbname",
         "firstname",
+        "gedeon",
+        "INITDB",
         "lastname",
+        "mongodb",
+        "mysql",
         "rabbitmq",
+        "rnwood",
         "routingkey",
         "springframework",
         "urlbank"

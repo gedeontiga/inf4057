@@ -3,7 +3,7 @@ package com.m1fonda.service_agency.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.m1fonda.service_agency.entities.Agence;
+import com.m1fonda.commons_libs.dto.AgencyDTO;
 import com.m1fonda.service_agency.services.AgencyService;
 
 import lombok.AllArgsConstructor;
@@ -19,8 +19,8 @@ public class AgencyController {
 
     private final AgencyService agencyService;
 
-    @GetMapping("/{code}")
-    public ResponseEntity<Agence> getAgency(@PathVariable Long code) {
-        return ResponseEntity.ok(agencyService.getAgency(code));
+    @GetMapping("/{numAgency}")
+    public ResponseEntity<AgencyDTO> getAgency(@PathVariable String numAgency) {
+        return ResponseEntity.ok(agencyService.getAgency(numAgency));
     }
 }
