@@ -58,6 +58,7 @@ services:
     image: gedeontiga/inf4057-service-notif:latest
     depends_on:
       - service-config
+      - smtp4dev
     ports:
       - "3025"
     environment:
