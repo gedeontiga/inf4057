@@ -9,12 +9,17 @@ import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.AccountDepositWithdrawalResponse;
 import com.m1fonda.commons_libs.dto.AccountTransferResponse;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 @Service
 public class MessageNotificationService {
 
+    private static final String SEND_MAIL_FALLBACK = "sendMessageFallback";
+    private static final String SERVICE_NOTIFICATION_CIRCUIT_BREAKER = "serviceMessageNotificationCircuitBreaker";
     @Autowired
     private SimpMessagingTemplate template;
 
+    @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.MESSAGE_DEPOSIT_NOTIFICATION_QUEUE)
     public void listenDeposits(AccountDepositWithdrawalResponse response) {
 
@@ -27,6 +32,7 @@ public class MessageNotificationService {
         template.convertAndSend("/topic/notifications", message);
     }
 
+    @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.MESSAGE_WITHDRAWAL_NOTIFICATION_QUEUE)
     public void listenWithdrawals(AccountDepositWithdrawalResponse response) {
         String message = "Retrait Effectué :" +
@@ -38,6 +44,7 @@ public class MessageNotificationService {
         template.convertAndSend("/topic/notifications", message);
     }
 
+    @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.MESSAGE_TRANSFER_NOTIFICATION_QUEUE)
     public void listenTransfers(AccountTransferResponse response) {
         String message = "Transfer Effectué :" +
