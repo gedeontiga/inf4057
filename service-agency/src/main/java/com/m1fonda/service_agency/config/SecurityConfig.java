@@ -7,7 +7,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.m1fonda.service_agency.services.SecurityFilter;
+import com.m1fonda.service_agency.components.SecurityFilter;
 
 @Configuration
 public class SecurityConfig {
@@ -19,8 +19,10 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(
                                                 authorize -> authorize
                                                                 .requestMatchers("/api/demande").permitAll()
-                                                                .requestMatchers("/api/agency/**")
-                                                                .hasAnyRole("MANAGER", "ADMIN"))
+                                                                .requestMatchers("/api/agency/get-agency/**")
+                                                                .hasAnyRole("MANAGER", "ADMIN")
+                                                                .requestMatchers("/api/agency/get-agencies/**")
+                                                                .hasRole("ADMIN"))
                                 .sessionManagement(
                                                 httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
                                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
