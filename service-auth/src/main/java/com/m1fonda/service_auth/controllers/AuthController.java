@@ -72,7 +72,6 @@ public class AuthController {
 
     @PostMapping("/activate")
     public ResponseEntity<String> activate(@RequestBody ActivationRequest request) {
-        registerService.activate(request.email(), request.code());
-        return ResponseEntity.ok("Account activated successfully");
+        return ResponseEntity.ok(registerService.activate(request.email(), request.code()));
     }
 }

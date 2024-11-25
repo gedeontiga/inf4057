@@ -1,7 +1,8 @@
 package com.m1fonda.service_account.controllers;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.m1fonda.commons_libs.dto.AccountDTO;
@@ -15,8 +16,9 @@ public class CompteController {
 
     private final CompteService accountService;
 
-    @PostMapping(path = "/get-account")
-    public AccountDTO getAccount(@RequestBody String userEmail) {
-        return accountService.getAccount(userEmail);
+    @GetMapping(path = "/get-account")
+    public AccountDTO getAccount() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return accountService.getAccount(user.getUsername());
     }
 }

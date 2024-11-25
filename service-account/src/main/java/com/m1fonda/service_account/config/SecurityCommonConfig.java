@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.m1fonda.service_account.services.SecurityFilter;
+import com.m1fonda.service_account.components.SecurityFilter;
 
 import lombok.RequiredArgsConstructor;
 

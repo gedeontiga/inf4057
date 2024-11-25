@@ -5,6 +5,7 @@
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/AccountTransferResponse.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/AgencyDTO.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/AnnounceDTO.java
+/home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/DemandeDTO.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/entities/Client.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/AccountDTO.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/entities/Status.java

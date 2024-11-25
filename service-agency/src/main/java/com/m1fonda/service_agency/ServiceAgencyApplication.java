@@ -31,7 +31,7 @@ public class ServiceAgencyApplication {
 					agencyRepository.save(
 							Agence.builder()
 									.capital(1000000000)
-									.numAgency(numAgency)
+									.numAgency("ATG-" + numAgency)
 									.depositBankRate(0.01)
 									.withdrawalBankRate(0.05)
 									.address(address)

@@ -17,11 +17,6 @@ import com.m1fonda.commons_libs.config.RabbitMQConstants;
 public class RabbitMQConfig {
 
     @Bean
-    Queue notificationQueue() {
-        return new Queue(RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE);
-    }
-
-    @Bean
     Queue emailQueue() {
         return new Queue(RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE);
     }
@@ -90,12 +85,6 @@ public class RabbitMQConfig {
     Binding bindingMessageTransfer() {
         return BindingBuilder.bind(messageTransferQueue()).to(notificationExchange())
                 .with(RabbitMQConstants.MESSAGE_TRANSFER_NOTIFICATION_KEY);
-    }
-
-    @Bean
-    Binding bindingNotification() {
-        return BindingBuilder.bind(notificationQueue()).to(notificationExchange())
-                .with(RabbitMQConstants.EMAIL_NOTIFICATION_ACTIVATION_KEY);
     }
 
     @Bean

@@ -18,5 +18,6 @@ com/m1fonda/commons_libs/dto/UserRequest.class
 com/m1fonda/commons_libs/config/RabbitMQConstants.class
 com/m1fonda/commons_libs/entities/Client.class
 com/m1fonda/commons_libs/dto/ClientDTO.class
+com/m1fonda/commons_libs/dto/DemandeDTO.class
 com/m1fonda/commons_libs/entities/Demand.class
 com/m1fonda/commons_libs/dto/AnnounceDTO.class

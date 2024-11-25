@@ -71,7 +71,7 @@ public class RegisterService {
         sendActivationEmail(request.firstName(), request.email(), code);
     }
 
-    public void activate(String email, String code) {
+    public String activate(String email, String code) {
         // Vérification du code
         Validation activationCode = validationRepository
                 .findByEmailAndExpiredAfter(email, Instant.now())
@@ -82,7 +82,7 @@ public class RegisterService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (user.isEnabled()) {
-            throw new RuntimeException("User already activated");
+            return "User already activated";
         }
 
         if (activationCode.getCode().equals(code)) {
@@ -90,7 +90,9 @@ public class RegisterService {
             user = userRepository.save(user);
             rabbitTemplate.convertAndSend(RabbitMQConstants.USER_EXCHANGE, RabbitMQConstants.USER_CREATION_KEY,
                     UserRequest.fromUser(user));
+            return "User activated successfully";
         }
+        return "Activation Failed";
     }
 
     private String generateActivationCode() {

@@ -34,7 +34,6 @@ public class UserController {
     @GetMapping("/read")
     public ResponseEntity<UserResponse> getUserByEmail() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println("==================>" + user.getUsername());
         return ResponseEntity.ok(userService.read(user.getUsername()));
     }
 }

@@ -22,7 +22,7 @@ public class Agence extends Agency {
     private String id;
 
     @Indexed(unique = true)
-    @Field("agences_number")
+    @Field("num_agency")
     private String numAgency;
 
     private String numBank;
