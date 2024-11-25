@@ -13,7 +13,7 @@ import com.m1fonda.service_auth.entities.Users;
 public interface JwtRepository extends JpaRepository<Jwt, Long> {
     Optional<Jwt> findByToken(String token);
 
-    void deleteAllByExpiredIsBefore(Instant instant);
+    void deleteAllByExpiredAtIsBefore(Instant instant);
 
-    Optional<Jwt> findByUserAndExpiredIsAfter(Users user, Instant now);
+    Optional<Jwt> findByUserAndExpiredAtIsAfter(Users user, Instant now);
 }

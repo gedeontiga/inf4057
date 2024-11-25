@@ -1,6 +1,8 @@
 package com.m1fonda.service_proxy.components;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -26,10 +28,6 @@ public class AuthFilter implements GatewayFilter, Ordered {
         String token = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         String path = exchange.getRequest().getPath().value();
 
-        log.info("=== Starting request processing ===");
-        log.info("Path: {}", path);
-        log.info("Headers: {}", exchange.getRequest().getHeaders());
-
         if (token == null || !token.startsWith("Bearer ")) {
             log.error("No valid authorization token found for path: {}", path);
             return unauthorized(exchange);
@@ -42,29 +40,42 @@ public class AuthFilter implements GatewayFilter, Ordered {
                 .exchangeToMono(response -> {
                     if (response.statusCode().is2xxSuccessful()) {
                         return response.bodyToMono(Map.class)
-                                .doOnNext(body -> log.info("Auth service response body: {}", body));
+                                .doOnNext(body -> log.debug("Auth service response body: {}", body))
+                                .flatMap(body -> {
+                                    if (body.get("email") == null || body.get("roles") == null) {
+                                        log.error("Invalid auth response format: missing email or roles");
+                                        return Mono.error(new RuntimeException("Invalid auth response format"));
+                                    }
+                                    return Mono.just(body);
+                                });
                     } else {
                         log.error("Auth service returned status: {}", response.statusCode());
                         return Mono.error(new RuntimeException("Auth service validation failed"));
                     }
                 })
-                .doOnNext(response -> {
-                    log.info("Processing auth response: {}", response);
-                    log.info("Email from response: {}", response.get("email"));
-                    log.info("Roles from response: {}", response.get("roles"));
-                })
                 .flatMap(response -> {
+                    String email = (String) response.get("email");
+                    String roles = (String) response.get("roles");
+
+                    // Normalize roles format
+                    roles = Arrays.stream(roles.split(","))
+                            .map(role -> {
+                                role = role.trim();
+                                if (!role.startsWith("ROLE_")) {
+                                    role = "ROLE_" + role;
+                                }
+                                return role;
+                            })
+                            .collect(Collectors.joining(","));
+
                     ServerHttpRequest request = exchange.getRequest().mutate()
-                            .header("X-User-Email", (String) response.get("email"))
-                            .header("X-User-Roles", (String) response.get("roles"))
+                            .header("X-User-Email", email)
+                            .header("X-User-Roles", roles)
                             .header(HttpHeaders.AUTHORIZATION, token)
                             .build();
 
-                    log.info("Modified request headers: {}", request.getHeaders());
-
-                    return chain.filter(exchange.mutate().request(request).build())
-                            .doOnSuccess(v -> log.info("Request processing completed successfully"))
-                            .doOnError(error -> log.error("Error during request processing", error));
+                    log.debug("Forwarding request with headers - Email: {}, Roles: {}", email, roles);
+                    return chain.filter(exchange.mutate().request(request).build());
                 })
                 .onErrorResume(error -> {
                     log.error("Error during authentication process", error);

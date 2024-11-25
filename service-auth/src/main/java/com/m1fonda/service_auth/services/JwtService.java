@@ -1,7 +1,7 @@
 package com.m1fonda.service_auth.services;
 
-import java.security.SecureRandom; // Ensure this import is present
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,14 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtService {
 
     private static final String TOKEN_NOT_FOUND = "Token not found";
-    private static final SecretKey SECRET_KEY = getKey();
-
-    private static SecretKey getKey() {
-        final byte[] keyBytes = new byte[64];
-        SecureRandom secureRandom = new SecureRandom();
-        secureRandom.nextBytes(keyBytes);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
+    private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(
+            Base64.getDecoder().decode("R9MyWaYpeXJwuQmL1nT4HmGQCY0kPj6vF2d3Z5K7A8bNcShEsUgVtWxDfM4BoI9q"));
 
     private final UserRepository userRepository;
     private final JwtRepository jwtRepository;
@@ -57,19 +51,13 @@ public class JwtService {
 
     public Boolean isTokenExpired(final String token) {
         final Date expiration = getClaim(token, Claims::getExpiration);
-        if (expiration != null && expiration.before(new Date())) {
-            Jwt jwt = jwtRepository.findByToken(token).orElseThrow();
-            jwt.setExpiredAt(Instant.now());
-            jwtRepository.save(jwt);
-            return true;
-        }
-        return false;
+        return expiration != null && expiration.before(new Date());
     }
 
     @Scheduled(cron = "@daily")
     public void removeUselessJwt() {
         log.info("Removing token at {}", Instant.now());
-        this.jwtRepository.deleteAllByExpiredIsBefore(Instant.now());
+        this.jwtRepository.deleteAllByExpiredAtIsBefore(Instant.now());
     }
 
     private <T> T getClaim(final String token, final Function<Claims, T> claimsResolver) {
@@ -98,11 +86,12 @@ public class JwtService {
                 .signWith(SECRET_KEY)
                 .compact();
 
-        Jwt jwt = jwtRepository.save(jwtRepository.findByUserAndExpiredIsAfter(user, Instant.now())
+        Jwt jwt = jwtRepository.save(jwtRepository.findByUserAndExpiredAtIsAfter(user, Instant.now())
                 .orElse(
                         Jwt.builder()
                                 .token(bearer)
-                                .expiredAt(Instant.now())
+                                .expiredAt(Instant.now().plusMillis(12 * 3600
+                                        * 1000))
                                 .user(user)
                                 .build()));
         return new HashMap<>(Map.of(BEARER, jwt.getToken()));

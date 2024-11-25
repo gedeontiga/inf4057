@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.m1fonda.commons_libs.dto.UserRequest;
 import com.m1fonda.service_user.dto.UserResponse;
-import com.m1fonda.service_user.entities.Users;
 import com.m1fonda.service_user.services.UserService;
 
 import lombok.AllArgsConstructor;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 @Slf4j
 @RestController
@@ -33,8 +33,8 @@ public class UserController {
 
     @GetMapping("/read")
     public ResponseEntity<UserResponse> getUserByEmail() {
-        Users user = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println("==================>" + user.getFirstName());
-        return ResponseEntity.ok(userService.read(user.getEmail()));
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("==================>" + user.getUsername());
+        return ResponseEntity.ok(userService.read(user.getUsername()));
     }
 }

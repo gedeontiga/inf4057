@@ -8,7 +8,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.m1fonda.service_user.services.SecurityFilter;
+import com.m1fonda.service_user.components.SecurityFilter;
 
 import lombok.AllArgsConstructor;
 
