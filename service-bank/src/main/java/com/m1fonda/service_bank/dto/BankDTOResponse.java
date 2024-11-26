@@ -1,5 +1,6 @@
 package com.m1fonda.service_bank.dto;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public record BankDTOResponse(
@@ -11,5 +12,10 @@ public record BankDTOResponse(
                 String contact,
                 String bankNumber,
                 Date createdAt) {
+
+    // public BankDTOResponse(String string, String string2, String string3, String string4, double d, String string5,
+    //         String string6, LocalDateTime now) {
+    //     //TODO Auto-generated constructor stub
+    // }
 
 }
