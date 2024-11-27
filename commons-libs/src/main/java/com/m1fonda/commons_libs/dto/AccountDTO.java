@@ -17,7 +17,7 @@ public record AccountDTO(
                                 account.getNumAgency(),
                                 account.getBalance(),
                                 account.getCreateAt(),
-                                account.getStatus().name(),
+                                account.getStatus().toString(),
                                 account.getUserEmail());
         }
 }

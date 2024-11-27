@@ -1,5 +1,6 @@
 package com.m1fonda.service_account.services;
 
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.AccountDTO;
 import com.m1fonda.commons_libs.dto.UserRequest;
 import com.m1fonda.commons_libs.entities.Demand;
+import com.m1fonda.commons_libs.entities.Status;
 import com.m1fonda.service_account.entities.Compte;
 import com.m1fonda.service_account.repositories.CompteRepository;
 
@@ -37,6 +39,8 @@ public class CompteService {
                 .userEmail(demand.getEmail())
                 .numAccount(numAccount)
                 .balance(demand.getBalance())
+                .status(Status.ACTIF)
+                .createAt(new Date())
                 .numAgency(numAgency)
                 .build();
 

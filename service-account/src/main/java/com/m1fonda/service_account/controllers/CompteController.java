@@ -4,19 +4,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.m1fonda.commons_libs.dto.AccountDTO;
 import com.m1fonda.service_account.services.CompteService;
 
 import lombok.AllArgsConstructor;
 
-@RequestMapping(path = "/api/account")
+@RestController
 @AllArgsConstructor
+@RequestMapping("/api/account")
 public class CompteController {
 
     private final CompteService accountService;
 
-    @GetMapping(path = "/get-account")
+    @GetMapping("/get-account")
     public AccountDTO getAccount() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return accountService.getAccount(user.getUsername());
