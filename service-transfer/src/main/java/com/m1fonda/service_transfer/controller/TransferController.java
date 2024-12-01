@@ -1,17 +1,22 @@
 package com.m1fonda.service_transfer.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.m1fonda.commons_libs.dto.TransferResponse;
-import com.m1fonda.commons_libs.dto.TransferRequest;
-import com.m1fonda.commons_libs.dto.UserResponse;
+import com.m1fonda.commons_libs.dto.TransferRequestDTO;
+import com.m1fonda.service_transfer.dto.TransferFilterDTO;
+import com.m1fonda.service_transfer.model.Transfer;
 import com.m1fonda.service_transfer.service.TransferService;
 
 import lombok.AllArgsConstructor;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -24,36 +29,26 @@ public class TransferController {
     private final TransferService transferService;
 
     @PostMapping("/")
-    public ResponseEntity<TransferResponse> transfer(@RequestBody TransferRequest transferRequest) {
-        RestTemplate restTemplate = new RestTemplate();
-        String userUrl1 = "http://localhost:8075/api/user/read" ;
-        String userUrl2 = "http://localhost:8075/api/user/read/"+transferRequest.receiverEmail() ;
-
-        UserResponse sender = restTemplate.getForObject(userUrl1, UserResponse.class);
-        UserResponse receiver = restTemplate.getForObject(userUrl2, UserResponse.class);
-
-        if (sender != null && receiver != null) {
-        TransferRequest response = new TransferRequest(
-                                        transferRequest.senderAccountNum(), 
-                                        transferRequest.senderAgency(), 
-                                        transferRequest.receiverAccountNum(), 
-                                        transferRequest.receiverAgency(), 
-                                        null,
-                                        sender.email(), 
-                                        receiver.email(), 
-                                        sender.firstName() + " " + sender.lastName(), 
-                                        receiver.firstName() + " " + receiver.lastName(), 
-                                        null, 
-                                        transferRequest.amount(), 
-                                        0, 
-                                        0,
-                                        0,
-                                        null);
-            return ResponseEntity.ok(transferService.newTransfer(response));
-        }
-
-        return ResponseEntity.badRequest().body(null);
+    public ResponseEntity<TransferResponse> transfer(@RequestBody TransferRequestDTO transferRequest) {
+        return ResponseEntity.ok(transferService.newTransfer(transferRequest));
     }
     
+    @GetMapping("/filter")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<Transfer>> filterTransfers(
+        @RequestParam(required = false) String email,
+        @RequestParam(required = false) String accountId,
+        @RequestParam(required = false) String agencyId,
+        @RequestParam(required = false) String bankId
+    ) {
+        TransferFilterDTO filterDTO = new TransferFilterDTO();
+        filterDTO.setEmail(email);
+        filterDTO.setAccountId(accountId);
+        filterDTO.setAgencyId(agencyId);
+        filterDTO.setBankId(bankId);
+
+        List<Transfer> transfers = transferService.filterTransfers(filterDTO);
+        return ResponseEntity.ok(transfers);
+    }
 
 }

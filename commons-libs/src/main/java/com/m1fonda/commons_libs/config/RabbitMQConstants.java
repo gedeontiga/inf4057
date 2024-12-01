@@ -81,4 +81,13 @@ public final class RabbitMQConstants {
 
     public static final String AGENCY_TRANSFER_KEY = "agency.transfer.key";
     public static final String AGENCY_TRANSFER_QUEUE = "agency.transfer.queue";
+
+    public static final String USER_READ_KEY = "user.read.key";
+    public static final String USER_READ_QUEUE = "user.read.queue";
+
+    public static final String ACCOUNT_READ_KEY = "account.read.key";
+    public static final String ACCOUNT_READ_QUEUE = "account.read.queue";
+
+    public static final String AGENCY_READ_KEY = "agency.read.key";
+    public static final String AGENCY_READ_QUEUE = "agency.read.queue";
 }

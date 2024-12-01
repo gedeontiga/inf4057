@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.AccountDepositWithdrawalResponse;
-import com.m1fonda.commons_libs.dto.AccountTransferResponse;
 import com.m1fonda.commons_libs.dto.ActivationCodeRequest;
 import com.m1fonda.commons_libs.dto.TransferRequest;
 import com.m1fonda.commons_libs.entities.Announce;
