@@ -84,6 +84,47 @@ spec:
     app: service-registry
 ---
 apiVersion: apps/v1
+king: Deployment
+metadata:
+  name: service-auth
+  namespace: microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-auth
+  template:
+    metadata:
+      labels:
+        app: service-auth
+    spec:
+      containers:
+        - name: service-auth
+          image: gedeontiga/inf4057-service-auth:latest
+          ports:
+            - containerPort: 9090
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: "service-auth"
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: "http://service-config:8888"
+            - name: SPRING_CONFIG_IMPORT
+              value: "configserver:http://service-config:8888"
+---
+apiVersion:
+kind: Service
+metadata:
+  name: service-auth
+  namespace: microservices
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 9090
+      targetPort: 9090
+  selector:
+    app: service-auth
+---
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: service-user
@@ -119,10 +160,133 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - port: 8181
+    - port: 8081
       targetPort: 8081
   selector:
     app: service-user
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-notif
+  namespace: microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-notif
+  template:
+    metadata:
+      labels:
+        app: service-notif
+    spec:
+      containers:
+        - name: service-notif
+          image: gedeontiga/inf4057-service-notif:latest
+          ports:
+            - containerPort: 3025
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: "service-notif"
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: "http://service-config:8888"
+            - name: SPRING_CONFIG_IMPORT
+              value: "configserver:http://service-config:8888"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-notif
+  namespace: microservices
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 3025
+      targetPort: 3025
+  selector:
+    app: service-notif
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-agency
+  namespace: microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-agency
+  template:
+    metadata:
+      labels:
+        app: service-agency
+    spec:
+      containers:
+        - name: service-agency
+          image: gedeontiga/inf4057-service-agency:latest
+          ports:
+            - containerPort: 8088
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: "service-agency"
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: "http://service-config:8888"
+            - name: SPRING_CONFIG_IMPORT
+              value: "configserver:http://service-config:8888"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-agency
+  namespace: microservices
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8088
+      targetPort: 8088
+  selector:
+    app: service-agency
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-account
+  namespace: microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-account
+  template:
+    metadata:
+      labels:
+        app: service-account
+    spec:
+      containers:
+        - name: service-account
+          image: gedeontiga/inf4057-service-account:latest
+          ports:
+            - containerPort: 8085
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: "service-account"
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: "http://service-config:8888"
+            - name: SPRING_CONFIG_IMPORT
+              value: "configserver:http://service-config:8888"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-account
+  namespace: microservices
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8085
+      targetPort: 8085
+  selector:
+    app: service-account
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -164,6 +328,119 @@ spec:
       targetPort: 8075
   selector:
     app: service-proxy
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+  namespace: microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: "gedeon"
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: "gedeon"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  namespace: microservices
+spec:
+  type: LoadBalancer
+  ports:
+    - name: mongodb
+      port: 27017
+      targetPort: 27017
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:latest
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ALLOW_EMPTY_PASSWORD
+              value: "yes"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: microservices
+spec:
+  type: LoadBalancer
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smtp4dev
+  namespace: microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smtp4dev
+  template:
+    metadata:
+      labels:
+        app: smtp4dev
+    spec:
+      containers:
+        - name: smtp4dev
+          image: rnwood/smtp4dev
+          ports:
+            - containerPort: 25
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: smtp4dev
+  namespace: microservices
+spec:
+  type: LoadBalancer
+  ports:
+    - name: smtp4dev
+      port: 2525
+      targetPort: 25
+    - name: smtp4dev-web
+      port: 3000
+      targetPort: 80
+  selector:
+    app: smtp4dev
 ---
 apiVersion: apps/v1
 kind: Deployment
