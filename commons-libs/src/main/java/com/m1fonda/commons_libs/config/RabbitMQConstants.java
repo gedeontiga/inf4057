@@ -72,4 +72,13 @@ public final class RabbitMQConstants {
     public static final String TRANSFER_EXCHANGE = "transferExchange";
     public static final String TRANSFER_QUEUE = "transferQueue";
     public static final String TRANSFER_KEY = "transferKey";
+
+    public static final String AGENCY_DEPOSIT_KEY = "agency.deposit.key";
+    public static final String AGENCY_DEPOSIT_QUEUE = "agency.deposit.queue";
+
+    public static final String AGENCY_WITHDRAW_KEY = "agency.withdraw.key";
+    public static final String AGENCY_WITHDRAW_QUEUE = "agency.withdraw.queue";
+
+    public static final String AGENCY_TRANSFER_KEY = "agency.transfer.key";
+    public static final String AGENCY_TRANSFER_QUEUE = "agency.transfer.queue";
 }

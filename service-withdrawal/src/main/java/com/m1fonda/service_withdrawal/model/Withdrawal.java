@@ -10,7 +10,6 @@ import java.util.Date;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
 import jakarta.persistence.*;
 
 @Document( collection = "withdrawals")
@@ -36,5 +35,5 @@ public class Withdrawal {
     private String accountNum;
 
     @CreatedDate
-    private Date createdAt;
+    private final Date createdAt = new Date();
 }

@@ -1,6 +1,5 @@
 package com.m1fonda.service_bank.dto;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public record BankDTOResponse(

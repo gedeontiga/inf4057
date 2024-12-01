@@ -38,5 +38,5 @@ public class Transfer {
     private String receiverAccountNum;
 
     @CreatedDate
-    private Date createdAt;
+    private final Date createdAt = new Date();
 }

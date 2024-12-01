@@ -1,13 +1,16 @@
 package com.m1fonda.service_deposit.service;
 
+import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import com.m1fonda.commons_libs.config.*;
-import com.m1fonda.service_deposit.dto.DepositRequest;
+import com.m1fonda.commons_libs.dto.DepositResponse;
+import com.m1fonda.commons_libs.dto.AccountDepositWithdrawalResponse;
+import com.m1fonda.service_deposit.component.CustomRabbitTemplate;
 import com.m1fonda.service_deposit.model.Deposit;
 import com.m1fonda.service_deposit.repository.DepositRepository;
 
@@ -21,17 +24,43 @@ import lombok.extern.slf4j.Slf4j;
 public class DepositService {
 
     private final DepositRepository depositRepository;
-    public final RabbitTemplate rabbitTemplate;
+    public final CustomRabbitTemplate rabbitTemplate;
 
     @CircuitBreaker(name="depositCircuitBreaker", fallbackMethod = "depositFallback")
+    public DepositResponse newDeposit(AccountDepositWithdrawalResponse request){
+
+        String status = "";
+        String transaction = "Deposit Request";
+        
+        if (request.transactionAmount() > 100000000) status = "rejected";
+        else {
+            rabbitTemplate.convertAndSend(RabbitMQConstants.AGENCY_EXCHANGE, RabbitMQConstants.AGENCY_DEPOSIT_KEY, request);
+            status = "initiated";
+        }
+
+        return  new DepositResponse(request.numeroCompte(), transaction, request.transactionAmount(), status, new Date());
+    }
+    
+    @CircuitBreaker(name="depositApprovedCircuitBreaker", fallbackMethod = "depositFallback")
     @RabbitListener(queues = RabbitMQConstants.DEPOSIT_QUEUE, containerFactory = "rabbitListenerContainerFactory")
-    public Deposit newDeposit(DepositRequest request){
+    public void approvedDeposits(AccountDepositWithdrawalResponse request) {
+
         String uuid = UUID.randomUUID().toString().replace("-", "");
-        String transactionNum = uuid.substring(0, 10);
-        Deposit deposit = Deposit.builder().transactionNum(transactionNum).accountNum(request.accountNum()).amount(request.amount()).build();
-        depositRepository.save(deposit);
-        rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_DEPOSIT_KEY, request);
-        return deposit;
+        String transactionID = uuid.substring(0, 10);
+
+        try {
+            AccountDepositWithdrawalResponse accountResponse = (AccountDepositWithdrawalResponse) rabbitTemplate.convertSendAndReceiveWithTimeout(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_DEPOSIT_KEY, request, 60, TimeUnit.SECONDS);
+            Deposit deposit = Deposit.builder().transactionNum(transactionID).accountNum(request.numeroCompte()).amount(request.transactionAmount()).build();
+            depositRepository.save(deposit);
+            AccountDepositWithdrawalResponse finalResponse = new AccountDepositWithdrawalResponse(transactionID, "success", accountResponse.numeroCompte(), request.userName(), request.agencyID(),request.email(), accountResponse.transactionAmount(), 0, accountResponse.newBalance(), new Date()) ;
+            rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE, RabbitMQConstants.MESSAGE_DEPOSIT_NOTIFICATION_KEY, finalResponse);
+            rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE, RabbitMQConstants.EMAIL_DEPOSIT_NOTIFICATION_KEY, finalResponse);
+        }
+        catch (Exception e){
+            AccountDepositWithdrawalResponse finalResponse = new AccountDepositWithdrawalResponse(transactionID, "failed", request.numeroCompte(), request.userName(), request.agencyID(), request.email(), request.transactionAmount(), 0, 0, new Date());
+            rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE, RabbitMQConstants.MESSAGE_DEPOSIT_NOTIFICATION_KEY, finalResponse);
+            rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE, RabbitMQConstants.EMAIL_DEPOSIT_NOTIFICATION_KEY, finalResponse);
+        }
     }
 
     public void depositFallback(){

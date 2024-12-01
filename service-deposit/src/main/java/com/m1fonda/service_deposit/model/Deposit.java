@@ -32,5 +32,5 @@ public class Deposit {
     private String accountNum;
 
     @CreatedDate
-    private Date createdAt;
+    private final Date createdAt = new Date();
 }
