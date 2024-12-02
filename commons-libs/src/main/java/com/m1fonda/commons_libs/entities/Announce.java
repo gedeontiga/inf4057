@@ -3,28 +3,22 @@ package com.m1fonda.commons_libs.entities;
 import java.io.Serializable;
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Announce implements Serializable {
-    private String title;
-    private String description;
-    private Date createAt;
-    private String picture;
-    private String email;
-
-    public Announce(String title, String description, Date createAt, String picture, String email) {
-        this.title = title;
-        this.description = description;
-        this.createAt = createAt;
-        this.picture = picture;
-        this.email = email;
-    }
-
-    public Announce() {
-    }
+    private String header;
+    private String userId1;
+    private String userId2;
+    private String agencyId;
+    private String message;
+    private final Date createdAt = new Date();
 }

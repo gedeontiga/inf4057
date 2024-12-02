@@ -13,7 +13,7 @@ import com.m1fonda.commons_libs.dto.AgencyDTO;
 import com.m1fonda.commons_libs.dto.AgencyUpdateTransaction;
 import com.m1fonda.commons_libs.dto.DepositRequest;
 import com.m1fonda.commons_libs.dto.DepositResponse;
-import com.m1fonda.commons_libs.dto.TransferRequest;
+import com.m1fonda.commons_libs.dto.TransferRequestDTO;
 import com.m1fonda.commons_libs.dto.TransferResponse;
 import com.m1fonda.commons_libs.dto.WithdrawalRequest;
 import com.m1fonda.commons_libs.dto.WithdrawalResponse;
@@ -104,7 +104,7 @@ public class AgencyService {
                 RabbitMQConstants.WITHDRAW_KEY, request);
     }
 
-    public TransferResponse sendTransferRequest(TransferRequest request) {
+    public TransferResponse sendTransferRequest(TransferRequestDTO request) {
         return (TransferResponse) rabbitTemplate.convertSendAndReceive(RabbitMQConstants.TRANSFER_EXCHANGE,
                 RabbitMQConstants.TRANSFER_KEY, request);
     }

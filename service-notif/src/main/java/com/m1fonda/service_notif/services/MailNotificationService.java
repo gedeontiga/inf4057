@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.AccountDepositWithdrawalResponse;
-import com.m1fonda.commons_libs.dto.AccountTransferResponse;
 import com.m1fonda.commons_libs.dto.ActivationCodeRequest;
 import com.m1fonda.commons_libs.dto.DemandDTO;
+import com.m1fonda.commons_libs.dto.TransferRequest;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @Service
@@ -74,17 +74,19 @@ public class MailNotificationService {
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.EMAIL_DEPOSIT_NOTIFICATION_QUEUE)
     public void sendDepositMail(AccountDepositWithdrawalResponse response) {
-        String message = "Compte :" + response.numeroCompte() +
-                "\n Utilisateur :" + response.userName() +
+        String message = "Transaction Réussie. ID: " + response.transactionID() +
+                "\n Compte :" + response.numeroCompte() +
+                "\n Client :" + response.userName() +
                 "\n Montant: " + response.transactionAmount() +
                 "\n Nouveau Solde: " + response.newBalance() +
                 "\n Date : " + response.createdAt();
-        String title = "DEPOT EFFECTUE";
+
+        String header = "DEPOT";
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom("no-reply@atg-bank.com");
         mailMessage.setTo(response.email());
-        mailMessage.setSubject(title);
+        mailMessage.setSubject(header);
         mailMessage.setText(message);
         javaMailSender.send(mailMessage);
 
@@ -93,31 +95,53 @@ public class MailNotificationService {
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.EMAIL_WITHDRAWAL_NOTIFICATION_QUEUE)
     public void sendWithdrawalMail(AccountDepositWithdrawalResponse response) {
+        String message = "Transaction Réussie. ID: " + response.transactionID() +
+                "\n Compte :" + response.numeroCompte() +
+                "\n Client :" + response.userName() +
+                "\n Montant: " + response.transactionAmount() +
+                "\n Nouveau Solde: " + response.newBalance() +
+                "\n Date : " + response.createdAt();
+
+        String header = "RETRAIT";
+
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom("no-reply@atg-bank.com");
         mailMessage.setTo(response.email());
-        mailMessage.setSubject("RETRAIT EFFECTUE");
-        mailMessage.setText("Compte :" + response.numeroCompte() +
-                "\n Utilisateur :" + response.userName() +
-                "\n Montant: " + response.transactionAmount() +
-                "\n Nouveau Solde: " + response.newBalance() +
-                "\n Date : " + response.createdAt());
+        mailMessage.setSubject(header);
+        mailMessage.setText(message);
         javaMailSender.send(mailMessage);
     }
 
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.EMAIL_WITHDRAWAL_NOTIFICATION_QUEUE)
-    public void sendTransferMail(AccountTransferResponse response) {
+    public void sendTransferMail(TransferRequest response) {
+
         SimpleMailMessage mailMessage = new SimpleMailMessage();
+        SimpleMailMessage mailMessage2 = new SimpleMailMessage();
+
         mailMessage.setFrom("no-reply@atg-bank.com");
         mailMessage.setTo(response.senderEmail());
-        mailMessage.setSubject("RETRAIT EFFECTUE");
-        mailMessage.setText("Compte :" + response.senderAccountNumber() +
-                "\n Utilisateur :" + response.senderUserName() +
-                "\n Montant: " + response.transactionAmount() +
-                "\n Nouveau Solde: " + response.newBalanceSender() +
-                "\n Date : " + response.createdAt());
+        mailMessage.setSubject("TRANSFER EFFECTUE");
+        mailMessage.setText("Transfer Réussi. ID: " + response.transactionNumber() +
+                "\n De :" + response.senderName() + " - " + response.senderAccountNum() +
+                "\n À :" + response.receiverName() + " - " + response.receiverAccountNum() +
+                "\n Montant: " + response.amount() +
+                "\n frais: " + response.fees() +
+                "\n Nouveau Solde: " + response.senderNewBalance() +
+                "\n Date : " + response.date());
         javaMailSender.send(mailMessage);
+
+        mailMessage2.setFrom("no-reply@atg-bank.com");
+        mailMessage2.setTo(response.senderEmail());
+        mailMessage2.setSubject("TRANSFER EFFECTUE");
+        mailMessage2.setText("Transfer Reçu. ID: " + response.transactionNumber() +
+                "\n De :" + response.senderName() + " - " + response.senderAccountNum() +
+                "\n À :" + response.receiverName() + " - " + response.receiverAccountNum() +
+                "\n Montant: " + response.amount() +
+                "\n Nouveau Solde: " + response.receiverNewBalance() +
+                "\n Date : " + response.date());
+        javaMailSender.send(mailMessage2);
+
     }
 
     public void sendMailFallback(Map<String, Object> infoMap, Throwable throwable) {
