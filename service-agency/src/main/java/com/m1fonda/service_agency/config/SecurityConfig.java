@@ -21,9 +21,9 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(
                                                 authorize -> authorize
                                                                 .requestMatchers("/api/demande").permitAll()
-                                                                .requestMatchers("/api/agency/get-agency/**")
+                                                                .requestMatchers("/api/agency/**")
                                                                 .hasAnyRole("MANAGER", "ADMIN")
-                                                                .requestMatchers("/api/agency/get-agencies/**")
+                                                                .requestMatchers("/api/agencies/get-agencies/**")
                                                                 .hasRole("ADMIN"))
                                 .sessionManagement(
                                                 httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer

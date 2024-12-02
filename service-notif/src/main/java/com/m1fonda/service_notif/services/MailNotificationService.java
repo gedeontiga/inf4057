@@ -1,6 +1,5 @@
 package com.m1fonda.service_notif.services;
 
-import java.util.Date;
 import java.util.Map;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -13,13 +12,13 @@ import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.AccountDepositWithdrawalResponse;
 import com.m1fonda.commons_libs.dto.AccountTransferResponse;
 import com.m1fonda.commons_libs.dto.ActivationCodeRequest;
-import com.m1fonda.commons_libs.entities.Announce;
-
+import com.m1fonda.commons_libs.dto.DemandDTO;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @Service
 public class MailNotificationService {
 
+    private static final String DEMANDE_TRAITÉE = "Demande traitée";
     private static final String CODE_ACTIVATION = "Code d'activation";
     private static final String SEND_MAIL_FALLBACK = "sendMailFallback";
     private static final String SERVICE_NOTIFICATION_CIRCUIT_BREAKER = "serviceNotificationCircuitBreaker";
@@ -28,24 +27,47 @@ public class MailNotificationService {
 
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE)
-    public void sendActivationCodeMail(ActivationCodeRequest activationInfo) {
+    public void sendActivationCodeMail(ActivationCodeRequest activationInfo) throws Exception {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         String text = String.format(
-                "Salut %s, \n votre code d'activation est %s.\n Merci d'utiliser l'application et a bientôt.",
+                "Salut Mr. %s, \n votre code d'activation est %s.\n Merci d'utiliser l'application et a bientôt.",
                 activationInfo.firstName(),
                 activationInfo.code());
-        Announce notification = Announce.builder()
-                .title(CODE_ACTIVATION)
-                .description(text)
-                .createAt(new Date())
-                .email(activationInfo.email())
-                .picture("/assets/images/bank-logo.ico")
-                .build();
         mailMessage.setFrom("no-reply@atg-bank.com");
         mailMessage.setTo(activationInfo.email());
-        mailMessage.setSubject(notification.getTitle());
+        mailMessage.setSubject(CODE_ACTIVATION);
 
-        mailMessage.setText(notification.getDescription());
+        mailMessage.setText(text);
+        javaMailSender.send(mailMessage);
+    }
+
+    @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
+    @RabbitListener(queues = RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE)
+    public void sendApprovedDemandMail(DemandDTO demand) throws Exception {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        String text = String.format(
+                "Salut Mr. %s, \n votre demande de creation de compte a ete approuvée.\n Merci d'utiliser l'application et a bientôt.",
+                demand.firstName());
+        mailMessage.setFrom("no-reply@atg-bank.com");
+        mailMessage.setTo(demand.email());
+        mailMessage.setSubject(DEMANDE_TRAITÉE);
+
+        mailMessage.setText(text);
+        javaMailSender.send(mailMessage);
+    }
+
+    @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
+    @RabbitListener(queues = RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE)
+    public void sendRejectedDemandMail(DemandDTO demand) throws Exception {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        String text = String.format(
+                "Salut Mr. %s, \n votre demande de creation de compte a ete rejetée car les informations sur votre CNI ne correspondent pas.\n Merci d'utiliser l'application et a bientôt.",
+                demand.firstName());
+        mailMessage.setFrom("no-reply@atg-bank.com");
+        mailMessage.setTo(demand.email());
+        mailMessage.setSubject(DEMANDE_TRAITÉE);
+
+        mailMessage.setText(text);
         javaMailSender.send(mailMessage);
     }
 

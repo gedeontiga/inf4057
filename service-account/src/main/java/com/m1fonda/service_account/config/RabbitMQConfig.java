@@ -17,6 +17,11 @@ import com.m1fonda.commons_libs.config.RabbitMQConstants;
 public class RabbitMQConfig {
 
     @Bean
+    Queue compteQueue() {
+        return new Queue(RabbitMQConstants.ACCOUNT_QUEUE);
+    }
+
+    @Bean
     Queue compteCreationQueue() {
         return new Queue(RabbitMQConstants.ACCOUNT_CREATION_QUEUE);
     }
@@ -27,8 +32,17 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    Queue compteTransactionQueue() {
+        return new Queue(RabbitMQConstants.ACCOUNT_TRANSACTION_QUEUE);
+    }
+
+    @Bean
     TopicExchange compteExchange() {
         return new TopicExchange(RabbitMQConstants.ACCOUNT_EXCHANGE);
+    }
+
+    Binding bindingCompte() {
+        return BindingBuilder.bind(compteQueue()).to(compteExchange()).with(RabbitMQConstants.ACCOUNT_KEY);
     }
 
     @Bean
@@ -40,6 +54,12 @@ public class RabbitMQConfig {
     @Bean
     Binding bindingCompteUpdate() {
         return BindingBuilder.bind(compteUpdateQueue()).to(compteExchange()).with(RabbitMQConstants.ACCOUNT_UPDATE_KEY);
+    }
+
+    @Bean
+    Binding bindingCompteTransaction() {
+        return BindingBuilder.bind(compteTransactionQueue()).to(compteExchange())
+                .with(RabbitMQConstants.ACCOUNT_TRANSACTION_KEY);
     }
 
     @Bean

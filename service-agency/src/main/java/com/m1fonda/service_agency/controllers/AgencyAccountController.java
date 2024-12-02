@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.m1fonda.commons_libs.dto.DemandeDTO;
 import com.m1fonda.service_agency.entities.Demande;
 import com.m1fonda.service_agency.services.AgencyAccountService;
 
@@ -20,7 +19,8 @@ public class AgencyAccountController {
     private final AgencyAccountService agencyAccountService;
 
     @PostMapping
-    public ResponseEntity<DemandeDTO> creerDemande(@RequestBody Demande demande) {
-        return ResponseEntity.ok(agencyAccountService.processDemande(demande));
+    public ResponseEntity<String> creerDemande(@RequestBody Demande demande) {
+        agencyAccountService.sendDemande(demande);
+        return ResponseEntity.ok("Success");
     }
 }

@@ -4,15 +4,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.m1fonda.commons_libs.dto.AgencyDTO;
+import com.m1fonda.service_agency.dto.DemandeDTO;
+import com.m1fonda.service_agency.services.AgencyAccountService;
 import com.m1fonda.service_agency.services.AgencyService;
 
 import lombok.AllArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @AllArgsConstructor
@@ -20,14 +24,33 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class AgencyController {
 
     private final AgencyService agencyService;
+    private final AgencyAccountService accountService;
 
     @GetMapping("/get-agency/{numAgency}")
-    public ResponseEntity<AgencyDTO> getAgency(@PathVariable String numAgency) {
+    public ResponseEntity<AgencyDTO> getAgency(@PathVariable String numAgency) throws Exception {
         return ResponseEntity.ok(agencyService.getAgency(numAgency));
     }
 
-    @GetMapping("/get-agencies/{numBank}")
-    public Set<AgencyDTO> getAllAgencies(@PathVariable String numBank) {
-        return agencyService.getAllAgencies(numBank);
+    @GetMapping("/all-demands")
+    public ResponseEntity<List<DemandeDTO>> getAllDemands() {
+        return ResponseEntity.ok(accountService.getDemandes());
     }
+
+    @PostMapping("/approve-demand")
+    public ResponseEntity<String> approveDemand(@RequestBody DemandeDTO demande) throws Exception {
+        accountService.validerDemande(demande);
+        return ResponseEntity.ok("APPROVED");
+    }
+
+    @PostMapping("/reject-demand")
+    public ResponseEntity<String> rejectDemand(@RequestBody DemandeDTO demande) {
+        accountService.rejeterDemande(demande);
+        return ResponseEntity.ok("REJECTED");
+    }
+
+    @GetMapping("/count-client/{numAgency}")
+    public ResponseEntity<Long> getClientNumber(@PathVariable String numAgency) throws Exception {
+        return ResponseEntity.ok(agencyService.getClientNumber(numAgency));
+    }
+
 }

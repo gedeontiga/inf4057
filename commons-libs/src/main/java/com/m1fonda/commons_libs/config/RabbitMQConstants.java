@@ -2,17 +2,26 @@ package com.m1fonda.commons_libs.config;
 
 public final class RabbitMQConstants {
     // Exchanges
+    public static final String BANK_EXCHANGE = "bank.exchange";
     public static final String ACCOUNT_EXCHANGE = "bank.account.exchange";
     public static final String AGENCY_EXCHANGE = "bank.agency.exchange";
     public static final String USER_EXCHANGE = "bank.user.exchange";
     public static final String NOTIFICATION_EXCHANGE = "bank.notification.exchange";
     public static final String AUTH_EXCHANGE = "bank.auth.exchange";
 
+    // Bank Queues & Routing Keys
+    public static final String BANK_QUEUE = "bank.queue";
+    public static final String BANK_KEY = "bank.key";
+
     // Account Queues & Routing Keys
+    public static final String ACCOUNT_QUEUE = "account.queue";
+    public static final String ACCOUNT_KEY = "account.key";
     public static final String ACCOUNT_CREATION_QUEUE = "account.creation.queue";
-    public static final String ACCOUNT_UPDATE_QUEUE = "account.update.queue";
     public static final String ACCOUNT_CREATION_KEY = "account.creation.key";
+    public static final String ACCOUNT_UPDATE_QUEUE = "account.update.queue";
     public static final String ACCOUNT_UPDATE_KEY = "account.update.key";
+    public static final String ACCOUNT_TRANSACTION_QUEUE = "account.transaction.queue";
+    public static final String ACCOUNT_TRANSACTION_KEY = "account.transaction.key";
 
     // Agency Queues & Routing Keys
     public static final String AGENCY_QUEUE = "agency.queue";
@@ -38,6 +47,8 @@ public final class RabbitMQConstants {
 
     // Notification Queues & Routing Keys
     public static final String EMAIL_NOTIFICATION_QUEUE = "notification.email.queue";
+    public static final String EMAIL_NOTIFICATION_DEMAND_REJECTED_KEY = "notification.email.demand.rejected";
+    public static final String EMAIL_NOTIFICATION_DEMAND_APPROVED_KEY = "notification.email.demand.approved";
     public static final String EMAIL_NOTIFICATION_ACTIVATION_KEY = "notification.email.activation.key";
     public static final String EMAIL_NOTIFICATION_CREATION_KEY = "notification.email.creation.key";
     public static final String EMAIL_DEPOSIT_NOTIFICATION_QUEUE = "notification.email.queue";

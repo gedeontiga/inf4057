@@ -1,5 +1,7 @@
 package com.m1fonda.service_account.controllers;
 
+import java.util.List;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +21,7 @@ public class CompteController {
     private final CompteService accountService;
 
     @GetMapping("/get-account")
-    public AccountDTO getAccount() {
+    public List<AccountDTO> getAccount() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return accountService.getAccount(user.getUsername());
     }

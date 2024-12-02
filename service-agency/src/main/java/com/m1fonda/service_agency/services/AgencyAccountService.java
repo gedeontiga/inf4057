@@ -1,10 +1,14 @@
 package com.m1fonda.service_agency.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
-import com.m1fonda.commons_libs.dto.DemandeDTO;
+import com.m1fonda.commons_libs.dto.DemandDTO;
+import com.m1fonda.service_agency.dto.DemandeDTO;
 import com.m1fonda.service_agency.entities.Agence;
 import com.m1fonda.service_agency.entities.Demande;
 import com.m1fonda.service_agency.repositories.AgencyRepository;
@@ -15,33 +19,36 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class AgencyAccountService {
-
     private final RabbitTemplate rabbitTemplate;
     private final DemandeRepository demandeRepository;
     private final AgencyRepository agencyRepository;
 
-    public DemandeDTO processDemande(Demande demande) {
-        boolean isApproved = validerDemande(demande);
-
-        Agence agence = agencyRepository.findByNumAgency(demande.getNumAgency()).orElse(null);
-        if (isApproved && agence != null) {
-            demande.setStatus("APPROVED");
-            rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_CREATION_KEY,
-                    demande);
-
-            agence.setCapital(agence.getCapital() + demande.getBalance());
-            agencyRepository.save(agence);
-            return DemandeDTO.demandeFactory(demandeRepository.save(demande));
-            // System.out.println("Demande approuvée : " + demande);
-        } else {
-            demande.setStatus("REJECTED");
-            return DemandeDTO.demandeFactory(demande);
-        }
+    public void sendDemande(Demande demande) {
+        demande.setStatus("PENDING");
+        demandeRepository.save(demande);
     }
 
-    private boolean validerDemande(Demande demande) {
-        return demande.getCni().length() == 11 &&
-                demande.getPhoneNumber().toString().length() == 9
-                && demande.getBalance() >= 2000;
+    public List<DemandeDTO> getDemandes() {
+        List<DemandeDTO> demandes = new ArrayList<DemandeDTO>();
+        demandeRepository.findByStatus("PENDING").forEach(demande -> demandes.add(DemandeDTO.demandeFactory(demande)));
+        return demandes;
+    }
+
+    public void validerDemande(DemandeDTO demandeDTO) throws Exception {
+        Demande demande = demandeRepository.findById(demandeDTO.id()).orElseThrow();
+        Agence agence = agencyRepository.findByNumAgency(demande.getNumAgency());
+        rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE,
+                RabbitMQConstants.ACCOUNT_CREATION_KEY, demande);
+        demande.setStatus("APPROVED");
+        agence.setCapital(agence.getCapital() + demande.getBalance());
+        agencyRepository.save(agence);
+        demandeRepository.save(demande);
+        rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
+                RabbitMQConstants.EMAIL_NOTIFICATION_DEMAND_APPROVED_KEY, DemandDTO.demandeFactory(demande));
+    }
+
+    public void rejeterDemande(DemandeDTO demande) {
+        rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
+                RabbitMQConstants.EMAIL_NOTIFICATION_DEMAND_REJECTED_KEY, demande);
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.m1fonda.commons_libs.entities.Demand;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class Demande extends Demand {
 
     @Id
+    @Getter
     private String id;
 
     @Builder

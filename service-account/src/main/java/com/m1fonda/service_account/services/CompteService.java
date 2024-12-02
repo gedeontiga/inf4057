@@ -1,6 +1,8 @@
 package com.m1fonda.service_account.services;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,7 +33,7 @@ public class CompteService {
 
     @CircuitBreaker(name = SERVICE_COMPTE_CIRCUIT_BREAKER, fallbackMethod = CREER_COMPTE_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.ACCOUNT_CREATION_QUEUE)
-    public void creerCompte(Demand demand) {
+    public Demand creerCompte(Demand demand) throws Exception {
         String numAgency = demand.getNumAgency();
         String uuid = UUID.randomUUID().toString().replace("-", "");
         String numAccount = uuid.substring(0, 8);
@@ -44,7 +46,7 @@ public class CompteService {
                 .numAgency(numAgency)
                 .build();
 
-        rabbitTemplate.convertAndSend(RabbitMQConstants.AUTH_EXCHANGE, RabbitMQConstants.AUTH_REGISTER_KEY,
+        rabbitTemplate.convertSendAndReceive(RabbitMQConstants.AUTH_EXCHANGE, RabbitMQConstants.AUTH_REGISTER_KEY,
                 UserRequest.builder()
                         .cni(demand.getCni())
                         .email(demand.getEmail())
@@ -54,23 +56,31 @@ public class CompteService {
                         .password(demand.getPassword())
                         .build());
         compteRepository.save(c);
+        demand.setStatus("APPROVED");
+        return demand;
     }
 
     @CircuitBreaker(name = SERVICE_COMPTE_CIRCUIT_BREAKER, fallbackMethod = UPDATE_COMPTE_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.ACCOUNT_UPDATE_QUEUE)
     public AccountDTO updateAccount(AccountDTO account) {
-        Compte c = compteRepository.findByUserEmailOrNumAccount(account.userEmail(), account.numAccount())
+        Compte c = compteRepository.findByNumAccount(account.numAccount())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
-        c.setBalance(Optional.ofNullable(account.balance()).orElse(c.getBalance()));
+        c.setBalance(Optional.ofNullable(c.getBalance() + account.balance()).orElse(c.getBalance()));
         c.setNumAgency(Optional.ofNullable(account.numAgency()).orElse(c.getNumAgency()));
         c.setStatus(Optional.ofNullable(account.status()).orElse(c.getStatus().name()));
         return AccountDTO.fromAccount(compteRepository.save(c));
     }
 
-    public AccountDTO getAccount(String email) {
-        return AccountDTO.fromAccount(compteRepository.findByUserEmail(email)
-                .orElseThrow(() -> new RuntimeException("No account found")));
+    public List<AccountDTO> getAccount(String email) {
+        List<AccountDTO> result = new ArrayList<AccountDTO>();
+        compteRepository.findByUserEmail(email).forEach(account -> result.add(AccountDTO.fromAccount(account)));
+        return result;
+    }
+
+    @RabbitListener(queues = RabbitMQConstants.ACCOUNT_QUEUE)
+    public long countClientByAgency(String numAgency) throws Exception {
+        return compteRepository.countByNumAgency(numAgency);
     }
 
     public void creerCompteFallback(Demand demand, Throwable throwable) {
