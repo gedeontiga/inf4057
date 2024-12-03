@@ -47,19 +47,9 @@ public final class RabbitMQConstants {
     public static final String EMAIL_NOTIFICATION_QUEUE = "notification.email.queue";
     public static final String EMAIL_NOTIFICATION_ACTIVATION_KEY = "notification.email.activation.key";
     public static final String EMAIL_NOTIFICATION_CREATION_KEY = "notification.email.creation.key";
-    public static final String EMAIL_DEPOSIT_NOTIFICATION_QUEUE = "notification.email.deposit.queue";
-    public static final String EMAIL_DEPOSIT_NOTIFICATION_KEY = "notification.email.deposit.key";
-    public static final String EMAIL_WITHDRAWAL_NOTIFICATION_QUEUE = "notification.email.withdrawal.queue";
-    public static final String EMAIL_WITHDRAWAL_NOTIFICATION_KEY = "notification.email.withdrawal.key";
-    public static final String EMAIL_TRANSFER_NOTIFICATION_QUEUE = "notification.email.transfer.queue";
-    public static final String EMAIL_TRANSFER_NOTIFICATION_KEY = "notification.email.transfer.key";
-
-    public static final String MESSAGE_DEPOSIT_NOTIFICATION_QUEUE = "message.deposit.email.queue";
-    public static final String MESSAGE_DEPOSIT_NOTIFICATION_KEY = "message.email.deposit.key";
-    public static final String MESSAGE_WITHDRAWAL_NOTIFICATION_QUEUE = "message.email.withdrawal.queue";
-    public static final String MESSAGE_WITHDRAWAL_NOTIFICATION_KEY = "message.email.withdrawal.key";
-    public static final String MESSAGE_TRANSFER_NOTIFICATION_QUEUE = "message.email.transfer.queue";
-    public static final String MESSAGE_TRANSFER_NOTIFICATION_KEY = "message.email.transfer.key";
+    public static final String NOTIFICATION_TRANSACTION_QUEUE = "notification.transaction.queue";
+    public static final String NOTIFICATION_TRANSACTION_KEY = "notification.transaction.key";
+    
 
     // Deposit, Withdrawal and Transfer queues & routing keys
 
@@ -82,12 +72,4 @@ public final class RabbitMQConstants {
     public static final String AGENCY_TRANSFER_KEY = "agency.transfer.key";
     public static final String AGENCY_TRANSFER_QUEUE = "agency.transfer.queue";
 
-    public static final String USER_READ_KEY = "user.read.key";
-    public static final String USER_READ_QUEUE = "user.read.queue";
-
-    public static final String ACCOUNT_READ_KEY = "account.read.key";
-    public static final String ACCOUNT_READ_QUEUE = "account.read.queue";
-
-    public static final String AGENCY_READ_KEY = "agency.read.key";
-    public static final String AGENCY_READ_QUEUE = "agency.read.queue";
 }

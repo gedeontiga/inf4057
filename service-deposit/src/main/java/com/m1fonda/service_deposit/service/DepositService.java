@@ -1,24 +1,14 @@
 package com.m1fonda.service_deposit.service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import com.m1fonda.commons_libs.config.*;
-// import com.m1fonda.commons_libs.dto.DepositResponse;
-// import com.m1fonda.commons_libs.dto.UserResponse;
-import com.m1fonda.commons_libs.dto.AccountDepositWithdrawalResponse;
-// import com.m1fonda.commons_libs.dto.DepositRequest;
-import com.m1fonda.service_deposit.component.CustomRabbitTemplate;
-import com.m1fonda.service_deposit.dto.DepositFilterDTO;
-// import com.m1fonda.service_deposit.dto.AccountDTO;
+import com.m1fonda.service_deposit.dto.DepositRequest;
+import com.m1fonda.service_deposit.dto.DepositResponse;
 import com.m1fonda.service_deposit.model.Deposit;
 import com.m1fonda.service_deposit.repository.DepositRepository;
 
@@ -32,52 +22,36 @@ import lombok.extern.slf4j.Slf4j;
 public class DepositService {
 
     private final DepositRepository depositRepository;
-    public final CustomRabbitTemplate rabbitTemplate;
+    public final RabbitTemplate rabbitTemplate;
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
 
-    // @CircuitBreaker(name="depositCircuitBreaker", fallbackMethod = "depositFallback")
-    // public DepositResponse newDeposit(DepositRequest request){
+    @CircuitBreaker(name="depositCircuitBreaker", fallbackMethod = "depositFallback")
+    public DepositResponse newDeposit(DepositRequest request){
 
-    //     AccountDTO account = (AccountDTO) rabbitTemplate.convertSendAndReceive(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_READ_KEY, request.accountNum());
-    //     UserResponse user = (UserResponse) rabbitTemplate.convertSendAndReceive(RabbitMQConstants.USER_EXCHANGE, RabbitMQConstants.USER_READ_KEY, account.userEmail());
+        String transactionID = getId();
 
-    //     String status = "initiated";
-    //     String transaction = "Deposit Request";
+        Deposit deposit = Deposit.builder()
+                            .amount(request.amount())
+                            .transactionNum(transactionID)
+                            .accountNum(request.accountNum())
+                            .build();
 
-    //     AccountDepositWithdrawalResponse newRequest = new AccountDepositWithdrawalResponse(null, status, request.accountNum(), user.firstName()+" "+user.lastName(), account.numAgency(), user.email(), request.amount(), 0, 0, new Date());
+        depositRepository.save(deposit);
 
-    //     rabbitTemplate.convertAndSend(RabbitMQConstants.AGENCY_EXCHANGE, RabbitMQConstants.AGENCY_DEPOSIT_KEY, newRequest);
+        rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_UPDATE_KEY, request);
 
-    //     return  new DepositResponse(request.accountNum(), transaction, request.amount(), status, new Date());
-    // }
-
-    @CircuitBreaker(name="depositApprovedCircuitBreaker", fallbackMethod = "depositFallback")
-    @RabbitListener(queues = RabbitMQConstants.DEPOSIT_QUEUE, containerFactory = "rabbitListenerContainerFactory")
-    public void approvedDeposits(AccountDepositWithdrawalResponse request) {
-
-        String uuid = UUID.randomUUID().toString().replace("-", "");
-        String transactionID = uuid.substring(0, 10);
-
-        try {
-            AccountDepositWithdrawalResponse accountResponse = (AccountDepositWithdrawalResponse) rabbitTemplate.convertSendAndReceiveWithTimeout(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_DEPOSIT_KEY, request, 60, TimeUnit.SECONDS);
-            Deposit deposit = Deposit.builder().transactionNum(transactionID).accountNum(request.numeroCompte()).amount(request.transactionAmount()).build();
-            depositRepository.save(deposit);
-            AccountDepositWithdrawalResponse finalResponse = new AccountDepositWithdrawalResponse(transactionID, "success", accountResponse.numeroCompte(), request.userName(), request.agencyID(),request.email(), accountResponse.transactionAmount(), 0, accountResponse.newBalance(), new Date()) ;
-            rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE, RabbitMQConstants.MESSAGE_DEPOSIT_NOTIFICATION_KEY, finalResponse);
-            rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE, RabbitMQConstants.EMAIL_DEPOSIT_NOTIFICATION_KEY, finalResponse);
-        }
-        catch (Exception e){
-            AccountDepositWithdrawalResponse finalResponse = new AccountDepositWithdrawalResponse(transactionID, e.toString(), request.numeroCompte(), request.userName(), request.agencyID(), request.email(), request.transactionAmount(), 0, 0, new Date());
-            rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE, RabbitMQConstants.MESSAGE_DEPOSIT_NOTIFICATION_KEY, finalResponse);
-            rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE, RabbitMQConstants.EMAIL_DEPOSIT_NOTIFICATION_KEY, finalResponse);
-        }
+        return  new DepositResponse(request.accountNum(), deposit.getTransactionNum(), deposit.getAmount(),  deposit.getCreatedAt());
     }
 
-    public List<Deposit> filterDeposits(DepositFilterDTO filterDTO) {
-        Query query = new Query(filterDTO.buildCriteria());
-        return mongoTemplate.find(query, Deposit.class);
+    public String getId(){
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        return uuid.substring(0, 10);
+    }
+
+    public List<DepositResponse> filterDeposits(String accountId, String agencyId) {
+        if (accountId != null && agencyId != null) return DepositResponse.fromList(depositRepository.findByAgencyNumAndAccountNum(agencyId, accountId));
+        if (accountId != null) return DepositResponse.fromList(depositRepository.findByAgencyNum(agencyId));
+        return DepositResponse.fromList(depositRepository.findByAccountNum(accountId));
     }
 
     public void depositFallback(){
@@ -85,4 +59,5 @@ public class DepositService {
         System.out.println(message);
         log.info(message);
     }
+
 }

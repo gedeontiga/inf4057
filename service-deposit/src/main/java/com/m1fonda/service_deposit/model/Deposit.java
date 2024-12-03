@@ -8,28 +8,36 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import jakarta.persistence.*;
 
 @Document( collection = "deposits")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Entity
+
 public class Deposit {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
-    @Column(unique = true, nullable = false)
+    @Indexed(unique = true)
     private String transactionNum;
 
     private double amount;
 
     private String accountNum;
+
+    private String agencyNum;
+
+    @Builder
+    public Deposit(String transactionNum, String accountNum, double amount) {
+        this.transactionNum = transactionNum;
+        this.accountNum = accountNum;
+        this.amount = amount;
+    }
 
     @CreatedDate
     private final Date createdAt = new Date();

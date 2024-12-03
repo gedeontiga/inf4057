@@ -1,9 +1,8 @@
-package com.m1fonda.commons_libs.dto;
+package com.m1fonda.service_transfer.dto;
 
 
-public record TransferRequestDTO(
+public record TransferDTO(
                             String senderAccountNum,
-                            String receiverAccountNum,
                             double amount
                             )
 {}

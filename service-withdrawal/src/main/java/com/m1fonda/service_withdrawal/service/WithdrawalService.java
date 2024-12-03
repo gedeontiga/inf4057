@@ -1,30 +1,23 @@
 package com.m1fonda.service_withdrawal.service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
-// import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-import com.m1fonda.service_withdrawal.component.CustomRabbitTemplate;
-import com.m1fonda.service_withdrawal.dto.WithdrawalFilterDTO;
+import com.m1fonda.service_withdrawal.dto.WithdrawDTO;
+import com.m1fonda.service_withdrawal.dto.WithdrawalRequest;
+import com.m1fonda.service_withdrawal.dto.WithdrawalResponse;
 import com.m1fonda.service_withdrawal.model.Withdrawal;
 import com.m1fonda.service_withdrawal.repository.WithdrawalRepository;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.m1fonda.commons_libs.config.*;
-import com.m1fonda.commons_libs.dto.AccountDTO;
-import com.m1fonda.commons_libs.dto.AccountDepositWithdrawalResponse;
-import com.m1fonda.commons_libs.dto.UserResponse;
-import com.m1fonda.commons_libs.dto.WithdrawalRequest;
-import com.m1fonda.commons_libs.dto.WithdrawalResponse;
+
+import com.m1fonda.commons_libs.config.RabbitMQConstants;
+import com.m1fonda.commons_libs.dto.AgencyDTO;
 
 
 @Slf4j
@@ -34,57 +27,42 @@ import com.m1fonda.commons_libs.dto.WithdrawalResponse;
 public class WithdrawalService {
 
     private final WithdrawalRepository withdrawalRepository;
-    public final CustomRabbitTemplate rabbitTemplate;
+    public final RabbitTemplate rabbitTemplate;
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
 
     @CircuitBreaker(name="withdrawalCircuitBreaker", fallbackMethod = "withdrawalFallback")
-    // @RabbitListener(queues = RabbitMQConstants.WITHDRAW_QUEUE, containerFactory = "rabbitListenerContainerFactory")
     public WithdrawalResponse newWithdrawal(WithdrawalRequest request){
         
-        String status = "";
+        String transactionID = getId();
+
+        Withdrawal withdrawal = Withdrawal.builder()
+                        .amount(request.amount())
+                        .transactionNum(transactionID)
+                        .accountNum(request.accountNum())
+                        .fees(request.fees())
+                        .build();
+
+        withdrawalRepository.save(withdrawal);
+
+        rabbitTemplate.convertAndSend(RabbitMQConstants.AGENCY_EXCHANGE, RabbitMQConstants.AGENCY_UPDATE_KEY, new AgencyDTO(request.agencyNum(), null, -1*request.amount(), 0, 0, transactionID));
+        rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_UPDATE_KEY, new WithdrawDTO(request.accountNum(), -1*(request.amount()+request.fees())));
+
+
+        return new WithdrawalResponse(request.agencyNum(), withdrawal.getTransactionNum(), withdrawal.getAmount(), 0, withdrawal.getCreatedAt());
+    }
+
+    public List<WithdrawalResponse> filterWithdrawals(String accountId, String agencyId) {
+        if (accountId != null && agencyId != null) return WithdrawalResponse.fromList(withdrawalRepository.findByAgencyNumAndAccountNum(agencyId, accountId));
+        if (accountId != null) return WithdrawalResponse.fromList(withdrawalRepository.findByAgencyNum(agencyId));
+        return WithdrawalResponse.fromList(withdrawalRepository.findByAccountNum(accountId));
+    }
+
+
+    public String getId(){
         String uuid = UUID.randomUUID().toString().replace("-", "");
-        String transactionNum = uuid.substring(0, 10);
-
-        AccountDTO account = (AccountDTO) rabbitTemplate.convertSendAndReceive(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_READ_KEY, request.accountNum());
-        UserResponse user = (UserResponse) rabbitTemplate.convertSendAndReceive(RabbitMQConstants.USER_EXCHANGE, RabbitMQConstants.USER_READ_KEY, account.userEmail());
-
-        try{
-            status = "initiated";
-            double fees = getTransactionFees(request.amount());
-
-            AccountDepositWithdrawalResponse newRequest = new AccountDepositWithdrawalResponse(transactionNum, status, request.accountNum(), user.firstName()+" "+user.lastName(), request.accountNum(), user.email(), request.amount(), fees, 0, new Date());
-
-            AccountDepositWithdrawalResponse confirmedWithdraw = (AccountDepositWithdrawalResponse) rabbitTemplate.convertSendAndReceiveWithTimeout(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_WITHDRAW_KEY, newRequest, 30, TimeUnit.SECONDS);
-            
-            rabbitTemplate.convertAndSend(RabbitMQConstants.AGENCY_EXCHANGE, RabbitMQConstants.AGENCY_WITHDRAW_KEY, confirmedWithdraw);
-            
-            Withdrawal withdrawal = Withdrawal.builder().transactionNum(transactionNum).accountNum(request.accountNum()).amount(request.amount()).build();
-            withdrawalRepository.save(withdrawal);
-
-            rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE, RabbitMQConstants.MESSAGE_WITHDRAWAL_NOTIFICATION_KEY, confirmedWithdraw);
-            rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE, RabbitMQConstants.EMAIL_WITHDRAWAL_NOTIFICATION_KEY, confirmedWithdraw);
-            
-        } catch (Exception e) {
-            status = "failed";
-        }
-
-        return new WithdrawalResponse(request.accountNum(), transactionNum, request.amount(), status, new Date());
+        return uuid.substring(0, 10);
     }
 
-    public List<Withdrawal> filterWithdrawals(WithdrawalFilterDTO filterDTO) {
-        Query query = new Query(filterDTO.buildCriteria());
-        return mongoTemplate.find(query, Withdrawal.class);
-    }
-
-    public double getTransactionFees(double amount){
-        if (amount < 1000) return amount * 0.075;
-        else if (amount < 10000) return amount * 0.05;
-        else if (amount < 50000) return amount * 0.025;
-        else if (amount < 500000) return amount * 0.0125;
-        else return amount * 0.00625;
-    }
 
     public void withdrawalFallback(){
         String message = "Withdrawal service is latent or down...";

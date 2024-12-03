@@ -1,52 +1,55 @@
 package com.m1fonda.service_bank.model;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
-import com.m1fonda.commons_libs.entities.*;
+import com.m1fonda.commons_libs.entities.Bank;
 
-import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Document(collection = "banks")
-@Entity
 @NoArgsConstructor
+@Getter
+@Setter
 public class BankModel extends Bank {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
-    @Column(unique = true, nullable = false)
+    @Indexed(unique = true)
     private String ownerEmail;
 
     @CreatedDate
-    private Date dateCreation;
+    private final Date dateCreation = new Date();
+
+    @DocumentReference
+    private Set<AgencyModel> agencies;
 
     @Builder
     public BankModel(String bankNumber,  String name, String logo, String ownerEmail, String type, Double capital, String contact) {
         super(bankNumber, name, logo, type, capital, contact);
         this.ownerEmail = ownerEmail;
+        this.agencies = new HashSet<>();
     }
 
-    public String getOwnerEmail() {
-        return this.ownerEmail;
+    public void addAgency(AgencyModel agencyModel) {
+        this.agencies.add(agencyModel);
     }
 
-    public void setOwnerEmail(String ownerEmail) {
-        this.ownerEmail = ownerEmail;
+    public void removeAgency(AgencyModel agencyModel) {
+        this.agencies.remove(agencyModel);
     }
 
-    public Date getDateCreation() {
-        return this.dateCreation;
-    }
-
-    public void setDateCreation(Date dateCreation) {
-        this.dateCreation = dateCreation;
-    }
 
 
 }

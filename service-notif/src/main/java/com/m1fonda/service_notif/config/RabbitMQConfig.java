@@ -23,28 +23,8 @@ public class RabbitMQConfig {
         return new Queue(RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE);
     }
     @Bean
-    Queue emailNotificationWithdrawalQueue() {
-        return new Queue(RabbitMQConstants.EMAIL_WITHDRAWAL_NOTIFICATION_QUEUE);
-    }
-    @Bean
-    Queue emailNotificationTransferQueue() {
-        return new Queue(RabbitMQConstants.EMAIL_TRANSFER_NOTIFICATION_QUEUE);
-    }
-    @Bean
-    Queue emailNotificationDepositQueue() {
-        return new Queue(RabbitMQConstants.EMAIL_DEPOSIT_NOTIFICATION_QUEUE);
-    }
-    @Bean
-    Queue messageNotificationDepositQueue() {
-        return new Queue(RabbitMQConstants.MESSAGE_DEPOSIT_NOTIFICATION_QUEUE);
-    }
-    @Bean
-    Queue messageNotificationWithdrawalQueue() {
-        return new Queue(RabbitMQConstants.MESSAGE_WITHDRAWAL_NOTIFICATION_QUEUE);
-    }
-    @Bean
-    Queue messageNotificationTransferQueue() {
-        return new Queue(RabbitMQConstants.MESSAGE_TRANSFER_NOTIFICATION_QUEUE);
+    Queue notificationTransactionQueue() {
+        return new Queue(RabbitMQConstants.NOTIFICATION_TRANSACTION_QUEUE);
     }
 
 
@@ -54,27 +34,8 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Binding bindingNotification1() {
-        return BindingBuilder.bind(emailNotificationDepositQueue()).to(notificationExchange()).with(RabbitMQConstants.EMAIL_DEPOSIT_NOTIFICATION_KEY);
-    }
-    @Bean
-    Binding bindingNotification2() {
-        return BindingBuilder.bind(emailNotificationWithdrawalQueue()).to(notificationExchange()).with(RabbitMQConstants.EMAIL_WITHDRAWAL_NOTIFICATION_KEY);
-    }
-    @Bean
-    Binding bindingNotification3() {
-        return BindingBuilder.bind(emailNotificationTransferQueue()).to(notificationExchange()).with(RabbitMQConstants.EMAIL_TRANSFER_NOTIFICATION_KEY);
-    }
-    Binding bindingNotification4() {
-        return BindingBuilder.bind(messageNotificationDepositQueue()).to(notificationExchange()).with(RabbitMQConstants.MESSAGE_DEPOSIT_NOTIFICATION_KEY);
-    }
-    @Bean
-    Binding bindingNotification5() {
-        return BindingBuilder.bind(messageNotificationWithdrawalQueue()).to(notificationExchange()).with(RabbitMQConstants.MESSAGE_WITHDRAWAL_NOTIFICATION_KEY);
-    }
-    @Bean
-    Binding bindingNotification6() {
-        return BindingBuilder.bind(messageNotificationTransferQueue()).to(notificationExchange()).with(RabbitMQConstants.MESSAGE_TRANSFER_NOTIFICATION_KEY);
+    Binding bindingNotificationTransactionQueue() {
+        return BindingBuilder.bind(notificationTransactionQueue()).to(notificationExchange()).with(RabbitMQConstants.NOTIFICATION_TRANSACTION_KEY);
     }
 
 

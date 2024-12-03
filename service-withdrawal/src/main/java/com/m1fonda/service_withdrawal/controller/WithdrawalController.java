@@ -1,17 +1,15 @@
 package com.m1fonda.service_withdrawal.controller;
 
+
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.m1fonda.commons_libs.dto.WithdrawalRequest;
-import com.m1fonda.commons_libs.dto.WithdrawalResponse;
-import com.m1fonda.service_withdrawal.dto.WithdrawalFilterDTO;
-import com.m1fonda.service_withdrawal.model.Withdrawal;
+import com.m1fonda.service_withdrawal.dto.WithdrawalRequest;
+import com.m1fonda.service_withdrawal.dto.WithdrawalResponse;
 import com.m1fonda.service_withdrawal.service.WithdrawalService;
 
 import lombok.AllArgsConstructor;
@@ -32,23 +30,17 @@ public class WithdrawalController {
     public ResponseEntity<WithdrawalResponse> withdrawal(@RequestBody WithdrawalRequest withdrawalRequest) {
         return ResponseEntity.ok(withdrawalService.newWithdrawal(withdrawalRequest));
     }
-    
-    @GetMapping("/filter")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<Withdrawal>> filterWithdrawals(
-        @RequestParam(required = false) String email,
-        @RequestParam(required = false) String accountId,
-        @RequestParam(required = false) String agencyId,
-        @RequestParam(required = false) String bankId
-    ) {
-        WithdrawalFilterDTO filterDTO = new WithdrawalFilterDTO();
-        filterDTO.setEmail(email);
-        filterDTO.setAccountId(accountId);
-        filterDTO.setAgencyId(agencyId);
-        filterDTO.setBankId(bankId);
 
-        List<Withdrawal> withdrawals = withdrawalService.filterWithdrawals(filterDTO);
-        return ResponseEntity.ok(withdrawals);
+    @GetMapping("/readall")
+    public ResponseEntity<List<WithdrawalResponse>> filterDeposits(
+        @RequestParam(required = false) String accountId,
+        @RequestParam(required = false) String agencyId
+    ) {
+        if (accountId != null || agencyId != null) {
+            List<WithdrawalResponse> withdrawals = withdrawalService.filterWithdrawals(accountId, agencyId);
+            return ResponseEntity.ok(withdrawals);
+        }
+        return ResponseEntity.badRequest().body(null);
     }
 
 }

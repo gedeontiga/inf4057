@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.m1fonda.service_bank.dto.AgencyDTO;
 import com.m1fonda.service_bank.dto.BankDTO;
 import com.m1fonda.service_bank.dto.BankDTOResponse;
-import com.m1fonda.service_bank.dto.BankWithAgenciesDTO;
 import com.m1fonda.service_bank.service.BankService;
 
 import lombok.AllArgsConstructor;
@@ -33,7 +32,7 @@ public class BankController {
     }
 
     @GetMapping("/get/{param}")
-    public ResponseEntity<BankWithAgenciesDTO> getBank(@RequestParam String param) {
+    public ResponseEntity<BankDTOResponse> getBank(@RequestParam String param) {
         return ResponseEntity.ok(bankService.getBank(param));
     }
     
@@ -43,13 +42,13 @@ public class BankController {
     }
 
     @PostMapping("/agency/add")
-    public ResponseEntity<BankWithAgenciesDTO> addAgency(@RequestBody AgencyDTO agency) {
+    public ResponseEntity<BankDTOResponse> addAgency(@RequestBody AgencyDTO agency) {
         return ResponseEntity.ok(bankService.addAgency(agency));
     }
 
-    @PostMapping("/agency/remove")
-    public boolean removeAgency(@RequestBody AgencyDTO agency) {
-        return bankService.removeAgency(agency);
+    @PostMapping("/agency/remove/{agencyNum}")
+    public void removeAgency(@RequestParam String agencyNum) {
+        bankService.removeAgency(agencyNum);
     }
     
 }

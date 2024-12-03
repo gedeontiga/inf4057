@@ -12,6 +12,7 @@ import com.m1fonda.commons_libs.config.*;;
 @Configuration
 public class RabbitMQConfig {
 
+
     @Bean
     public Queue depositPendingQueue(){
         return new Queue(RabbitMQConstants.DEPOSIT_QUEUE, true);
