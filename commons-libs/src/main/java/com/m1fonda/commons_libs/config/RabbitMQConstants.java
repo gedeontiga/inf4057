@@ -74,4 +74,6 @@ public final class RabbitMQConstants {
     public static final String TRANSFER_EXCHANGE = "transferExchange";
     public static final String TRANSFER_QUEUE = "transferQueue";
     public static final String TRANSFER_KEY = "transferKey";
+    public static final String NOTIFICATION_TRANSACTION_QUEUE = "notification.transaction.queue";
+    public static final String NOTIFICATION_TRANSACTION_KEY = "notification.transaction.key";
 }

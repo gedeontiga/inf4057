@@ -25,7 +25,18 @@ public class AgencyAccountService {
 
     public void sendDemande(Demande demande) {
         demande.setStatus("PENDING");
-        demandeRepository.save(demande);
+        Demande demand = demandeRepository.findByEmailAndNumBank(demande.getEmail(), demande.getNumBank())
+                .orElse(demande);
+        demand.setBalance(demande.getBalance());
+        demand.setCni(demande.getCni());
+        demand.setFirstName(demande.getFirstName());
+        demand.setLastName(demande.getLastName());
+        demand.setPhoneNumber(demande.getPhoneNumber());
+        demand.setUrlRectoCni(demande.getUrlRectoCni());
+        demand.setUrlVersoCni(demande.getUrlVersoCni());
+        demand.setNumAgency(demande.getNumAgency());
+        demand.setPassword(demande.getPassword());
+        demandeRepository.save(demand);
     }
 
     public List<DemandeDTO> getDemandes() {

@@ -10,6 +10,7 @@
         "gedeon",
         "INITDB",
         "lastname",
+        "mockito",
         "mongodb",
         "mysql",
         "nullable",

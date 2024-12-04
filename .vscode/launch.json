@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ServiceAgencyApplication",
+            "request": "launch",
+            "mainClass": "ServiceAgencyApplication",
+            "projectName": "service-agency"
+        },
+        {
+            "type": "java",
             "name": "ServiceAuthApplication",
             "request": "launch",
             "mainClass": "com.m1fonda.service_auth.ServiceAuthApplication",

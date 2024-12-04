@@ -27,13 +27,8 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Queue depositQueue() {
-        return new Queue(RabbitMQConstants.EMAIL_DEPOSIT_NOTIFICATION_QUEUE);
-    }
-
-    @Bean
-    Queue withdrawalQueue() {
-        return new Queue(RabbitMQConstants.EMAIL_WITHDRAWAL_NOTIFICATION_QUEUE);
+    Queue transactionQueue() {
+        return new Queue(RabbitMQConstants.NOTIFICATION_TRANSACTION_QUEUE);
     }
 
     @Bean
@@ -75,15 +70,9 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Binding bindingDeposit() {
-        return BindingBuilder.bind(depositQueue()).to(notificationExchange())
-                .with(RabbitMQConstants.EMAIL_DEPOSIT_NOTIFICATION_KEY);
-    }
-
-    @Bean
-    Binding bindingWithdrawal() {
-        return BindingBuilder.bind(withdrawalQueue()).to(notificationExchange())
-                .with(RabbitMQConstants.EMAIL_WITHDRAWAL_NOTIFICATION_KEY);
+    Binding bindingTransaction() {
+        return BindingBuilder.bind(transactionQueue()).to(notificationExchange())
+                .with(RabbitMQConstants.NOTIFICATION_TRANSACTION_KEY);
     }
 
     @Bean
