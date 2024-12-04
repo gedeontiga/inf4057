@@ -36,7 +36,7 @@ public class BankController {
         return ResponseEntity.ok(bankService.getBank(param));
     }
     
-    @PutMapping("/update")
+    @PutMapping("/agency/update")
     public ResponseEntity<AgencyDTO> updateAgency(@RequestBody AgencyDTO entity) {
         return ResponseEntity.ok(bankService.updateAgency(entity));
     }
