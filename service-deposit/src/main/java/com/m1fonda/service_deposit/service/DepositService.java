@@ -50,8 +50,8 @@ public class DepositService {
 
     public List<DepositResponse> filterDeposits(String accountId, String agencyId) {
         if (accountId != null && agencyId != null) return DepositResponse.fromList(depositRepository.findByAgencyNumAndAccountNum(agencyId, accountId));
-        if (accountId != null) return DepositResponse.fromList(depositRepository.findByAgencyNum(agencyId));
-        return DepositResponse.fromList(depositRepository.findByAccountNum(accountId));
+        if (accountId != null) return DepositResponse.fromList(depositRepository.findByAccountNum(accountId));
+        return DepositResponse.fromList(depositRepository.findByAgencyNum(agencyId));
     }
 
     public void depositFallback(){

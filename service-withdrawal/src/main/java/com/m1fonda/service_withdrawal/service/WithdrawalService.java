@@ -39,6 +39,7 @@ public class WithdrawalService {
                         .amount(request.amount())
                         .transactionNum(transactionID)
                         .accountNum(request.accountNum())
+                        .agencyNum(request.agencyNum())
                         .fees(request.fees())
                         .build();
 
@@ -48,13 +49,13 @@ public class WithdrawalService {
         rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_UPDATE_KEY, new WithdrawDTO(request.accountNum(), -1*(request.amount()+request.fees())));
 
 
-        return new WithdrawalResponse(request.agencyNum(), withdrawal.getTransactionNum(), withdrawal.getAmount(), 0, withdrawal.getCreatedAt());
+        return WithdrawalResponse.fromWithdrawal(withdrawal);
     }
 
     public List<WithdrawalResponse> filterWithdrawals(String accountId, String agencyId) {
         if (accountId != null && agencyId != null) return WithdrawalResponse.fromList(withdrawalRepository.findByAgencyNumAndAccountNum(agencyId, accountId));
-        if (accountId != null) return WithdrawalResponse.fromList(withdrawalRepository.findByAgencyNum(agencyId));
-        return WithdrawalResponse.fromList(withdrawalRepository.findByAccountNum(accountId));
+        if (accountId != null) return WithdrawalResponse.fromList(withdrawalRepository.findByAccountNum(accountId));
+        return WithdrawalResponse.fromList(withdrawalRepository.findByAgencyNum(agencyId));
     }
 
 

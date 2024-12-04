@@ -10,7 +10,7 @@ import com.m1fonda.service_transfer.model.Transfer;
 @Repository
 public interface TransferRepository extends MongoRepository<Transfer, String> {
     List<Transfer> findByAgencyNum(String agencyNum);
-    List<Transfer> findByAccountNum(String accountNum);
-    List<Transfer> findByAgencyNumAndAccountNum(String agencyNum, String accountNum);
+    List<Transfer> findBySenderAccountNumOrReceiverAccountNumAndAgencyNum(String accountNum, String agencyNum);
+    List<Transfer> findBySenderAccountNumOrReceiverAccountNum(String account);
 
 }

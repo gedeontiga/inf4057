@@ -1,180 +1,171 @@
-// package com.m1fonda.service_deposit;
-
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import org.junit.jupiter.api.extension.ExtendWith;
-// import org.mockito.InjectMocks;
-// import org.mockito.Mock;
-// import org.mockito.junit.jupiter.MockitoExtension;
-// import org.springframework.amqp.core.Message;
-// import org.springframework.amqp.core.MessageBuilder;
-// import org.springframework.amqp.core.MessageProperties;
-// import org.springframework.amqp.core.MessagePropertiesBuilder;
-// import org.springframework.data.mongodb.core.MongoTemplate;
-// import org.springframework.data.mongodb.core.query.Criteria;
-// import org.springframework.data.mongodb.core.query.Query;
-
-// import com.m1fonda.commons_libs.config.RabbitMQConstants;
-// import com.m1fonda.commons_libs.dto.AccountDepositWithdrawalResponse;
-// import com.m1fonda.service_deposit.component.CustomRabbitTemplate;
-// import com.m1fonda.service_deposit.dto.DepositFilterDTO;
-// import com.m1fonda.service_deposit.model.Deposit;
-// import com.m1fonda.service_deposit.repository.DepositRepository;
-// import com.m1fonda.service_deposit.service.DepositService;
-
-// import static org.junit.jupiter.api.Assertions.*;
-// import static org.mockito.ArgumentMatchers.*;
-// import static org.mockito.Mockito.*;
-
-// import java.util.Arrays;
-// import java.util.Date;
-// import java.util.List;
-// import java.util.concurrent.TimeUnit;
-
-// @ExtendWith(MockitoExtension.class)
-// public class DepositServiceTest {
-
-//     @Mock
-//     private DepositRepository depositRepository;
-
-//     @Mock
-//     private CustomRabbitTemplate rabbitTemplate;
-
-//     @Mock
-//     private MongoTemplate mongoTemplate;
-
-//     @InjectMocks
-//     private DepositService depositService;
-
-//     private AccountDepositWithdrawalResponse testRequest;
-
-//     @BeforeEach
-//     public void setUp() {
-//         testRequest = new AccountDepositWithdrawalResponse(
-//             null, 
-//             "initiated", 
-//             "12345", 
-//             "John Doe", 
-//             "AG001", 
-//             "john@example.com", 
-//             1000.0, 
-//             0, 
-//             0, 
-//             new Date()
-//         );
-//     }
-
-//     @Test
-//     public void testApprovedDeposits_SuccessfulDeposit() {
-//         // Arrange
-//         AccountDepositWithdrawalResponse mockAccountResponse = new AccountDepositWithdrawalResponse(
-//             null, 
-//             "success", 
-//             "12345", 
-//             "John Doe", 
-//             "AG001", 
-//             "john@example.com", 
-//             1000.0, 
-//             0, 
-//             2000.0, 
-//             new Date()
-//         );
-
-//         when(rabbitTemplate.convertSendAndReceiveWithTimeout(
-//             eq(RabbitMQConstants.ACCOUNT_EXCHANGE), 
-//             eq(RabbitMQConstants.ACCOUNT_DEPOSIT_KEY), 
-//             eq(testRequest), 
-//             eq(60L), 
-//             eq(TimeUnit.SECONDS)
-//         )).thenReturn(mockAccountResponse);
-
-//         // Create a mock message with properties
-//         MessageProperties properties = MessagePropertiesBuilder.newInstance().build();
-//         Message message = MessageBuilder
-//             .withBody(new byte[0])
-//             .andProperties(properties)
-//             .build();
-
-//         // Act
-//         depositService.approvedDeposits(testRequest);
-
-//         // Assert
-//         verify(depositRepository).save(argThat(deposit -> 
-//             deposit.getAccountNum().equals("12345") && 
-//             deposit.getAmount() == 1000.0
-//         ));
-
-//         // Use explicit method for convertAndSend
-//         verify(rabbitTemplate, times(2)).convertAndSend(
-//             eq(RabbitMQConstants.NOTIFICATION_EXCHANGE), 
-//             anyString(), 
-//             any(AccountDepositWithdrawalResponse.class)
-//         );
-//     }
-
-//     @Test
-//     public void testApprovedDeposits_FailedDeposit() {
-//         // Arrange
-//         when(rabbitTemplate.convertSendAndReceiveWithTimeout(
-//             eq(RabbitMQConstants.ACCOUNT_EXCHANGE), 
-//             eq(RabbitMQConstants.ACCOUNT_DEPOSIT_KEY), 
-//             eq(testRequest), 
-//             eq(60L), 
-//             eq(TimeUnit.SECONDS)
-//         )).thenThrow(new RuntimeException("Deposit failed"));
-
-//         // Act
-//         depositService.approvedDeposits(testRequest);
-
-//         // Assert
-//         verify(depositRepository, never()).save(any(Deposit.class));
-
-//         verify(rabbitTemplate, times(2)).convertAndSend(
-//             eq(RabbitMQConstants.NOTIFICATION_EXCHANGE), 
-//             anyString(), 
-//             any(AccountDepositWithdrawalResponse.class)
-//         );
-//     }
+package com.m1fonda.service_deposit;
 
 
-//     @Test
-//     public void testFilterDeposits() {
-//         // Arrange
-//         DepositFilterDTO filterDTO = mock(DepositFilterDTO.class);
-//         Criteria mockCriteria = mock(Criteria.class);
-//         Query mockQuery = new Query(mockCriteria);
-        
-//         when(filterDTO.buildCriteria()).thenAnswer(mockQuery);
-        
-//         Deposit deposit1 = Deposit.builder()
-//             .transactionNum("T001")
-//             .accountNum("12345")
-//             .amount(1000.0)
-//             .build();
-        
-//         Deposit deposit2 = Deposit.builder()
-//             .transactionNum("T002")
-//             .accountNum("67890")
-//             .amount(2000.0)
-//             .build();
+import com.m1fonda.service_deposit.dto.DepositRequest;
+import com.m1fonda.service_deposit.dto.DepositResponse;
+import com.m1fonda.service_deposit.model.Deposit;
+import com.m1fonda.service_deposit.repository.DepositRepository;
+import com.m1fonda.service_deposit.service.DepositService;
+import com.m1fonda.commons_libs.config.RabbitMQConstants;
 
-//         when(mongoTemplate.find(eq(mockQuery), eq(Deposit.class)))
-//             .thenReturn(Arrays.asList(deposit1, deposit2));
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
-//         // Act
-//         List<Deposit> filteredDeposits = depositService.filterDeposits(filterDTO);
+import java.util.Arrays;
+import java.util.List;
 
-//         // Assert
-//         assertNotNull(filteredDeposits);
-//         assertEquals(2, filteredDeposits.size());
-//         verify(mongoTemplate).find(eq(mockQuery), eq(Deposit.class));
-//     }
-//     @Test
-//     public void testDepositFallback() {
-//         // Act
-//         depositService.depositFallback();
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
-//         // This test mainly checks that the method can be called without exceptions
-//         // You might want to add additional assertions based on your logging requirements
-//     }
-// }
+@ExtendWith(MockitoExtension.class)
+class DepositServiceTest {
+
+    @Mock
+    private DepositRepository depositRepository;
+
+    @Mock
+    private RabbitTemplate rabbitTemplate;
+
+    @InjectMocks
+    private DepositService depositService;
+
+    private DepositRequest depositRequest;
+    private Deposit deposit;
+
+    @BeforeEach
+    void setUp() {
+        depositRequest = new DepositRequest("ACC123", "AGN001", 1000.0);
+        deposit = Deposit.builder()
+            .transactionNum("TRANS123")
+            .accountNum(depositRequest.accountNum())
+            .amount(depositRequest.amount())
+            .build();
+    }
+
+    @Test
+    void testNewDeposit() {
+        // Arrange
+        when(depositRepository.save(any(Deposit.class))).thenReturn(deposit);
+
+        // Act
+        DepositResponse response = depositService.newDeposit(depositRequest);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(depositRequest.accountNum(), response.accountNum());
+        assertEquals(depositRequest.amount(), response.amount());
+        assertNotNull(response.transaction());
+
+        // Verify interactions
+        verify(depositRepository).save(any(Deposit.class));
+        verify(rabbitTemplate).convertAndSend(
+            eq(RabbitMQConstants.ACCOUNT_EXCHANGE), 
+            eq(RabbitMQConstants.ACCOUNT_UPDATE_KEY), 
+            eq(depositRequest)
+        );
+    }
+
+    @Test
+    void testGetId() {
+        // Act
+        String id = depositService.getId();
+
+        // Assert
+        assertNotNull(id);
+        assertEquals(10, id.length());
+    }
+
+    @Test
+    void testFilterDeposits_AccountAndAgency() {
+        // Arrange
+        List<Deposit> mockDeposits = Arrays.asList(
+            Deposit.builder()
+                .accountNum("ACC123")
+                .agencyNum("AGN001")
+                .amount(1000.0)
+                .transactionNum("TRANS1")
+                .build(),
+            Deposit.builder()
+                .accountNum("ACC123")
+                .agencyNum("AGN001")
+                .amount(2000.0)
+                .transactionNum("TRANS2")
+                .build()
+        );
+
+        when(depositRepository.findByAgencyNumAndAccountNum("AGN001", "ACC123"))
+            .thenReturn(mockDeposits);
+
+        // Act
+        List<DepositResponse> responses = depositService.filterDeposits("ACC123", "AGN001");
+
+        // Assert
+        assertNotNull(responses);
+        assertEquals(2, responses.size());
+        assertEquals("ACC123", responses.get(0).accountNum());
+        assertEquals("AGN001", mockDeposits.get(0).getAgencyNum());
+    }
+
+    @Test
+    void testFilterDeposits_AccountOnly() {
+        // Arrange
+        List<Deposit> mockDeposits = Arrays.asList(
+            Deposit.builder()
+                .accountNum("ACC123")
+                .amount(1500.0)
+                .transactionNum("TRANS3")
+                .build()
+        );
+
+        when(depositRepository.findByAccountNum("ACC123"))
+            .thenReturn(mockDeposits);
+
+        // Act
+        List<DepositResponse> responses = depositService.filterDeposits("ACC123", null);
+
+        // Assert
+        assertNotNull(responses);
+        assertEquals(1, responses.size());
+        assertEquals("ACC123", responses.get(0).accountNum());
+    }
+
+    @Test
+    void testFilterDeposits_AgencyOnly() {
+        // Arrange
+        List<Deposit> mockDeposits = Arrays.asList(
+            Deposit.builder()
+                .agencyNum("AGN001")
+                .amount(2500.0)
+                .transactionNum("TRANS4")
+                .build()
+        );
+
+        when(depositRepository.findByAgencyNum("AGN001"))
+            .thenReturn(mockDeposits);
+
+        // Act
+        List<DepositResponse> responses = depositService.filterDeposits(null, "AGN001");
+
+        // Assert
+        assertNotNull(responses);
+        assertEquals(1, responses.size());
+        assertEquals("AGN001", mockDeposits.get(0).getAgencyNum());
+    }
+
+    @Test
+    void testDepositFallback() {
+        // Act
+        depositService.depositFallback();
+
+        // This test ensures the fallback method can be called without throwing an exception
+        // We're primarily checking that it logs or prints a message
+        // In a real-world scenario, you might want to verify logging
+    }
+}

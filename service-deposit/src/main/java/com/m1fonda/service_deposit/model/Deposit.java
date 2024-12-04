@@ -17,7 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
+@Builder
 public class Deposit {
 
     @Id
@@ -32,7 +32,6 @@ public class Deposit {
 
     private String agencyNum;
 
-    @Builder
     public Deposit(String transactionNum, String accountNum, double amount) {
         this.transactionNum = transactionNum;
         this.accountNum = accountNum;

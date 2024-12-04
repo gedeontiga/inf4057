@@ -51,9 +51,9 @@ public class TransferService {
     }
 
     public List<TransferResponse> filterTransfers(String accountId, String agencyId) {
-        if (accountId != null && agencyId != null) return TransferResponse.fromList(transferRepository.findByAgencyNumAndAccountNum(agencyId, accountId));
-        if (accountId != null) return TransferResponse.fromList(transferRepository.findByAgencyNum(agencyId));
-        return TransferResponse.fromList(transferRepository.findByAccountNum(accountId));
+        if (accountId != null && agencyId != null) return TransferResponse.fromList(transferRepository.findBySenderAccountNumOrReceiverAccountNumAndAgencyNum(accountId, agencyId));
+        if (agencyId != null) return TransferResponse.fromList(transferRepository.findByAgencyNum(agencyId));
+        return TransferResponse.fromList(transferRepository.findBySenderAccountNumOrReceiverAccountNum(accountId));
     }
 
     public String getId(){

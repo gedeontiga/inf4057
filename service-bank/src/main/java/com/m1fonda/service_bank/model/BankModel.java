@@ -49,7 +49,4 @@ public class BankModel extends Bank {
     public void removeAgency(AgencyModel agencyModel) {
         this.agencies.remove(agencyModel);
     }
-
-
-
 }

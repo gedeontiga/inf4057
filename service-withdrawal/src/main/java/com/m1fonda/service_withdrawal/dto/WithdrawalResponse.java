@@ -7,11 +7,12 @@ import java.util.List;
 import com.m1fonda.service_withdrawal.model.Withdrawal;
 
 
-public record WithdrawalResponse(String accountNum, String transaction, double amount, double fees, Date createAt) {
+public record WithdrawalResponse(String accountNum, String agencyNum, String transaction, double amount, double fees, Date createAt) {
 
     public static WithdrawalResponse fromWithdrawal(Withdrawal w){
             return new WithdrawalResponse(
                 w.getAccountNum(),
+                w.getAgencyNum(),
                 w.getTransactionNum(),
                 w.getAmount(),
                 w.getFees(),

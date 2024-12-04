@@ -30,9 +30,5 @@ public record BankDTOResponse(
                 b.getDateCreation()
             );
         }
-    // public BankDTOResponse(String string, String string2, String string3, String string4, double d, String string5,
-    //         String string6, LocalDateTime now) {
-    //     //TODO Auto-generated constructor stub
-    // }
 
 }

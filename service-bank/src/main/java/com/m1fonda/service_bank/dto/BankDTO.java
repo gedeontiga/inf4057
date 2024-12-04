@@ -8,4 +8,5 @@ public record BankDTO(
                 double capital,
                 String contact) {
 
+
 }

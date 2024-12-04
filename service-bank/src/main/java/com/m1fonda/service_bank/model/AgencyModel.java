@@ -3,6 +3,7 @@ package com.m1fonda.service_bank.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.m1fonda.commons_libs.entities.Agency;
 
@@ -26,6 +27,7 @@ public class AgencyModel extends Agency {
     private String numBank;
 
     @Indexed(unique = true)
+    @Field("num_Agency")
     private String numAgency;
 
     @Builder

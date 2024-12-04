@@ -41,6 +41,16 @@ public class MessageNotificationService {
         notificationRepository.save(notification);
     }
 
+    public void deleteNotification(String notificationId){
+        notificationRepository.deleteByNotificationId(notificationId);
+    }
+    public void deleteUserNotification(String email){
+        notificationRepository.deleteByUserEmail(email);
+    }
+    public void deleteAgencyNotification(String agencyNum){
+        notificationRepository.deleteByAgencyNum(agencyNum);
+    }
+
 
     public String getId(){
         String uuid = UUID.randomUUID().toString().replace("-", "");
