@@ -22,9 +22,7 @@ public class SecurityConfig {
                                                 authorize -> authorize
                                                                 .requestMatchers("/api/demande").permitAll()
                                                                 .requestMatchers("/api/agency/**")
-                                                                .hasAnyRole("MANAGER", "ADMIN")
-                                                                .requestMatchers("/api/agencies/get-agencies/**")
-                                                                .hasRole("ADMIN"))
+                                                                .hasAnyRole("MANAGER", "ADMIN"))
                                 .sessionManagement(
                                                 httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
                                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

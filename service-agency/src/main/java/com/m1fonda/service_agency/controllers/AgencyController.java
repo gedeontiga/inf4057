@@ -11,6 +11,7 @@ import com.m1fonda.service_agency.services.AgencyService;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +51,11 @@ public class AgencyController {
     @GetMapping("/count-client/{numAgency}")
     public ResponseEntity<Long> getClientNumber(@PathVariable String numAgency) throws Exception {
         return ResponseEntity.ok(agencyService.getClientNumber(numAgency));
+    }
+
+    @GetMapping("/get-agencies/{numBank}")
+    public ResponseEntity<Set<AgencyDTO>> getAllAgencies(@PathVariable String numBank) {
+        return ResponseEntity.ok(agencyService.getAllAgencies(numBank));
     }
 
 }

@@ -56,11 +56,13 @@ public class RabbitMQConfig {
         return new TopicExchange(RabbitMQConstants.NOTIFICATION_EXCHANGE);
     }
 
+    @Bean
     Binding bindingDemandApproved() {
         return BindingBuilder.bind(demandQueue()).to(notificationExchange())
                 .with(RabbitMQConstants.EMAIL_NOTIFICATION_DEMAND_APPROVED_KEY);
     }
 
+    @Bean
     Binding bindingDemandRejected() {
         return BindingBuilder.bind(demandQueue()).to(notificationExchange())
                 .with(RabbitMQConstants.EMAIL_NOTIFICATION_DEMAND_REJECTED_KEY);
