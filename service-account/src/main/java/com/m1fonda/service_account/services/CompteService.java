@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.AccountDTO;
+import com.m1fonda.commons_libs.dto.AccountRequestTransferDTO;
+import com.m1fonda.commons_libs.dto.AccountResponseTransferDTO;
 import com.m1fonda.commons_libs.dto.UserRequest;
 import com.m1fonda.commons_libs.entities.Demand;
 import com.m1fonda.commons_libs.entities.Status;
@@ -33,7 +35,7 @@ public class CompteService {
 
     @CircuitBreaker(name = SERVICE_COMPTE_CIRCUIT_BREAKER, fallbackMethod = CREER_COMPTE_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.ACCOUNT_CREATION_QUEUE)
-    public Demand creerCompte(Demand demand) throws Exception {
+    public void creerCompte(Demand demand) throws Exception {
         String numAgency = demand.getNumAgency();
         String uuid = UUID.randomUUID().toString().replace("-", "");
         String numAccount = uuid.substring(0, 8);
@@ -44,6 +46,7 @@ public class CompteService {
                 .status(Status.ACTIF)
                 .createAt(new Date())
                 .numAgency(numAgency)
+                .numBank(demand.getNumBank())
                 .build();
 
         rabbitTemplate.convertSendAndReceive(RabbitMQConstants.AUTH_EXCHANGE, RabbitMQConstants.AUTH_REGISTER_KEY,
@@ -56,8 +59,6 @@ public class CompteService {
                         .password(demand.getPassword())
                         .build());
         compteRepository.save(c);
-        demand.setStatus("APPROVED");
-        return demand;
     }
 
     @CircuitBreaker(name = SERVICE_COMPTE_CIRCUIT_BREAKER, fallbackMethod = UPDATE_COMPTE_FALLBACK)
@@ -76,6 +77,12 @@ public class CompteService {
         List<AccountDTO> result = new ArrayList<AccountDTO>();
         compteRepository.findByUserEmail(email).forEach(account -> result.add(AccountDTO.fromAccount(account)));
         return result;
+    }
+
+    public AccountResponseTransferDTO getTransferInfos(AccountRequestTransferDTO request) {
+        Compte sender = compteRepository.findByNumAccount(request.numAccountSender()).orElseThrow();
+        Compte receiver = compteRepository.findByNumAccount(request.numAccountReceiver()).orElseThrow();
+        return new AccountResponseTransferDTO(sender.getNumBank(), receiver.getNumBank(), receiver.getUserEmail());
     }
 
     @RabbitListener(queues = RabbitMQConstants.ACCOUNT_QUEUE)

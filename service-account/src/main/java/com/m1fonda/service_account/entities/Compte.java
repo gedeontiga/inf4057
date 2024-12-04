@@ -29,8 +29,9 @@ public class Compte extends Account {
     private String userEmail;
 
     @Builder
-    public Compte(String numAccount, Double balance, Status status, Date createAt, String numAgency, String userEmail) {
-        super(numAccount, balance, status, createAt, numAgency, userEmail);
+    public Compte(String numAccount, Double balance, Status status, Date createAt, String numAgency, String userEmail,
+            String numBank) {
+        super(numAccount, balance, status, createAt, numAgency, userEmail, numBank);
         this.userEmail = userEmail;
     }
 }

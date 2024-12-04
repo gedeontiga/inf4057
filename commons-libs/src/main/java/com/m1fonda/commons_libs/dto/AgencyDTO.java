@@ -6,16 +6,14 @@ public record AgencyDTO(
                 String numAgency,
                 String name,
                 double capital,
-                double depositBankRate,
-                double withdrawalBankRate,
-                String address) {
+                String address,
+                String numBank) {
         public static AgencyDTO fromAgency(Agency agency) {
                 return new AgencyDTO(
                                 agency.getNumAgency(),
                                 agency.getName(),
                                 agency.getCapital(),
-                                agency.getDepositBankRate(),
-                                agency.getWithdrawalBankRate(),
-                                agency.getAddress());
+                                agency.getAddress(),
+                                agency.getNumBank());
         }
 }

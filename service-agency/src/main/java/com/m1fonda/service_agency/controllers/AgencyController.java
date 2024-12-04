@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @AllArgsConstructor
@@ -36,15 +35,15 @@ public class AgencyController {
         return ResponseEntity.ok(accountService.getDemandes());
     }
 
-    @PostMapping("/approve-demand")
-    public ResponseEntity<String> approveDemand(@RequestBody DemandeDTO demande) throws Exception {
-        accountService.validerDemande(demande);
+    @PostMapping("/approve-demand/{demandeId}")
+    public ResponseEntity<String> approveDemand(@PathVariable String demandeId) throws Exception {
+        accountService.validerDemande(demandeId);
         return ResponseEntity.ok("APPROVED");
     }
 
-    @PostMapping("/reject-demand")
-    public ResponseEntity<String> rejectDemand(@RequestBody DemandeDTO demande) {
-        accountService.rejeterDemande(demande);
+    @PostMapping("/reject-demand/{demandeId}")
+    public ResponseEntity<String> rejectDemand(@PathVariable String demandeId) {
+        accountService.rejeterDemande(demandeId);
         return ResponseEntity.ok("REJECTED");
     }
 

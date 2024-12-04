@@ -11,12 +11,6 @@ import org.springframework.stereotype.Service;
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.AgencyDTO;
 import com.m1fonda.commons_libs.dto.AgencyUpdateTransaction;
-import com.m1fonda.commons_libs.dto.DepositRequest;
-import com.m1fonda.commons_libs.dto.DepositResponse;
-import com.m1fonda.commons_libs.dto.TransferRequestDTO;
-import com.m1fonda.commons_libs.dto.TransferResponse;
-import com.m1fonda.commons_libs.dto.WithdrawalRequest;
-import com.m1fonda.commons_libs.dto.WithdrawalResponse;
 import com.m1fonda.service_agency.entities.Agence;
 import com.m1fonda.service_agency.repositories.AgencyRepository;
 
@@ -42,15 +36,11 @@ public class AgencyService {
 
     @CircuitBreaker(name = AGENCY_UPDATE_SERVICE, fallbackMethod = AGENCY_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.AGENCY_UPDATE_QUEUE)
-    public AgencyDTO updateAgencyInfo(AgencyDTO agency) {
+    public void updateAgencyInfo(AgencyDTO agency) {
         Agence agence = agencyRepository.findByNumAgency(agency.numAgency());
         agence.setName(Optional.ofNullable(agency.name()).orElse(agence.getName()));
         agence.setCapital(Optional.ofNullable(agency.capital()).orElse(agence.getCapital()));
-        agence.setDepositBankRate(Optional.ofNullable(agency.depositBankRate()).orElse(agence.getDepositBankRate()));
-        agence.setWithdrawalBankRate(
-                Optional.ofNullable(agency.withdrawalBankRate()).orElse(agence.getWithdrawalBankRate()));
         agence.setAddress(Optional.ofNullable(agency.address()).orElse(agence.getAddress()));
-        return AgencyDTO.fromAgency(agencyRepository.save(agence));
     }
 
     /*
@@ -85,8 +75,15 @@ public class AgencyService {
 
     @CircuitBreaker(name = AGENCY_CREATION_SERVICE, fallbackMethod = AGENCY_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.AGENCY_CREATION_QUEUE)
-    public AgencyDTO createAgency(Agence agence) throws Exception {
-        return AgencyDTO.fromAgency(agencyRepository.save(agence));
+    public void createAgency(AgencyDTO agence) throws Exception {
+        agencyRepository.save(
+                Agence.builder()
+                        .capital(agence.capital())
+                        .address(agence.address())
+                        .name(agence.name())
+                        .numAgency(agence.numAgency())
+                        .numBank(agence.numBank())
+                        .build());
     }
 
     public long getClientNumber(String numAgency) throws Exception {
@@ -94,20 +91,23 @@ public class AgencyService {
                 RabbitMQConstants.ACCOUNT_KEY, numAgency);
     }
 
-    public DepositResponse sendDepositRequest(DepositRequest request) {
-        return (DepositResponse) rabbitTemplate.convertSendAndReceive(RabbitMQConstants.DEPOSIT_EXCHANGE,
-                RabbitMQConstants.DEPOSIT_KEY, request);
-    }
+    // public DepositResponse sendDepositRequest(DepositRequest request) {
+    // return (DepositResponse)
+    // rabbitTemplate.convertSendAndReceive(RabbitMQConstants.DEPOSIT_EXCHANGE,
+    // RabbitMQConstants.DEPOSIT_KEY, request);
+    // }
 
-    public WithdrawalResponse sendWithDrawalRequest(WithdrawalRequest request) {
-        return (WithdrawalResponse) rabbitTemplate.convertSendAndReceive(RabbitMQConstants.WITHDRAW_EXCHANGE,
-                RabbitMQConstants.WITHDRAW_KEY, request);
-    }
+    // public WithdrawalResponse sendWithDrawalRequest(WithdrawalRequest request) {
+    // return (WithdrawalResponse)
+    // rabbitTemplate.convertSendAndReceive(RabbitMQConstants.WITHDRAW_EXCHANGE,
+    // RabbitMQConstants.WITHDRAW_KEY, request);
+    // }
 
-    public TransferResponse sendTransferRequest(TransferRequestDTO request) {
-        return (TransferResponse) rabbitTemplate.convertSendAndReceive(RabbitMQConstants.TRANSFER_EXCHANGE,
-                RabbitMQConstants.TRANSFER_KEY, request);
-    }
+    // public TransferResponse sendTransferRequest(TransferRequestDTO request) {
+    // return (TransferResponse)
+    // rabbitTemplate.convertSendAndReceive(RabbitMQConstants.TRANSFER_EXCHANGE,
+    // RabbitMQConstants.TRANSFER_KEY, request);
+    // }
 
     public void agencyFallback(Object object, Throwable throwable) {
         System.out.println(

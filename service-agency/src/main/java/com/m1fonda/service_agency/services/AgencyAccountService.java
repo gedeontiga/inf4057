@@ -34,8 +34,8 @@ public class AgencyAccountService {
         return demandes;
     }
 
-    public void validerDemande(DemandeDTO demandeDTO) throws Exception {
-        Demande demande = demandeRepository.findById(demandeDTO.id()).orElseThrow();
+    public void validerDemande(String demandeId) throws Exception {
+        Demande demande = demandeRepository.findById(demandeId).orElseThrow();
         Agence agence = agencyRepository.findByNumAgency(demande.getNumAgency());
         rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE,
                 RabbitMQConstants.ACCOUNT_CREATION_KEY, demande);
@@ -47,8 +47,10 @@ public class AgencyAccountService {
                 RabbitMQConstants.EMAIL_NOTIFICATION_DEMAND_APPROVED_KEY, DemandDTO.demandeFactory(demande));
     }
 
-    public void rejeterDemande(DemandeDTO demande) {
+    public void rejeterDemande(String demandeId) {
+        DemandeDTO demande = DemandeDTO.demandeFactory(demandeRepository.findById(demandeId).orElseThrow());
         rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
                 RabbitMQConstants.EMAIL_NOTIFICATION_DEMAND_REJECTED_KEY, demande);
+        demandeRepository.deleteById(demandeId);
     }
 }

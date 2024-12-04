@@ -19,9 +19,11 @@ public class Demand implements Serializable {
     private String urlRectoCni;
     private String urlVersoCni;
     private String numAgency;
+    private String numBank;
 
     protected Demand(String firstName, String lastName, String email, String password, String status, String cni,
-            Long phoneNumber, Double balance, String urlRectoCni, String urlVersoCni, String numAgency) {
+            Long phoneNumber, Double balance, String urlRectoCni, String urlVersoCni, String numAgency,
+            String numBank) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -33,6 +35,7 @@ public class Demand implements Serializable {
         this.urlRectoCni = urlRectoCni;
         this.urlVersoCni = urlVersoCni;
         this.numAgency = numAgency;
+        this.numBank = numBank;
     }
 
     protected Demand() {

@@ -12,6 +12,7 @@
         "lastname",
         "mongodb",
         "mysql",
+        "nullable",
         "rabbitmq",
         "rnwood",
         "routingkey",

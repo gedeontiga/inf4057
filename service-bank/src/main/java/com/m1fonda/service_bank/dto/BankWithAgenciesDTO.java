@@ -2,7 +2,7 @@ package com.m1fonda.service_bank.dto;
 
 import java.util.Set;
 
-import com.m1fonda.service_bank.model.BankModel;
+import com.m1fonda.service_bank.model.Banque;
 
 import lombok.Data;
 
@@ -18,7 +18,7 @@ public class BankWithAgenciesDTO {
     private String contact;
     private Set<AgencyDTO> agencies;
 
-    public BankWithAgenciesDTO (BankModel bank, Set<AgencyDTO> agencies) {
+    public BankWithAgenciesDTO(Banque bank, Set<AgencyDTO> agencies) {
         this.agencies = agencies;
         this.ownerEmail = bank.getOwnerEmail();
         this.type = bank.getType();
@@ -29,6 +29,7 @@ public class BankWithAgenciesDTO {
         this.bankNumber = bank.getBankNumber();
     }
 
-    public BankWithAgenciesDTO() {}
+    public BankWithAgenciesDTO() {
+    }
 
 }

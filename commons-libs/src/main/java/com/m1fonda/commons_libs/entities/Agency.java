@@ -12,19 +12,16 @@ public class Agency implements Serializable {
     protected String numAgency;
     private String name;
     private double capital;
-    private double depositBankRate;
-    private double withdrawalBankRate;
     private String address;
+    private String numBank;
 
-    protected Agency(String numAgency, String name, double capital, double depositBankRate,
-            double withdrawalBankRate,
-            String address) {
+    protected Agency(String numAgency, String name, double capital, String address,
+            String numBank) {
         this.numAgency = numAgency;
         this.name = name;
         this.capital = capital;
-        this.depositBankRate = depositBankRate;
-        this.withdrawalBankRate = withdrawalBankRate;
         this.address = address;
+        this.numBank = numBank;
     }
 
     protected Agency() {

@@ -19,8 +19,9 @@ public class Demande extends Demand {
 
     @Builder
     public Demande(String firstName, String lastName, String email, String password, String status, String cni,
-            Long phoneNumber, Double balance, String urlRectoCni, String urlVersoCni, String numAgency) {
+            Long phoneNumber, Double balance, String urlRectoCni, String urlVersoCni, String numAgency,
+            String numBank) {
         super(firstName, lastName, email, password, status, cni, phoneNumber, balance, urlRectoCni, urlVersoCni,
-                numAgency);
+                numAgency, numBank);
     }
 }

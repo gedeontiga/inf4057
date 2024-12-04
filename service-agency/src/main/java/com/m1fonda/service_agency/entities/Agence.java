@@ -25,13 +25,10 @@ public class Agence extends Agency {
     @Field("num_agency")
     private String numAgency;
 
-    private String numBank;
-
     @Builder
-    public Agence(String numAgency, String name, double capital, double depositBankRate, double withdrawalBankRate,
+    public Agence(String numAgency, String name, double capital,
             String address, String numBank) {
-        super(numAgency, name, capital, depositBankRate, withdrawalBankRate, address);
-        this.numBank = numBank;
+        super(numAgency, name, capital, address, numBank);
         this.numAgency = numAgency;
     }
 }

@@ -4,6 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.m1fonda.commons_libs.dto.BankResponseDTO;
+import com.m1fonda.commons_libs.dto.BankTransferDTO;
 import com.m1fonda.service_bank.dto.AgencyDTO;
 import com.m1fonda.service_bank.dto.BankDTO;
 import com.m1fonda.service_bank.dto.BankDTOResponse;
@@ -16,9 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
-
-
-
 
 @AllArgsConstructor
 @RestController
@@ -36,7 +35,7 @@ public class BankController {
     public ResponseEntity<BankWithAgenciesDTO> getBank(@RequestParam String param) {
         return ResponseEntity.ok(bankService.getBank(param));
     }
-    
+
     @PutMapping("/update")
     public ResponseEntity<AgencyDTO> updateAgency(@RequestBody AgencyDTO entity) {
         return ResponseEntity.ok(bankService.updateAgency(entity));
@@ -48,8 +47,13 @@ public class BankController {
     }
 
     @PostMapping("/agency/remove")
-    public boolean removeAgency(@RequestBody AgencyDTO agency) {
-        return bankService.removeAgency(agency);
+    public void removeAgency(@RequestBody AgencyDTO agency) {
+        bankService.removeAgency(agency);
     }
-    
+
+    @PostMapping("/check-bank/account")
+    public BankResponseDTO checkTransferTransaction(@RequestBody BankTransferDTO request) {
+        return bankService.checkBankAccountAndApplyFees(request);
+    }
+
 }

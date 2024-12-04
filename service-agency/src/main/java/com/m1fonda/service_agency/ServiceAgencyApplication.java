@@ -32,8 +32,6 @@ public class ServiceAgencyApplication {
 							Agence.builder()
 									.capital(1000000000)
 									.numAgency("ATG-" + numAgency)
-									.depositBankRate(0.01)
-									.withdrawalBankRate(0.05)
 									.address(address)
 									.name("ATG Agence")
 									.numBank("ATG-001")
