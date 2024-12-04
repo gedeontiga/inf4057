@@ -36,9 +36,16 @@ public class TransferController {
         @RequestParam(required = false) String accountId,
         @RequestParam(required = false) String agencyId
     ) {
-
-        List<TransferResponse> transfers = transferService.filterTransfers(accountId, agencyId);
-        return ResponseEntity.ok(transfers);
+        if (accountId != null || agencyId != null) {
+            List<TransferResponse> transfers = transferService.filterTransfers(accountId, agencyId);
+            return ResponseEntity.ok(transfers);
+        }
+        return ResponseEntity.ok(transferService.getAll());
     }
 
+    @PostMapping("/deleteall")
+    public ResponseEntity<Object> remove() {
+        transferService.deleteAll();
+        return ResponseEntity.ok(null);
+    }
 }

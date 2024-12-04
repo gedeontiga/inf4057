@@ -9,6 +9,7 @@ import com.m1fonda.commons_libs.config.*;
 import com.m1fonda.service_bank.dto.AgencyDTO;
 import com.m1fonda.service_bank.dto.BankDTO;
 import com.m1fonda.service_bank.dto.BankDTOResponse;
+import com.m1fonda.service_bank.dto.FeesDTO;
 import com.m1fonda.service_bank.model.AgencyModel;
 import com.m1fonda.service_bank.model.BankModel;
 import com.m1fonda.service_bank.repository.AgencyRepository;
@@ -32,6 +33,8 @@ public class BankService {
                     .name(bank.name())
                     .type(bank.type())
                     .logo(bank.logo())
+                    .withdrawFee(bank.withdrawFee())
+                    .transferFee(bank.transferFee())
                     .contact(bank.contact())
                     .build();
         BankModel b = bankRepository.save(bankModel);
@@ -44,10 +47,18 @@ public class BankService {
     }
 
     public BankDTOResponse addAgency(AgencyDTO agency) {
-        AgencyModel agencyModel = new AgencyModel(getId(), agency.name(), agency.capital(), 0, 0, agency.address(), agency.numBank());
+        AgencyModel agencyModel = AgencyModel.builder()
+                                            .address(agency.address())
+                                            .capital(agency.capital())
+                                            .name(agency.name())
+                                            .numAgency(getId())
+                                            .numBank(agency.numBank())
+                                            .build();
+        agencyRepository.save(agencyModel);
         BankModel bankModel = bankRepository.findByBankNumber(agency.numBank()).orElse(null);
         bankModel.addAgency(agencyModel);
         bankRepository.save(bankModel);
+
         rabbitTemplate.convertAndSend(RabbitMQConstants.AGENCY_EXCHANGE, RabbitMQConstants.AGENCY_CREATION_KEY, agency);
 
         return BankDTOResponse.fromBank(bankModel);
@@ -58,8 +69,6 @@ public class BankService {
         AgencyModel ag = agencyRepository.findByNumAgency(agency.numAgency()).orElse(null);
         if (agency.address() != null) ag.setAddress(agency.address());
         if (agency.capital() != 0) ag.setCapital(agency.capital());
-        if (agency.depositBankRate() != 0) ag.setDepositBankRate(agency.depositBankRate());
-        if (agency.withdrawalBankRate() != 0) ag.setWithdrawalBankRate(agency.withdrawalBankRate());
         if (agency.name() != null) ag.setName(agency.name());
         agencyRepository.save(ag);
         rabbitTemplate.convertAndSend(RabbitMQConstants.AGENCY_EXCHANGE, RabbitMQConstants.AGENCY_UPDATE_KEY, agency);
@@ -77,6 +86,16 @@ public class BankService {
         return uuid.substring(0, 8);
     }
 
+    public FeesDTO getFees(String agencyId){
+        AgencyModel agency = agencyRepository.findByNumAgency(agencyId).orElse(null);
+        BankModel bank = bankRepository.findByBankNumber(agency.getNumBank()).orElse(null);
+        return FeesDTO.fromBank(bank);
+    }
+
+    public void deleteAll(){
+        bankRepository.deleteAll();
+        agencyRepository.deleteAll();
+    }
 
 
 

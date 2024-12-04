@@ -1,5 +1,6 @@
 package com.m1fonda.service_withdrawal.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,6 +42,7 @@ public class WithdrawalService {
                         .accountNum(request.accountNum())
                         .agencyNum(request.agencyNum())
                         .fees(request.fees())
+                        .createdAt(new Date())
                         .build();
 
         withdrawalRepository.save(withdrawal);
@@ -51,6 +53,15 @@ public class WithdrawalService {
 
         return WithdrawalResponse.fromWithdrawal(withdrawal);
     }
+
+    public List<WithdrawalResponse> getAll(){
+        return WithdrawalResponse.fromList(withdrawalRepository.findAll());
+    }
+
+    public void deleteAll(){
+        withdrawalRepository.deleteAll();
+    }
+
 
     public List<WithdrawalResponse> filterWithdrawals(String accountId, String agencyId) {
         if (accountId != null && agencyId != null) return WithdrawalResponse.fromList(withdrawalRepository.findByAgencyNumAndAccountNum(agencyId, accountId));

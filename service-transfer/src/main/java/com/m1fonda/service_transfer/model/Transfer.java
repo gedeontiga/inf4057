@@ -37,5 +37,5 @@ public class Transfer {
     private double fees;
 
     @CreatedDate
-    private final Date createdAt = new Date();
+    private Date createdAt ;
 }

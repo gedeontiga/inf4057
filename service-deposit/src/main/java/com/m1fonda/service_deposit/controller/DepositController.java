@@ -37,12 +37,17 @@ public class DepositController {
             List<DepositResponse> deposits = depositService.filterDeposits(accountId, agencyId);
             return ResponseEntity.ok(deposits);
         }
-        return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.ok(depositService.getAll());
     }
 
     @PostMapping("/")
     public ResponseEntity<DepositResponse> deposit(@RequestBody DepositRequest depositRequest) {
         return ResponseEntity.ok(depositService.newDeposit(depositRequest));
     }
-
+    @PostMapping("/deleteall")
+    public ResponseEntity<Object> remove() {
+        depositService.deleteAll();
+        return ResponseEntity.ok(null);
+    }
+ 
 }

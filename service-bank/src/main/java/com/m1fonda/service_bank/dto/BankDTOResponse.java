@@ -15,6 +15,8 @@ public record BankDTOResponse(
                 String contact,
                 String bankNumber,
                 Set<AgencyModel> agencies,
+                double withdrawFee,
+                double transferFee,
                 Date createdAt) {
 
         public static BankDTOResponse fromBank(BankModel b){
@@ -27,6 +29,8 @@ public record BankDTOResponse(
                 b.getContact(),
                 b.getBankNumber(),
                 b.getAgencies(),
+                b.getWithdrawFee(),
+                b.getTransferFee(),
                 b.getDateCreation()
             );
         }

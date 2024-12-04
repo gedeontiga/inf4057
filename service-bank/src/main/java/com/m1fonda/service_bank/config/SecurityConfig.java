@@ -14,8 +14,8 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/bank/**") .hasRole("ADMIN")
-                        .anyRequest().authenticated());
+                        .requestMatchers("/api/bank/**") .permitAll()
+                        .anyRequest().permitAll());
         return http.build();
     }
 }

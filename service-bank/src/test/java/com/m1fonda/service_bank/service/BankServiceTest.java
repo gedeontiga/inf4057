@@ -49,8 +49,10 @@ class BankServiceTest {
             "logo.png", 
             "owner@test.com", 
             "Commercial", 
-            1000000.0, 
-            "1234567890"
+            1000000.0,
+            "1234567890",
+            0.5,
+            0.3
         );
 
         bankModel = BankModel.builder()
@@ -100,8 +102,6 @@ class BankServiceTest {
             "AGN001", 
             "Main Branch", 
             500000.0, 
-            0.05, 
-            0.03, 
             "123 Main St", 
             "12345"
         );
@@ -125,22 +125,14 @@ class BankServiceTest {
     @Test
     void testUpdateAgency() {
         // Arrange
-        AgencyModel existingAgency = new AgencyModel(
-            "AGN001", 
-            "Old Branch", 
-            100000.0, 
-            0.02, 
-            0.01, 
-            "Old Address", 
-            "12345"
-        );
+
+        AgencyModel existingAgency = new AgencyModel(null, "12345", "AGN001", "Old Branch", 100000, "Old Address");
+
 
         AgencyDTO updateDTO = new AgencyDTO(
             "AGN001", 
             "New Branch", 
-            200000.0, 
-            0.0, 
-            0.0, 
+            200000.0,
             "New Address", 
             "12345"
         );

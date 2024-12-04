@@ -1,5 +1,6 @@
 package com.m1fonda.service_deposit.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,15 +33,25 @@ public class DepositService {
 
         Deposit deposit = Deposit.builder()
                             .amount(request.amount())
+                            .agencyNum(request.agencyNum())
                             .transactionNum(transactionID)
                             .accountNum(request.accountNum())
+                            .createdAt(new Date())
                             .build();
 
         depositRepository.save(deposit);
 
         rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_UPDATE_KEY, request);
 
-        return  new DepositResponse(request.accountNum(), deposit.getTransactionNum(), deposit.getAmount(),  deposit.getCreatedAt());
+        return  new DepositResponse(request.accountNum(), request.agencyNum(), deposit.getTransactionNum(), deposit.getAmount(),  deposit.getCreatedAt());
+    }
+
+    public List<DepositResponse> getAll(){
+        return DepositResponse.fromList(depositRepository.findAll());
+    }
+
+    public void deleteAll(){
+        depositRepository.deleteAll();
     }
 
     public String getId(){

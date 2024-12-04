@@ -123,7 +123,7 @@ class TransferServiceTest {
                 .build()
         );
 
-        when(transferRepository.findBySenderAccountNumOrReceiverAccountNumAndAgencyNum("AGN001", "ACC_SENDER"))
+        when(transferRepository.findBySenderAccountNumOrReceiverAccountNumAndAgencyNum("AGN001", "AGN001", "ACC_SENDER"))
             .thenReturn(mockTransfers);
 
         // Act
@@ -149,7 +149,7 @@ class TransferServiceTest {
                 .build()
         );
 
-        when(transferRepository.findBySenderAccountNumOrReceiverAccountNum("ACC_SENDER"))
+        when(transferRepository.findBySenderAccountNumOrReceiverAccountNum("ACC_SENDER", "ACC_SENDER"))
             .thenReturn(mockTransfers);
 
         // Act

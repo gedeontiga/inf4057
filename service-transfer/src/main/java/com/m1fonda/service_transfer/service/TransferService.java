@@ -39,6 +39,8 @@ public class TransferService {
                                     .receiverAccountNum(request.receiverAccountNum())
                                     .amount(request.amount())
                                     .fees(request.fees())
+                                    .agencyNum(request.agencyNum())
+                                    .createdAt(new Date())
                                     .build();
 
         transferRepository.save(transfer);
@@ -51,9 +53,17 @@ public class TransferService {
     }
 
     public List<TransferResponse> filterTransfers(String accountId, String agencyId) {
-        if (accountId != null && agencyId != null) return TransferResponse.fromList(transferRepository.findBySenderAccountNumOrReceiverAccountNumAndAgencyNum(accountId, agencyId));
+        if (accountId != null && agencyId != null) return TransferResponse.fromList(transferRepository.findBySenderAccountNumOrReceiverAccountNumAndAgencyNum(accountId, accountId, agencyId));
         if (agencyId != null) return TransferResponse.fromList(transferRepository.findByAgencyNum(agencyId));
-        return TransferResponse.fromList(transferRepository.findBySenderAccountNumOrReceiverAccountNum(accountId));
+        return TransferResponse.fromList(transferRepository.findBySenderAccountNumOrReceiverAccountNum(accountId, accountId));
+    }
+
+    public List<TransferResponse> getAll(){
+        return TransferResponse.fromList(transferRepository.findAll());
+    }
+
+    public void deleteAll(){
+        transferRepository.deleteAll();
     }
 
     public String getId(){

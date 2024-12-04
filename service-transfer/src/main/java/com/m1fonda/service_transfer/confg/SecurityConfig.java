@@ -14,8 +14,8 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/transfer/**").authenticated()
-                        .anyRequest().authenticated());
+                        .requestMatchers("/api/transfer/**").permitAll()
+                        .anyRequest().permitAll());
         return http.build();
     }
 }

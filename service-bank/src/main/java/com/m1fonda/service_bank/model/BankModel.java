@@ -30,16 +30,21 @@ public class BankModel extends Bank {
     private String ownerEmail;
 
     @CreatedDate
-    private final Date dateCreation = new Date();
+    private Date dateCreation = new Date();
+
+    private double withdrawFee;
+    private double transferFee;
 
     @DocumentReference
     private Set<AgencyModel> agencies;
 
     @Builder
-    public BankModel(String bankNumber,  String name, String logo, String ownerEmail, String type, Double capital, String contact) {
+    public BankModel(String bankNumber,  String name, String logo, String ownerEmail, String type, Double capital, String contact, double withdrawFee, double transferFee) {
         super(bankNumber, name, logo, type, capital, contact);
         this.ownerEmail = ownerEmail;
         this.agencies = new HashSet<>();
+        this.transferFee = transferFee;
+        this.withdrawFee = withdrawFee;
     }
 
     public void addAgency(AgencyModel agencyModel) {
@@ -49,4 +54,5 @@ public class BankModel extends Bank {
     public void removeAgency(AgencyModel agencyModel) {
         this.agencies.remove(agencyModel);
     }
+
 }

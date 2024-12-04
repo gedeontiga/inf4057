@@ -6,7 +6,9 @@ public record BankDTO(
                 String ownerEmail,
                 String type,
                 double capital,
-                String contact) {
+                String contact,
+                double withdrawFee,
+                double transferFee) {
 
 
 }

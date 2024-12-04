@@ -26,12 +26,12 @@ public class AuthFilter implements GatewayFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String token = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        String path = exchange.getRequest().getPath().value();
+        // String path = exchange.getRequest().getPath().value();
 
-        if (token == null || !token.startsWith("Bearer ")) {
-            log.error("No valid authorization token found for path: {}", path);
-            return unauthorized(exchange);
-        }
+        // if (token == null || !token.startsWith("Bearer ")) {
+        //     log.error("No valid authorization token found for path: {}", path);
+        //     return unauthorized(exchange);
+        // }
 
         return webClientBuilder.build()
                 .post()

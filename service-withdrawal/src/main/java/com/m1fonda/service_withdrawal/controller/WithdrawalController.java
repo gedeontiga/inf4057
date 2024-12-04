@@ -40,7 +40,13 @@ public class WithdrawalController {
             List<WithdrawalResponse> withdrawals = withdrawalService.filterWithdrawals(accountId, agencyId);
             return ResponseEntity.ok(withdrawals);
         }
-        return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.ok(withdrawalService.getAll());
+    }
+
+    @PostMapping("/deleteall")
+    public ResponseEntity<Object> remove() {
+        withdrawalService.deleteAll();
+        return ResponseEntity.ok(null);
     }
 
 }

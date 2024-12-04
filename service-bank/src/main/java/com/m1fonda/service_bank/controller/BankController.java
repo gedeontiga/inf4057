@@ -7,15 +7,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.m1fonda.service_bank.dto.AgencyDTO;
 import com.m1fonda.service_bank.dto.BankDTO;
 import com.m1fonda.service_bank.dto.BankDTOResponse;
+import com.m1fonda.service_bank.dto.FeesDTO;
 import com.m1fonda.service_bank.service.BankService;
 
 import lombok.AllArgsConstructor;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -32,7 +34,7 @@ public class BankController {
     }
 
     @GetMapping("/get/{param}")
-    public ResponseEntity<BankDTOResponse> getBank(@RequestParam String param) {
+    public ResponseEntity<BankDTOResponse> getBank(@PathVariable String param) {
         return ResponseEntity.ok(bankService.getBank(param));
     }
     
@@ -47,8 +49,20 @@ public class BankController {
     }
 
     @PostMapping("/agency/remove/{agencyNum}")
-    public void removeAgency(@RequestParam String agencyNum) {
+    public void removeAgency(@PathVariable String agencyNum) {
         bankService.removeAgency(agencyNum);
     }
+
+    @GetMapping("/fees/{agencyNum}")
+    public ResponseEntity<FeesDTO> getMethodName(@PathVariable String agencyNum) {
+        return ResponseEntity.ok(bankService.getFees(agencyNum));
+    }
+    
+    @PostMapping("/deleteall")
+    public ResponseEntity<Object> deleteAll() {
+        bankService.deleteAll();
+        return ResponseEntity.ok(null);
+    }
+    
     
 }
