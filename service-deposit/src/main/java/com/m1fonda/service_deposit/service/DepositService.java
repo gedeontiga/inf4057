@@ -32,10 +32,10 @@ public class DepositService {
         String transactionID = getId();
 
         Deposit deposit = Deposit.builder()
-                            .amount(request.amount())
-                            .agencyNum(request.agencyNum())
+                            .amount(request.balance())
+                            .agencyNum(request.numAgency())
                             .transactionNum(transactionID)
-                            .accountNum(request.accountNum())
+                            .accountNum(request.numAccount())
                             .createdAt(new Date())
                             .build();
 
@@ -43,7 +43,7 @@ public class DepositService {
 
         rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_UPDATE_KEY, request);
 
-        return  new DepositResponse(request.accountNum(), request.agencyNum(), deposit.getTransactionNum(), deposit.getAmount(),  deposit.getCreatedAt());
+        return  new DepositResponse(request.numAccount(), request.numAgency(), deposit.getTransactionNum(), deposit.getAmount(),  deposit.getCreatedAt());
     }
 
     public List<DepositResponse> getAll(){

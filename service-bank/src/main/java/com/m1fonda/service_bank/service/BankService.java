@@ -1,5 +1,7 @@
 package com.m1fonda.service_bank.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -95,6 +97,15 @@ public class BankService {
     public void deleteAll(){
         bankRepository.deleteAll();
         agencyRepository.deleteAll();
+    }
+
+    public List<BankDTOResponse> getAll(){
+        List<BankModel> banks = bankRepository.findAll();
+        List<BankDTOResponse> lists = new ArrayList<>();
+        for (BankModel b: banks){
+            lists.add(BankDTOResponse.fromBank(b));
+        }
+        return lists;
     }
 
 

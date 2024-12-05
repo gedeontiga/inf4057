@@ -1,5 +1,7 @@
 package com.m1fonda.service_bank.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/bank")
@@ -32,6 +35,12 @@ public class BankController {
     public ResponseEntity<BankDTOResponse> newBank(@RequestBody BankDTO bank) {
         return ResponseEntity.ok(bankService.createBank(bank));
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<BankDTOResponse>> getAll() {
+        return ResponseEntity.ok(bankService.getAll());
+    }
+    
 
     @GetMapping("/get/{param}")
     public ResponseEntity<BankDTOResponse> getBank(@PathVariable String param) {

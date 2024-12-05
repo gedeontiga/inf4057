@@ -44,8 +44,8 @@ class DepositServiceTest {
         depositRequest = new DepositRequest("ACC123", "AGN001", 1000.0);
         deposit = Deposit.builder()
             .transactionNum("TRANS123")
-            .accountNum(depositRequest.accountNum())
-            .amount(depositRequest.amount())
+            .accountNum(depositRequest.numAccount())
+            .amount(depositRequest.balance())
             .build();
     }
 
@@ -59,8 +59,8 @@ class DepositServiceTest {
 
         // Assert
         assertNotNull(response);
-        assertEquals(depositRequest.accountNum(), response.accountNum());
-        assertEquals(depositRequest.amount(), response.amount());
+        assertEquals(depositRequest.numAccount(), response.accountNum());
+        assertEquals(depositRequest.balance(), response.amount());
         assertNotNull(response.transaction());
 
         // Verify interactions
