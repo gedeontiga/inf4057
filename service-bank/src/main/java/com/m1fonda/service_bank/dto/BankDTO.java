@@ -8,7 +8,8 @@ public record BankDTO(
                 double capital,
                 String contact,
                 double withdrawFee,
-                double transferFee) {
+                double transferFee,
+                double externalFee) {
 
 
 }

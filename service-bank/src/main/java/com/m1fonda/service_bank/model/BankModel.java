@@ -34,17 +34,19 @@ public class BankModel extends Bank {
 
     private double withdrawFee;
     private double transferFee;
+    private double externalFee;
 
     @DocumentReference
     private Set<AgencyModel> agencies;
 
     @Builder
-    public BankModel(String bankNumber,  String name, String logo, String ownerEmail, String type, Double capital, String contact, double withdrawFee, double transferFee) {
+    public BankModel(String bankNumber,  String name, String logo, String ownerEmail, String type, Double capital, String contact, double withdrawFee, double transferFee, double externalFee) {
         super(bankNumber, name, logo, type, capital, contact);
         this.ownerEmail = ownerEmail;
         this.agencies = new HashSet<>();
         this.transferFee = transferFee;
         this.withdrawFee = withdrawFee;
+        this.externalFee = externalFee;
     }
 
     public void addAgency(AgencyModel agencyModel) {

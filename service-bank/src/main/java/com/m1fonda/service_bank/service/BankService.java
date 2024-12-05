@@ -37,6 +37,7 @@ public class BankService {
                     .logo(bank.logo())
                     .withdrawFee(bank.withdrawFee())
                     .transferFee(bank.transferFee())
+                    .externalFee(bank.externalFee())
                     .contact(bank.contact())
                     .build();
         BankModel b = bankRepository.save(bankModel);

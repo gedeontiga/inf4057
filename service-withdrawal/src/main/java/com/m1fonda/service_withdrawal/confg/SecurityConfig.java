@@ -14,8 +14,8 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/withdrawal/**").permitAll()
-                        .anyRequest().permitAll());
+                        .requestMatchers("/api/withdrawal/**").authenticated()
+                        .anyRequest().authenticated());
         return http.build();
     }
 }

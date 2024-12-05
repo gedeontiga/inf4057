@@ -52,7 +52,8 @@ class BankServiceTest {
             1000000.0,
             "1234567890",
             0.5,
-            0.3
+            0.3,
+            0.5
         );
 
         bankModel = BankModel.builder()

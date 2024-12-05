@@ -35,8 +35,8 @@ public class MessageNotificationService {
                                     .message(request.message())
                                     .build();
 
-        template.convertAndSendToUser(notification.getUserEmail(), "/topic/notifications", notification);
-        template.convertAndSendToUser(notification.getAgencyNum(), "/topic/notifications", notification);
+        template.convertAndSendToUser(notification.getUserEmail(), "/topic/transactions", notification);
+        template.convertAndSendToUser(notification.getAgencyNum(), "/topic/transactions", notification);
 
         notificationRepository.save(notification);
     }
