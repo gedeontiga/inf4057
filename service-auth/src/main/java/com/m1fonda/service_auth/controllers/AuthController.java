@@ -29,7 +29,6 @@ import org.springframework.http.ResponseEntity;
 @AllArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
-
     private final RegisterService registerService;
     private LoginService loginService;
     private final JwtService jwtService;
@@ -39,18 +38,14 @@ public class AuthController {
     public ResponseEntity<Map<String, String>> validateToken(
             @RequestHeader(org.springframework.http.HttpHeaders.AUTHORIZATION) String bearerToken) {
         String token = bearerToken.substring(7);
-
         if (jwtService.isTokenExpired(token)) {
             throw new RuntimeException("Token expired");
         }
-
         String email = jwtService.getEmailFromToken(token);
         Users user = userService.getUserByEmail(email);
-
         Map<String, String> response = new HashMap<>();
         response.put("email", user.getEmail());
         response.put("roles", user.getRole().getType().toString());
-
         return ResponseEntity.ok(response);
     }
 

@@ -14,6 +14,7 @@ import com.m1fonda.service_agency.entities.Demande;
 import com.m1fonda.service_agency.repositories.AgencyRepository;
 import com.m1fonda.service_agency.repositories.DemandeRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -36,6 +37,7 @@ public class AgencyAccountService {
         demand.setUrlVersoCni(demande.getUrlVersoCni());
         demand.setNumAgency(demande.getNumAgency());
         demand.setPassword(demande.getPassword());
+        agencyRepository.findByNumAgency(demande.getNumAgency());
         demandeRepository.save(demand);
     }
 
@@ -46,8 +48,9 @@ public class AgencyAccountService {
     }
 
     public void validerDemande(String demandeId) throws Exception {
-        Demande demande = demandeRepository.findById(demandeId).orElseThrow();
-        Agence agence = agencyRepository.findByNumAgency(demande.getNumAgency());
+        Demande demande = demandeRepository.findById(demandeId)
+                .orElseThrow(() -> new EntityNotFoundException("Demande with ID " + demandeId + " not found."));
+        Agence agence = agencyRepository.findByNumAgency(demande.getNumAgency()).orElseThrow();
         rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE,
                 RabbitMQConstants.ACCOUNT_CREATION_KEY, demande);
         demande.setStatus("APPROVED");

@@ -23,6 +23,7 @@
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/AccountResponseTransferDTO.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/AccountDTO.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/AccountRequestTransferDTO.java
+/home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/NotificationRequest.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/BankTransferDTO.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/WithdrawalRequest.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/entities/Demand.java

@@ -56,13 +56,6 @@ public final class RabbitMQConstants {
     public static final String EMAIL_WITHDRAWAL_NOTIFICATION_QUEUE = "notification.email.queue";
     public static final String EMAIL_WITHDRAWAL_NOTIFICATION_KEY = "notification.email.withdrawal.key";
 
-    public static final String MESSAGE_DEPOSIT_NOTIFICATION_QUEUE = "message.deposit.email.queue";
-    public static final String MESSAGE_DEPOSIT_NOTIFICATION_KEY = "message.email.deposit.key";
-    public static final String MESSAGE_WITHDRAWAL_NOTIFICATION_QUEUE = "message.email.withdrawal.queue";
-    public static final String MESSAGE_WITHDRAWAL_NOTIFICATION_KEY = "message.email.withdrawal.key";
-    public static final String MESSAGE_TRANSFER_NOTIFICATION_QUEUE = "message.email.transfer.queue";
-    public static final String MESSAGE_TRANSFER_NOTIFICATION_KEY = "message.email.transfer.key";
-
     // Deposit, Withdrawal and Transfer queues & routing keys
 
     public static final String DEPOSIT_QUEUE = "depositQueue";

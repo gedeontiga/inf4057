@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.ActivationCodeRequest;
 import com.m1fonda.commons_libs.dto.DemandDTO;
-import com.m1fonda.service_notif.dto.NotificationRequest;
+import com.m1fonda.commons_libs.dto.NotificationRequest;
 import com.m1fonda.service_notif.entities.Notification;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;

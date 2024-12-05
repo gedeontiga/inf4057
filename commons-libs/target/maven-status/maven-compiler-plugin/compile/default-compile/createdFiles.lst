@@ -19,6 +19,7 @@ com/m1fonda/commons_libs/dto/AgencyUpdateTransaction.class
 com/m1fonda/commons_libs/entities/Status.class
 com/m1fonda/commons_libs/dto/ActivationCodeRequest.class
 com/m1fonda/commons_libs/entities/Announce.class
+com/m1fonda/commons_libs/dto/NotificationRequest.class
 com/m1fonda/commons_libs/dto/TransferResponse.class
 com/m1fonda/commons_libs/entities/Bank.class
 com/m1fonda/commons_libs/dto/DemandDTO.class

@@ -12,6 +12,7 @@ import org.springframework.cglib.core.internal.Function;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.m1fonda.service_auth.customexceptions.TokenExpiredException;
 import com.m1fonda.service_auth.entities.Jwt;
 import com.m1fonda.service_auth.entities.Users;
 import com.m1fonda.service_auth.repositories.JwtRepository;
@@ -37,7 +38,8 @@ public class JwtService {
     private final String BEARER = "bearer";
 
     public Map<String, String> generate(final String email) {
-        final Users user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        final Users user = userRepository.findByEmailAndEnabledIsTrue(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         return this.generateJwt(user);
     }
 
@@ -49,9 +51,13 @@ public class JwtService {
         return jwtRepository.findByToken(token).orElseThrow(() -> new RuntimeException(TOKEN_NOT_FOUND));
     }
 
-    public Boolean isTokenExpired(final String token) {
+    public boolean isTokenExpired(String token) {
         final Date expiration = getClaim(token, Claims::getExpiration);
-        return expiration != null && expiration.before(new Date());
+
+        if (expiration != null && expiration.before(new Date())) {
+            throw new TokenExpiredException("Token has expired");
+        }
+        return false;
     }
 
     @Scheduled(cron = "@daily")

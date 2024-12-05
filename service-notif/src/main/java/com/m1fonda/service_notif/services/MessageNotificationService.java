@@ -8,7 +8,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
-import com.m1fonda.service_notif.dto.NotificationRequest;
+import com.m1fonda.commons_libs.dto.NotificationRequest;
 import com.m1fonda.service_notif.entities.Notification;
 import com.m1fonda.service_notif.repositories.NotificationRepository;
 
@@ -29,7 +29,6 @@ public class MessageNotificationService {
     public void newTransaction(NotificationRequest request) {
 
         Notification notification = Notification.builder()
-                .notificationId(request.notificationId())
                 .agencyNum(request.agencyNum())
                 .userEmail(request.userEmail())
                 .message(request.message())

@@ -2,6 +2,7 @@ package com.m1fonda.service_auth.services;
 
 import org.springframework.stereotype.Service;
 
+import com.m1fonda.service_auth.customexceptions.UserNotFoundException;
 import com.m1fonda.service_auth.entities.Users;
 import com.m1fonda.service_auth.repositories.UserRepository;
 
@@ -15,6 +16,6 @@ public class UserService {
 
     public Users getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found."));
     }
 }

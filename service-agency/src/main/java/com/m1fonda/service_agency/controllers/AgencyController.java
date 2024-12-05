@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @AllArgsConstructor
 @RequestMapping("/api/agency")
 public class AgencyController {
-
     private final AgencyService agencyService;
     private final AgencyAccountService accountService;
 

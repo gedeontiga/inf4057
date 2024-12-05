@@ -20,7 +20,7 @@ public class SecurityConfig {
                                 .csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(
                                                 authorize -> authorize
-                                                                .requestMatchers("/api/demande").permitAll()
+                                                                .requestMatchers("/api/demande/**").permitAll()
                                                                 .requestMatchers("/api/agency/**")
                                                                 .hasAnyRole("MANAGER", "ADMIN"))
                                 .sessionManagement(

@@ -3,9 +3,11 @@
     "java.configuration.updateBuildConfiguration": "automatic",
     "cSpell.words": [
         "configserver",
+        "customexceptions",
         "datname",
         "dblink",
         "dbname",
+        "exceptionshandler",
         "firstname",
         "gedeon",
         "INITDB",

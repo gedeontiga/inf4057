@@ -15,6 +15,7 @@ import com.m1fonda.service_agency.entities.Agence;
 import com.m1fonda.service_agency.repositories.AgencyRepository;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -30,14 +31,16 @@ public class AgencyService {
     private final RabbitTemplate rabbitTemplate;
     private AgencyRepository agencyRepository;
 
-    public AgencyDTO getAgency(String numAgency) throws Exception {
-        return AgencyDTO.fromAgency(agencyRepository.findByNumAgency(numAgency));
+    public AgencyDTO getAgency(String numAgency) {
+        return agencyRepository.findByNumAgency(numAgency)
+                .map(AgencyDTO::fromAgency)
+                .orElseThrow(() -> new EntityNotFoundException("Agency with number " + numAgency + " not found."));
     }
 
     @CircuitBreaker(name = AGENCY_UPDATE_SERVICE, fallbackMethod = AGENCY_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.AGENCY_UPDATE_QUEUE)
     public void updateAgencyInfo(AgencyDTO agency) {
-        Agence agence = agencyRepository.findByNumAgency(agency.numAgency());
+        Agence agence = agencyRepository.findByNumAgency(agency.numAgency()).orElseThrow();
         agence.setName(Optional.ofNullable(agency.name()).orElse(agence.getName()));
         agence.setCapital(Optional.ofNullable(agency.capital()).orElse(agence.getCapital()));
         agence.setAddress(Optional.ofNullable(agency.address()).orElse(agence.getAddress()));
@@ -49,8 +52,8 @@ public class AgencyService {
      */
     @CircuitBreaker(name = AGENCY_TRANSACTION_SERVICE, fallbackMethod = AGENCY_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.AGENCY_QUEUE)
-    public void updateCapital(AgencyUpdateTransaction transaction) throws Exception {
-        Agence agence = agencyRepository.findByNumAgency(transaction.numAgency());
+    public void updateCapital(AgencyUpdateTransaction transaction) {
+        Agence agence = agencyRepository.findByNumAgency(transaction.numAgency()).orElseThrow();
         double amount = transaction.amountTransaction();
         if (agence.getCapital() < amount * 50) {
             amount = (double) rabbitTemplate.convertSendAndReceive(RabbitMQConstants.BANK_EXCHANGE,
@@ -90,24 +93,6 @@ public class AgencyService {
         return (long) rabbitTemplate.convertSendAndReceive(RabbitMQConstants.ACCOUNT_EXCHANGE,
                 RabbitMQConstants.ACCOUNT_KEY, numAgency);
     }
-
-    // public DepositResponse sendDepositRequest(DepositRequest request) {
-    // return (DepositResponse)
-    // rabbitTemplate.convertSendAndReceive(RabbitMQConstants.DEPOSIT_EXCHANGE,
-    // RabbitMQConstants.DEPOSIT_KEY, request);
-    // }
-
-    // public WithdrawalResponse sendWithDrawalRequest(WithdrawalRequest request) {
-    // return (WithdrawalResponse)
-    // rabbitTemplate.convertSendAndReceive(RabbitMQConstants.WITHDRAW_EXCHANGE,
-    // RabbitMQConstants.WITHDRAW_KEY, request);
-    // }
-
-    // public TransferResponse sendTransferRequest(TransferRequestDTO request) {
-    // return (TransferResponse)
-    // rabbitTemplate.convertSendAndReceive(RabbitMQConstants.TRANSFER_EXCHANGE,
-    // RabbitMQConstants.TRANSFER_KEY, request);
-    // }
 
     public void agencyFallback(Object object, Throwable throwable) {
         System.out.println(

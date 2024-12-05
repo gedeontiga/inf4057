@@ -32,21 +32,6 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Queue messageDepositQueue() {
-        return new Queue(RabbitMQConstants.MESSAGE_DEPOSIT_NOTIFICATION_QUEUE);
-    }
-
-    @Bean
-    Queue messageWithdrawalQueue() {
-        return new Queue(RabbitMQConstants.MESSAGE_WITHDRAWAL_NOTIFICATION_QUEUE);
-    }
-
-    @Bean
-    Queue messageTransferQueue() {
-        return new Queue(RabbitMQConstants.MESSAGE_TRANSFER_NOTIFICATION_QUEUE);
-    }
-
-    @Bean
     TopicExchange notificationExchange() {
         return new TopicExchange(RabbitMQConstants.NOTIFICATION_EXCHANGE);
     }
@@ -73,24 +58,6 @@ public class RabbitMQConfig {
     Binding bindingTransaction() {
         return BindingBuilder.bind(transactionQueue()).to(notificationExchange())
                 .with(RabbitMQConstants.NOTIFICATION_TRANSACTION_KEY);
-    }
-
-    @Bean
-    Binding bindingMessageDeposit() {
-        return BindingBuilder.bind(messageDepositQueue()).to(notificationExchange())
-                .with(RabbitMQConstants.MESSAGE_DEPOSIT_NOTIFICATION_KEY);
-    }
-
-    @Bean
-    Binding bindingMessageWithdrawal() {
-        return BindingBuilder.bind(messageWithdrawalQueue()).to(notificationExchange())
-                .with(RabbitMQConstants.MESSAGE_WITHDRAWAL_NOTIFICATION_KEY);
-    }
-
-    @Bean
-    Binding bindingMessageTransfer() {
-        return BindingBuilder.bind(messageTransferQueue()).to(notificationExchange())
-                .with(RabbitMQConstants.MESSAGE_TRANSFER_NOTIFICATION_KEY);
     }
 
     @Bean

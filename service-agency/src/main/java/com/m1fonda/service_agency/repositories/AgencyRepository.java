@@ -12,7 +12,7 @@ import com.m1fonda.service_agency.entities.Agence;
 public interface AgencyRepository extends MongoRepository<Agence, String> {
     Optional<Agence> findById(Long id);
 
-    Agence findByNumAgency(String numAgency);
+    Optional<Agence> findByNumAgency(String numAgency);
 
     void deleteByNumAgency(String numAgency);
 

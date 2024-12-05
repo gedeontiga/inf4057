@@ -11,5 +11,7 @@ import com.m1fonda.service_auth.entities.Users;
 @Repository
 // @RepositoryRestResource
 public interface UserRepository extends JpaRepository<Users, Long> {
-    public Optional<Users> findByEmail(String email);
+    Optional<Users> findByEmail(String email);
+
+    Optional<Users> findByEmailAndEnabledIsTrue(String email);
 }
