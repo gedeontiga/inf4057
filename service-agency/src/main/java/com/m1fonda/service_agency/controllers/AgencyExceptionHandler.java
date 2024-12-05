@@ -11,7 +11,7 @@ import com.m1fonda.service_agency.dto.ErrorResponse;
 import jakarta.persistence.EntityNotFoundException;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class AgencyExceptionHandler {
 
     // Handle specific exceptions
     @ExceptionHandler(EntityNotFoundException.class)
