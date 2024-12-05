@@ -67,7 +67,7 @@ services:
     environment:
       - SPRING_APPLICATION_NAME=service-bank
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
-      - SPRING_DATA_MONGODB_URI=mongodb://brunel:brunel@localhost:27017/service_bank?authSource=admin
+      - SPRING_DATA_MONGODB_URI=mongodb://gedeon:gedeon@localhost:27017/service_bank?authSource=admin
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
     networks:
       - microservices_network
@@ -125,8 +125,8 @@ services:
     ports:
       - "27017:27017"
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=brunel
-      - MONGO_INITDB_ROOT_PASSWORD=brunel
+      - MONGO_INITDB_ROOT_USERNAME=gedeon
+      - MONGO_INITDB_ROOT_PASSWORD=gedeon
     networks:
       - microservices_network
 
