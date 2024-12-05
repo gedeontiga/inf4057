@@ -7,7 +7,7 @@ services:
       - "8888:8888"
     environment:
       - SPRING_APPLICATION_NAME=service-config
-      - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/brunel237/cloud-conf-inf4057
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/gedeontiga/cloud-conf-inf4057
     networks:
       - microservices_network
 
