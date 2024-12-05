@@ -84,7 +84,6 @@ services:
     environment:
       - SPRING_APPLICATION_NAME=service-deposit
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
-      - SPRING_DATA_MONGODB_URI=mongodb://brunel:brunel@localhost:27017/service_deposit?authSource=admin
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
     networks:
       - microservices_network
@@ -101,7 +100,6 @@ services:
     environment:
       - SPRING_APPLICATION_NAME=service-withdrawal
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
-      - SPRING_DATA_MONGODB_URI=mongodb://brunel:brunel@localhost:27017/service_withdrawal?authSource=admin
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
     networks:
       - microservices_network
@@ -118,7 +116,6 @@ services:
     environment:
       - SPRING_APPLICATION_NAME=service-transfer
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
-      - SPRING_DATA_MONGODB_URI=mongodb://brunel:brunel@localhost:27017/service_transfer?authSource=admin
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
     networks:
       - microservices_network
