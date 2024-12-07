@@ -23,14 +23,36 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    Queue authCreationQueue() {
+        return new Queue(RabbitMQConstants.AUTH_MANAGER_CREATION_QUEUE, false);
+    }
+
+    @Bean
+    Queue authDeletionQueue() {
+        return new Queue(RabbitMQConstants.AUTH_MANAGER_DELETION_QUEUE, false);
+    }
+
+    @Bean
     TopicExchange exchange() {
         return new TopicExchange(RabbitMQConstants.AUTH_EXCHANGE);
     }
 
     // Liaison entre l’échange et la file d'attente avec une cle de routage
     @Bean
-    Binding bindingUser(Queue userQueue, TopicExchange exchange) {
-        return BindingBuilder.bind(userQueue).to(exchange).with(RabbitMQConstants.AUTH_REGISTER_KEY);
+    Binding bindingUser() {
+        return BindingBuilder.bind(userQueue()).to(exchange()).with(RabbitMQConstants.AUTH_REGISTER_KEY);
+    }
+
+    @Bean
+    Binding bindingAuthCreation() {
+        return BindingBuilder.bind(authCreationQueue()).to(exchange())
+                .with(RabbitMQConstants.AUTH_MANAGER_CREATION_KEY);
+    }
+
+    @Bean
+    Binding bindingAuthDeletion() {
+        return BindingBuilder.bind(authDeletionQueue()).to(exchange())
+                .with(RabbitMQConstants.AUTH_MANAGER_DELETION_KEY);
     }
 
     @Bean

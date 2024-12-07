@@ -35,7 +35,7 @@ public class RegisterService {
     private final RabbitTemplate rabbitTemplate;
     private final PasswordEncoder passwordEncoder;
 
-    private static final int ACTIVATION_CODE_LENGTH = 6;
+    private static final int ACTIVATION_CODE_LENGTH = 999999;
     private static final long ACTIVATION_HOURS_VALIDITY = 24 * 3600 * 1000;
 
     public boolean isEmailAlreadyExists(String email) {
@@ -54,11 +54,7 @@ public class RegisterService {
 
         // Création de l'utilisateur
         Users user = Users.builder()
-                .firstName(request.firstName())
-                .lastName(request.lastName())
-                .cni(request.cni())
                 .password(passwordEncoder.encode(request.password()))
-                .phoneNumber(request.phoneNumber())
                 .email(request.email())
                 .enabled(false)
                 .role(role)
@@ -69,6 +65,8 @@ public class RegisterService {
         String code = generateActivationCode();
         saveActivationCode(request.email(), code);
         sendActivationEmail(request.firstName(), request.email(), code);
+        rabbitTemplate.convertAndSend(RabbitMQConstants.USER_EXCHANGE, RabbitMQConstants.USER_CREATION_KEY,
+                request);
     }
 
     public String activate(String email, String code) {
@@ -88,8 +86,6 @@ public class RegisterService {
         if (activationCode.getCode().equals(code)) {
             user.setEnabled(true);
             user = userRepository.save(user);
-            rabbitTemplate.convertAndSend(RabbitMQConstants.USER_EXCHANGE, RabbitMQConstants.USER_CREATION_KEY,
-                    UserRequest.fromUser(user));
             return "User activated successfully";
         }
         return "Activation Failed";
@@ -97,8 +93,7 @@ public class RegisterService {
 
     private String generateActivationCode() {
         SecureRandom random = new SecureRandom();
-        return String.format("%0" + ACTIVATION_CODE_LENGTH + "d",
-                random.nextInt((int) Math.pow(10, ACTIVATION_CODE_LENGTH)));
+        return String.valueOf(random.nextInt(ACTIVATION_CODE_LENGTH));
     }
 
     private void saveActivationCode(String email, String code) {

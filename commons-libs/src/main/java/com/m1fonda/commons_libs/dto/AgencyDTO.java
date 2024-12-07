@@ -2,6 +2,9 @@ package com.m1fonda.commons_libs.dto;
 
 import com.m1fonda.commons_libs.entities.Agency;
 
+import lombok.Builder;
+
+@Builder
 public record AgencyDTO(
                 String numAgency,
                 String name,

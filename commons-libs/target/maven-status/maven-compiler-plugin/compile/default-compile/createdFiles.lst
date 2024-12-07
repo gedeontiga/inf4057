@@ -3,6 +3,7 @@ com/m1fonda/commons_libs/dto/AccountResponseTransferDTO.class
 com/m1fonda/commons_libs/entities/Account.class
 com/m1fonda/commons_libs/dto/UserRequest$UserRequestBuilder.class
 com/m1fonda/commons_libs/dto/WithdrawalRequest.class
+com/m1fonda/commons_libs/dto/AccountDTO$AccountDTOBuilder.class
 com/m1fonda/commons_libs/entities/Agency.class
 com/m1fonda/commons_libs/dto/AccountRequestTransferDTO.class
 com/m1fonda/commons_libs/entities/Announce$AnnounceBuilder.class
@@ -12,12 +13,14 @@ com/m1fonda/commons_libs/dto/AccountDTO.class
 com/m1fonda/commons_libs/dto/UserResponse.class
 com/m1fonda/commons_libs/dto/UserRequest.class
 com/m1fonda/commons_libs/dto/TransferRequestDTO.class
+com/m1fonda/commons_libs/dto/ManagerCreationAuthRequest.class
 com/m1fonda/commons_libs/dto/WithdrawalResponse.class
 com/m1fonda/commons_libs/entities/Demand.class
 com/m1fonda/commons_libs/dto/BankTransferDTO.class
 com/m1fonda/commons_libs/dto/AgencyUpdateTransaction.class
 com/m1fonda/commons_libs/entities/Status.class
 com/m1fonda/commons_libs/dto/ActivationCodeRequest.class
+com/m1fonda/commons_libs/dto/AgencyDTO$AgencyDTOBuilder.class
 com/m1fonda/commons_libs/entities/Announce.class
 com/m1fonda/commons_libs/dto/NotificationRequest.class
 com/m1fonda/commons_libs/dto/TransferResponse.class

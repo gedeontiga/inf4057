@@ -1,5 +1,6 @@
 package com.m1fonda.service_agency.services;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.AgencyDTO;
 import com.m1fonda.commons_libs.dto.AgencyUpdateTransaction;
+import com.m1fonda.commons_libs.dto.NotificationRequest;
 import com.m1fonda.service_agency.entities.Agence;
 import com.m1fonda.service_agency.repositories.AgencyRepository;
 
@@ -42,7 +44,19 @@ public class AgencyService {
     public void updateAgencyInfo(AgencyDTO agency) {
         Agence agence = agencyRepository.findByNumAgency(agency.numAgency()).orElseThrow();
         agence.setName(Optional.ofNullable(agency.name()).orElse(agence.getName()));
-        agence.setCapital(Optional.ofNullable(agency.capital()).orElse(agence.getCapital()));
+        double capital = agence.getCapital() / 3;
+        double solde = Optional.ofNullable(agency.capital()).orElse(0.0);
+        double newCapital = agence.getCapital() + solde;
+        if (newCapital >= capital)
+            agence.setCapital(newCapital);
+        else {
+            rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
+                    RabbitMQConstants.NOTIFICATION_TRANSACTION_KEY,
+                    new NotificationRequest(null, agence.getNumBank(), agence.getNumAgency(), "Transaction Échouée",
+                            "L'agence numero: " + agence.getNumAgency()
+                                    + " ne peut valider cette transaction: montant trop élevé.",
+                            new Date()));
+        }
         agence.setAddress(Optional.ofNullable(agency.address()).orElse(agence.getAddress()));
     }
 

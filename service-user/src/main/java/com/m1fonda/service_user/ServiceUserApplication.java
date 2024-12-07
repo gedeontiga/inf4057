@@ -34,10 +34,10 @@ public class ServiceUserApplication {
 		}
 
 		return args -> {
-			Stream<String> adminStream = Stream.of("admin1", "admin2");
+			Stream<String> adminStream = Stream.of("admin.uba", "admin.cca");
 			defaultSaveUser(adminStream, userRepository, roleRepository.findByType(RoleType.ADMIN).orElseThrow(),
 					passwordEncoder);
-			Stream<String> managerStream = Stream.of("manager1", "manager2");
+			Stream<String> managerStream = Stream.of("manager1", "manager2", "manager3");
 			defaultSaveUser(managerStream, userRepository, roleRepository.findByType(RoleType.MANAGER).orElseThrow(),
 					passwordEncoder);
 		};
@@ -58,8 +58,7 @@ public class ServiceUserApplication {
 									.email(username + bankDomainName)
 									.firstName(username)
 									.lastName(username)
-									.password(passwordEncoder.encode(username + ".password"))
-									.phoneNumber(random.nextLong(699999999))
+									.phoneNumber(Long.parseLong("600000000") + random.nextLong(99999999))
 									.role(role)
 									.build()));
 		});

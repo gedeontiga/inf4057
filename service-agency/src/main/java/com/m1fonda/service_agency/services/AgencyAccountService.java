@@ -37,13 +37,14 @@ public class AgencyAccountService {
         demand.setUrlVersoCni(demande.getUrlVersoCni());
         demand.setNumAgency(demande.getNumAgency());
         demand.setPassword(demande.getPassword());
-        getAgency(demande.getNumAgency());
+        getAgency(demande.getNumAgency(), demande.getNumBank());
         demandeRepository.save(demand);
     }
 
-    private Agence getAgency(String numAgency) {
-        return agencyRepository.findByNumAgency(numAgency)
-                .orElseThrow(() -> new EntityNotFoundException("Agency with number " + numAgency + " not found."));
+    private Agence getAgency(String numAgency, String numBank) {
+        return agencyRepository.findByNumAgencyAndNumBank(numAgency, numBank)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Agency with number " + numAgency + " or bank with number " + numBank + " not found."));
     }
 
     public List<DemandeDTO> getDemandes() {

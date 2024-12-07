@@ -1,6 +1,5 @@
 package com.m1fonda.service_agency;
 
-import java.util.UUID;
 import java.util.stream.Stream;
 
 import org.springframework.boot.CommandLineRunner;
@@ -24,18 +23,19 @@ public class ServiceAgencyApplication {
 	CommandLineRunner start(AgencyRepository agencyRepository) throws RuntimeException {
 
 		return args -> {
-			Stream.of("Bastos", "Santa Barbara").forEach(address -> {
-				String uuid = UUID.randomUUID().toString().replace("-", "");
-				String numAgency = uuid.substring(0, 8);
-				if (agencyRepository.count() < 3)
-					agencyRepository.save(
-							Agence.builder()
-									.capital(1000000000)
-									.numAgency("ATG-" + numAgency)
-									.address(address)
-									.name("ATG Agence")
-									.numBank("ATG-001")
-									.build());
+			Stream.of("CCA", "UBA").forEach(bank -> {
+				Stream.of("Bastos", "Omnisports", "Poste").forEach(address -> {
+					String numAgency = bank + "-" + address + "-001";
+					if (agencyRepository.findByAddressAndNumAgency(address, numAgency).isEmpty())
+						agencyRepository.save(
+								Agence.builder()
+										.capital(1000000000)
+										.numAgency(numAgency)
+										.address(address)
+										.name("ATG Agence")
+										.numBank(bank + "-001")
+										.build());
+				});
 			});
 		};
 	}

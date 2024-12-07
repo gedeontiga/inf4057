@@ -31,13 +31,12 @@ public class MailNotificationService {
     public void sendActivationCodeMail(ActivationCodeRequest activationInfo) throws Exception {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         String text = String.format(
-                "Salut Mr. %s, \n votre code d'activation est %s.\n Merci d'utiliser l'application et a bientôt.",
+                "Salut Mr./Mme. %s, \n votre code d'activation est %s.\n Merci d'utiliser l'application et a bientôt.",
                 activationInfo.firstName(),
                 activationInfo.code());
-        mailMessage.setFrom("no-reply@atg-bank.com");
         mailMessage.setTo(activationInfo.email());
         mailMessage.setSubject(CODE_ACTIVATION);
-
+        mailMessage.setFrom("gedeon.ambomo@facsciences-uy1.cm"); // Optionnel si Gmail gère "From"
         mailMessage.setText(text);
         javaMailSender.send(mailMessage);
     }
@@ -47,12 +46,11 @@ public class MailNotificationService {
     public void sendApprovedDemandMail(DemandDTO demand) throws Exception {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         String text = String.format(
-                "Salut Mr. %s, \n votre demande de creation de compte a ete approuvée.\n Merci d'utiliser l'application et a bientôt.",
+                "Salut Mr./Mme. %s, \n votre demande de creation de compte a ete approuvée.\n Merci d'utiliser l'application et a bientôt.",
                 demand.firstName());
-        mailMessage.setFrom("no-reply@atg-bank.com");
         mailMessage.setTo(demand.email());
         mailMessage.setSubject(DEMANDE_TRAITÉE);
-
+        mailMessage.setFrom("gedeon.ambomo@facsciences-uy1.cm"); // Optionnel si Gmail gère "From"
         mailMessage.setText(text);
         javaMailSender.send(mailMessage);
     }
@@ -62,12 +60,11 @@ public class MailNotificationService {
     public void sendRejectedDemandMail(DemandDTO demand) throws Exception {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         String text = String.format(
-                "Salut Mr. %s, \n votre demande de creation de compte a ete rejetée car les informations sur votre CNI ne correspondent pas.\n Merci d'utiliser l'application et a bientôt.",
+                "Salut Mr./Mme. %s, \n votre demande de creation de compte a ete rejetée car les informations sur votre CNI ne correspondent pas.\n Merci d'utiliser l'application et a bientôt.",
                 demand.firstName());
-        mailMessage.setFrom("no-reply@atg-bank.com");
         mailMessage.setTo(demand.email());
         mailMessage.setSubject(DEMANDE_TRAITÉE);
-
+        mailMessage.setFrom("gedeon.ambomo@facsciences-uy1.cm"); // Optionnel si Gmail gère "From"
         mailMessage.setText(text);
         javaMailSender.send(mailMessage);
     }
@@ -84,7 +81,7 @@ public class MailNotificationService {
                 .build();
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom("no-reply@atg-bank.com");
+        mailMessage.setFrom("gedeon.ambomo@facsciences-uy1.cm"); // Optionnel si Gmail gère "From"
         mailMessage.setTo(notification.getUserEmail());
         mailMessage.setText(notification.toString());
         javaMailSender.send(mailMessage);

@@ -42,6 +42,10 @@ public final class RabbitMQConstants {
     public static final String USER_UPDATE_KEY = "user.update.key";
 
     // Authentication Queues & Routing Keys
+    public static final String AUTH_MANAGER_DELETION_QUEUE = "auth.manager.deletion.queue";
+    public static final String AUTH_MANAGER_DELETION_KEY = "auth.manager.deletion.key";
+    public static final String AUTH_MANAGER_CREATION_QUEUE = "auth.manager.creation.queue";
+    public static final String AUTH_MANAGER_CREATION_KEY = "auth.manager.creation.key";
     public static final String AUTH_REGISTER_QUEUE = "user.register.queue";
     public static final String AUTH_REGISTER_KEY = "user.register.key";
 

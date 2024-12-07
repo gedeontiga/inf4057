@@ -37,7 +37,6 @@ public class UserService {
         user.setFirstName(Optional.ofNullable(request.firstName()).orElse(user.getFirstName()));
         user.setLastName(Optional.ofNullable(request.lastName()).orElse(user.getLastName()));
         user.setPhoneNumber(Optional.ofNullable(request.phoneNumber()).orElse(user.getPhoneNumber()));
-        user.setPassword(Optional.ofNullable(request.password()).orElse(user.getPassword()));
         user.setCni(Optional.ofNullable(request.cni()).orElse(user.getCni()));
         return UserResponse.fromUser(userRepository.save(user));
     }
@@ -51,7 +50,6 @@ public class UserService {
                 .email(request.email())
                 .lastName(request.lastName())
                 .firstName(request.firstName())
-                .password(request.password())
                 .phoneNumber(request.phoneNumber())
                 .role(role)
                 .build();

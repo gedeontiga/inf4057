@@ -15,15 +15,13 @@ public class Client implements Serializable {
     private String firstName;
     private String lastName;
     protected String email;
-    private String password;
     private Long phoneNumber;
 
-    protected Client(String cni, String firstName, String lastName, String email, String password, Long phoneNumber) {
+    protected Client(String cni, String firstName, String lastName, String email, Long phoneNumber) {
         this.cni = cni;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.password = password;
         this.phoneNumber = phoneNumber;
     }
 

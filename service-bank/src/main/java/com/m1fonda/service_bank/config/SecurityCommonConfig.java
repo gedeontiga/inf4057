@@ -1,4 +1,4 @@
-package com.m1fonda.service_bank;
+package com.m1fonda.service_bank.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

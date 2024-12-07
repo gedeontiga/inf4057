@@ -14,6 +14,10 @@ public interface AgencyRepository extends MongoRepository<Agence, String> {
 
     Optional<Agence> findByNumAgency(String numAgency);
 
+    Optional<Agence> findByNumAgencyAndNumBank(String numAgency, String numBank);
+
+    Optional<Agence> findByAddressAndNumAgency(String address, String numAgency);
+
     void deleteByNumAgency(String numAgency);
 
     Set<Agence> findAllByNumBank(String numBank);

@@ -12,10 +12,10 @@ public record UserRequest(
                 String firstName,
                 String lastName,
                 Long phoneNumber) {
-        public static UserRequest fromUser(Client user) {
+        public static UserRequest fromUser(Client user, String password) {
                 return new UserRequest(
                                 user.getEmail(),
-                                user.getPassword(),
+                                password,
                                 user.getCni(),
                                 user.getFirstName(),
                                 user.getLastName(),

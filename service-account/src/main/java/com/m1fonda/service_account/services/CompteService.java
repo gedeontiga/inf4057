@@ -14,6 +14,7 @@ import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.AccountDTO;
 import com.m1fonda.commons_libs.dto.AccountRequestTransferDTO;
 import com.m1fonda.commons_libs.dto.AccountResponseTransferDTO;
+import com.m1fonda.commons_libs.dto.AgencyDTO;
 import com.m1fonda.commons_libs.dto.NotificationRequest;
 import com.m1fonda.commons_libs.dto.UserRequest;
 import com.m1fonda.commons_libs.entities.Demand;
@@ -67,12 +68,20 @@ public class CompteService {
     public void updateAccount(AccountDTO account) {
         Compte compte = compteRepository.findByNumAccount(account.numAccount())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
+        double fees = Optional.ofNullable(account.fees()).orElse(0.0);
+        double solde = Optional.ofNullable((account.balance())).orElse(0.0);
+        double newBalance = compte.getBalance() + solde + solde * fees;
 
-        double solde = Optional.ofNullable(compte.getBalance() + account.balance()).orElse(compte.getBalance());
-
-        if (solde >= 0)
-            compte.setBalance(solde);
-        else
+        if (newBalance >= 0) {
+            compte.setBalance(newBalance);
+            rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
+                    RabbitMQConstants.NOTIFICATION_TRANSACTION_KEY,
+                    new NotificationRequest(null, compte.getUserEmail(), compte.getNumAgency(), "Transaction Réussie",
+                            "Transaction effectuée avec succès.", new Date()));
+            rabbitTemplate.convertAndSend(RabbitMQConstants.AGENCY_EXCHANGE, RabbitMQConstants.AGENCY_UPDATE_KEY,
+                    AgencyDTO.builder().numAgency(compte.getNumAgency()).numBank(compte.getNumBank())
+                            .capital(account.balance()).build());
+        } else
             rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
                     RabbitMQConstants.NOTIFICATION_TRANSACTION_KEY,
                     new NotificationRequest(null, compte.getUserEmail(), compte.getNumAgency(), "Transaction Échouée",
@@ -84,7 +93,7 @@ public class CompteService {
 
     public List<AccountDTO> getAccount(String email) {
         List<AccountDTO> result = new ArrayList<AccountDTO>();
-        compteRepository.findByUserEmail(email).forEach(account -> result.add(AccountDTO.fromAccount(account)));
+        compteRepository.findByUserEmail(email).forEach(account -> result.add(AccountDTO.fromAccount(account, null)));
         return result;
     }
 

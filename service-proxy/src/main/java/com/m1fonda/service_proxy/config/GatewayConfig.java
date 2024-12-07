@@ -21,6 +21,9 @@ public class GatewayConfig {
                                 .route("service-agency", r -> r
                                                 .path("/api/demande/**")
                                                 .uri("lb://service-agency"))
+                                .route("service-bank", r -> r
+                                                .path("/api/bank/**")
+                                                .uri("lb://service-bank"))
                                 .route("service-user", r -> r
                                                 .path("/api/user/**", "/api/manager/**", "/api/admin/**")
                                                 .filters(f -> f.filter(authFilter))
@@ -33,14 +36,14 @@ public class GatewayConfig {
                                                 .path("/api/agency/**")
                                                 .filters(f -> f.filter(authFilter))
                                                 .uri("lb://service-agency"))
-                                .route("service-bank", r -> r
-                                                .path("/api/bank/**")
-                                                .filters(f -> f.filter(authFilter))
-                                                .uri("lb://service-bank"))
                                 .route("service-deposit", r -> r
                                                 .path("/api/deposit/**")
                                                 .filters(f -> f.filter(authFilter))
                                                 .uri("lb://service-deposit"))
+                                .route("service-bank", r -> r
+                                                .path("/api/admin-bank/**")
+                                                .filters(f -> f.filter(authFilter))
+                                                .uri("lb://service-bank"))
                                 .route("service-withdrawal", r -> r
                                                 .path("/api/withdrawal/**")
                                                 .filters(f -> f.filter(authFilter))

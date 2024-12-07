@@ -14,7 +14,7 @@ public interface CompteRepository extends MongoRepository<Compte, String> {
 
     long countByNumAgency(String numAgency);
 
-    List<Compte> findByNumAgency(String numAgency);
+    Optional<Compte> findByNumAgency(String numAgency);
 
     Optional<Compte> findByNumAccount(String numAccount);
 }

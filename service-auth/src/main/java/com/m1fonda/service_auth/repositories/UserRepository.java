@@ -13,5 +13,7 @@ import com.m1fonda.service_auth.entities.Users;
 public interface UserRepository extends JpaRepository<Users, Long> {
     Optional<Users> findByEmail(String email);
 
+    void deleteByEmail(String email);
+
     Optional<Users> findByEmailAndEnabledIsTrue(String email);
 }

@@ -1,7 +1,6 @@
 package com.m1fonda.service_auth;
 
 import java.io.IOException;
-import java.util.Random;
 import java.util.stream.Stream;
 
 import org.springframework.boot.CommandLineRunner;
@@ -32,10 +31,10 @@ public class ServiceAuthApplication {
 		}
 
 		return args -> {
-			Stream<String> adminStream = Stream.of("admin1", "admin2");
+			Stream<String> adminStream = Stream.of("admin.uba", "admin.cca");
 			defaultSaveUser(adminStream, userRepository, roleRepository.findByType(RoleType.ADMIN).orElseThrow(),
 					passwordEncoder);
-			Stream<String> managerStream = Stream.of("manager1", "manager2");
+			Stream<String> managerStream = Stream.of("manager1", "manager2", "manager3");
 			defaultSaveUser(managerStream, userRepository, roleRepository.findByType(RoleType.MANAGER).orElseThrow(),
 					passwordEncoder);
 		};
@@ -43,22 +42,15 @@ public class ServiceAuthApplication {
 
 	public void defaultSaveUser(Stream<String> stream, UserRepository userRepository, Role role,
 			PasswordEncoder passwordEncoder) throws IOException {
-		Random random = new Random();
 		final String bankDomainName = "@atg-bank.com";
 
 		stream.forEach(username -> {
-			String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-			StringBuilder result = new StringBuilder(11);
-			new Random().ints(11, 0, characters.length()).forEach(i -> result.append(characters.charAt(i)));
 			userRepository.save(userRepository.findByEmail(username + bankDomainName)
 					.orElse(
-							Users.builder().cni(result.toString())
+							Users.builder()
 									.email(username + bankDomainName)
-									.firstName(username)
-									.lastName(username)
 									.enabled(true)
 									.password(passwordEncoder.encode(username + ".password"))
-									.phoneNumber(random.nextLong(699999999))
 									.role(role)
 									.build()));
 		});

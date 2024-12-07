@@ -81,6 +81,62 @@ services:
     networks:
       - microservices_network
 
+  service-bank:
+    build: ./service-bank
+    image: gedeontiga/inf4057-service-bank:latest
+    depends_on:
+      - service-config
+    ports:
+      - "8088"
+    environment:
+      - SPRING_APPLICATION_NAME=service-bank
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+    networks:
+      - microservices_network
+
+  service-deposit:
+    build: ./service-deposit
+    image: gedeontiga/inf4057-service-deposit:latest
+    depends_on:
+      - service-config
+    ports:
+      - "8088"
+    environment:
+      - SPRING_APPLICATION_NAME=service-deposit
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+    networks:
+      - microservices_network
+
+  service-withdrawal:
+    build: ./service-withdrawal
+    image: gedeontiga/inf4057-service-withdrawal:latest
+    depends_on:
+      - service-config
+    ports:
+      - "8088"
+    environment:
+      - SPRING_APPLICATION_NAME=service-withdrawal
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+    networks:
+      - microservices_network
+
+  service-transfer:
+    build: ./service-transfer
+    image: gedeontiga/inf4057-service-transfer:latest
+    depends_on:
+      - service-config
+    ports:
+      - "8088"
+    environment:
+      - SPRING_APPLICATION_NAME=service-transfer
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+    networks:
+      - microservices_network
+
   service-account:
     build: ./service-account
     image: gedeontiga/inf4057-service-account:latest
@@ -133,14 +189,6 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-    networks:
-      - microservices_network
-
-  smtp4dev:
-    image: rnwood/smtp4dev
-    ports:
-      - "2525:25"
-      - "30:80"
     networks:
       - microservices_network
 
