@@ -59,6 +59,8 @@ public class ServiceUserApplication {
 									.firstName(username)
 									.lastName(username)
 									.phoneNumber(Long.parseLong("600000000") + random.nextLong(99999999))
+									.profilePicture(
+											"https://www.pngarts.com/files/10/Default-Profile-Picture-Transparent-Image.png")
 									.role(role)
 									.build()));
 		});

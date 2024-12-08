@@ -11,7 +11,8 @@ public record UserRequest(
                 String cni,
                 String firstName,
                 String lastName,
-                Long phoneNumber) {
+                Long phoneNumber,
+                String profilePicture) {
         public static UserRequest fromUser(Client user, String password) {
                 return new UserRequest(
                                 user.getEmail(),
@@ -19,6 +20,7 @@ public record UserRequest(
                                 user.getCni(),
                                 user.getFirstName(),
                                 user.getLastName(),
-                                user.getPhoneNumber());
+                                user.getPhoneNumber(),
+                                user.getProfilePicture());
         }
 }

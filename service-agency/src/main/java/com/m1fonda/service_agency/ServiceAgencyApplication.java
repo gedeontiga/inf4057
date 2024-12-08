@@ -15,6 +15,8 @@ import com.m1fonda.service_agency.repositories.AgencyRepository;
 @SpringBootApplication
 public class ServiceAgencyApplication {
 
+	final String DASH = "-";
+
 	public static void main(String[] args) {
 		SpringApplication.run(ServiceAgencyApplication.class, args);
 	}
@@ -24,16 +26,17 @@ public class ServiceAgencyApplication {
 
 		return args -> {
 			Stream.of("CCA", "UBA").forEach(bank -> {
+				String numBank = bank + DASH + bank.hashCode();
 				Stream.of("Bastos", "Omnisports", "Poste").forEach(address -> {
-					String numAgency = bank + "-" + address + "-001";
+					String numAgency = numBank + DASH + address + DASH + address.hashCode();
 					if (agencyRepository.findByAddressAndNumAgency(address, numAgency).isEmpty())
 						agencyRepository.save(
 								Agence.builder()
 										.capital(1000000000)
 										.numAgency(numAgency)
 										.address(address)
-										.name("ATG Agence")
-										.numBank(bank + "-001")
+										.name(bank + " " + address)
+										.numBank(numBank)
 										.build());
 				});
 			});

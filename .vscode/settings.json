@@ -10,6 +10,7 @@
         "exceptionshandler",
         "firstname",
         "gedeon",
+        "healthcheck",
         "INITDB",
         "lastname",
         "mockito",

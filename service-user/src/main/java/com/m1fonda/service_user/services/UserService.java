@@ -38,6 +38,7 @@ public class UserService {
         user.setLastName(Optional.ofNullable(request.lastName()).orElse(user.getLastName()));
         user.setPhoneNumber(Optional.ofNullable(request.phoneNumber()).orElse(user.getPhoneNumber()));
         user.setCni(Optional.ofNullable(request.cni()).orElse(user.getCni()));
+        user.setProfilePicture(Optional.ofNullable(request.profilePicture()).orElse(user.getProfilePicture()));
         return UserResponse.fromUser(userRepository.save(user));
     }
 

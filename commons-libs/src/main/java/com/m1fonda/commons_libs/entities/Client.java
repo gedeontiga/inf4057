@@ -16,13 +16,16 @@ public class Client implements Serializable {
     private String lastName;
     protected String email;
     private Long phoneNumber;
+    private String profilePicture;
 
-    protected Client(String cni, String firstName, String lastName, String email, Long phoneNumber) {
+    protected Client(String cni, String firstName, String lastName, String email, Long phoneNumber,
+            String profilePicture) {
         this.cni = cni;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.profilePicture = profilePicture;
     }
 
     protected Client() {

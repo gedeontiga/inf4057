@@ -28,9 +28,9 @@ public class Users extends Client {
     private Role role;
 
     @Builder
-    public Users(String cni, String firstName, String lastName, String email, Long phoneNumber,
+    public Users(String cni, String firstName, String lastName, String email, Long phoneNumber, String profilePicture,
             Role role, boolean enabled) {
-        super(cni, firstName, lastName, email, phoneNumber);
+        super(cni, firstName, lastName, email, phoneNumber, profilePicture);
         this.email = email;
         this.role = role;
     }

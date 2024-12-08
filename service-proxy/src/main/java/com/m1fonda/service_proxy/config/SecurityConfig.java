@@ -16,6 +16,7 @@ public class SecurityConfig {
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/api/auth/**").permitAll()
                         .pathMatchers("/api/demande/**").permitAll()
+                        .pathMatchers("/api/bank/**").permitAll()
                         .anyExchange()
                         .permitAll())
                 .build();
