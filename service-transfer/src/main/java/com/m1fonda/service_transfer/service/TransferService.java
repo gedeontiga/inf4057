@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.AccountDTO;
+import com.m1fonda.commons_libs.dto.AccountTransactionDTO;
 
 @Slf4j
 @Service
@@ -46,8 +47,11 @@ public class TransferService {
         rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_UPDATE_KEY,
                 AccountDTO.builder().numAccount(request.receiverAccountNum()).balance(request.amount()).build());
         rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_UPDATE_KEY,
-                AccountDTO.builder().numAccount(request.senderAccountNum())
-                        .balance(-1 * (request.amount())).build());
+                AccountTransactionDTO.builder()
+                        .numAccount(request.senderAccountNum())
+                        .balance(-1 * (request.amount()))
+                        .fees(request.fees())
+                        .build());
 
         return new TransferResponse(request.senderAccountNum(), request.receiverAccountNum(), request.agencyNum(),
                 transactionID, request.amount(), request.fees(), new Date());

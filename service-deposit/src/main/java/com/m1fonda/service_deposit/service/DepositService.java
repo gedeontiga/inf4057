@@ -44,7 +44,6 @@ public class DepositService {
         rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_UPDATE_KEY,
                 AccountDTO.builder()
                         .numAccount(request.numAccount())
-                        .numAgency(request.numAgency())
                         .balance(request.balance())
                         .build());
 

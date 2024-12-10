@@ -18,22 +18,22 @@ public class RabbitMQConfig {
 
     @Bean
     Queue compteQueue() {
-        return new Queue(RabbitMQConstants.ACCOUNT_QUEUE);
+        return new Queue(RabbitMQConstants.ACCOUNT_QUEUE, false);
     }
 
     @Bean
     Queue compteCreationQueue() {
-        return new Queue(RabbitMQConstants.ACCOUNT_CREATION_QUEUE);
+        return new Queue(RabbitMQConstants.ACCOUNT_CREATION_QUEUE, false);
     }
 
     @Bean
     Queue compteUpdateQueue() {
-        return new Queue(RabbitMQConstants.ACCOUNT_UPDATE_QUEUE);
+        return new Queue(RabbitMQConstants.ACCOUNT_UPDATE_QUEUE, false);
     }
 
     @Bean
     Queue compteTransactionQueue() {
-        return new Queue(RabbitMQConstants.ACCOUNT_TRANSACTION_QUEUE);
+        return new Queue(RabbitMQConstants.ACCOUNT_TRANSACTION_QUEUE, false);
     }
 
     @Bean

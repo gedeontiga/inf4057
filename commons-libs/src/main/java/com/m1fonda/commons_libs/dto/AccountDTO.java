@@ -11,15 +11,13 @@ public record AccountDTO(
                 String numAccount,
                 String numAgency,
                 Double balance,
-                Double fees,
                 Date createAt,
                 String status) {
-        public static AccountDTO fromAccount(Account account, Double fees) {
+        public static AccountDTO fromAccount(Account account) {
                 return new AccountDTO(
                                 account.getNumAccount(),
                                 account.getNumAgency(),
                                 account.getBalance(),
-                                fees,
                                 account.getCreateAt(),
                                 account.getStatus().toString());
         }

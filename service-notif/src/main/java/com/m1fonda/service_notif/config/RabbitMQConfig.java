@@ -15,20 +15,14 @@ import com.m1fonda.commons_libs.config.RabbitMQConstants;
 
 @Configuration
 public class RabbitMQConfig {
-
     @Bean
-    Queue demandQueue() {
-        return new Queue(RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE);
-    }
-
-    @Bean
-    Queue emailQueue() {
-        return new Queue(RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE);
+    Queue mailQueue() {
+        return new Queue(RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE, false);
     }
 
     @Bean
     Queue transactionQueue() {
-        return new Queue(RabbitMQConstants.NOTIFICATION_TRANSACTION_QUEUE);
+        return new Queue(RabbitMQConstants.NOTIFICATION_TRANSACTION_QUEUE, false);
     }
 
     @Bean
@@ -38,19 +32,19 @@ public class RabbitMQConfig {
 
     @Bean
     Binding bindingDemandApproved() {
-        return BindingBuilder.bind(demandQueue()).to(notificationExchange())
+        return BindingBuilder.bind(mailQueue()).to(notificationExchange())
                 .with(RabbitMQConstants.EMAIL_NOTIFICATION_DEMAND_APPROVED_KEY);
     }
 
     @Bean
     Binding bindingDemandRejected() {
-        return BindingBuilder.bind(demandQueue()).to(notificationExchange())
+        return BindingBuilder.bind(mailQueue()).to(notificationExchange())
                 .with(RabbitMQConstants.EMAIL_NOTIFICATION_DEMAND_REJECTED_KEY);
     }
 
     @Bean
     Binding bindingEmail() {
-        return BindingBuilder.bind(emailQueue()).to(notificationExchange())
+        return BindingBuilder.bind(mailQueue()).to(notificationExchange())
                 .with(RabbitMQConstants.EMAIL_NOTIFICATION_ACTIVATION_KEY);
     }
 
@@ -67,7 +61,6 @@ public class RabbitMQConfig {
         return template;
     }
 
-    // Important : Configurez un message listener factory pour le convertisseur JSON
     @Bean
     SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();

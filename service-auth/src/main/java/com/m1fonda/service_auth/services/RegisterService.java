@@ -22,7 +22,9 @@ import com.m1fonda.service_auth.repositories.UserRepository;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class RegisterService {
@@ -62,14 +64,22 @@ public class RegisterService {
         userRepository.save(user);
 
         // Génération et envoi du code d'activation
-        String code = generateActivationCode();
+        Long code = generateActivationCode();
+        ActivationCodeRequest codeRequest = ActivationCodeRequest.builder()
+                .email(request.email())
+                .firstName(code.toString())
+                .code(code)
+                .build();
+
+        rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
+                RabbitMQConstants.EMAIL_NOTIFICATION_ACTIVATION_KEY,
+                codeRequest);
         saveActivationCode(request.email(), code);
-        sendActivationEmail(request.firstName(), request.email(), code);
         rabbitTemplate.convertAndSend(RabbitMQConstants.USER_EXCHANGE, RabbitMQConstants.USER_CREATION_KEY,
                 request);
     }
 
-    public String activate(String email, String code) {
+    public String activate(String email, Long code) {
         // Vérification du code
         Validation activationCode = validationRepository
                 .findByEmailAndExpiredAfter(email, Instant.now())
@@ -91,12 +101,12 @@ public class RegisterService {
         return "Activation Failed";
     }
 
-    private String generateActivationCode() {
+    private Long generateActivationCode() {
         SecureRandom random = new SecureRandom();
-        return String.valueOf(random.nextInt(ACTIVATION_CODE_LENGTH));
+        return random.nextLong(ACTIVATION_CODE_LENGTH);
     }
 
-    private void saveActivationCode(String email, String code) {
+    private void saveActivationCode(String email, Long code) {
         // Suppression de l'ancien code si existant
         validationRepository.findByEmail(email)
                 .ifPresent(validationRepository::delete);
@@ -107,12 +117,6 @@ public class RegisterService {
         activationCode.setCode(code);
         activationCode.setExpired(Instant.now().plusMillis(ACTIVATION_HOURS_VALIDITY));
         validationRepository.save(activationCode);
-    }
-
-    private void sendActivationEmail(String firstName, String email, String code) {
-        rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
-                RabbitMQConstants.EMAIL_NOTIFICATION_ACTIVATION_KEY,
-                ActivationCodeRequest.activationCodeFactory(firstName, email, code));
     }
 
     @Scheduled(cron = "@daily") // Nettoyage toutes les jours

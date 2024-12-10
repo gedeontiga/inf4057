@@ -7,20 +7,21 @@ import com.m1fonda.service_bank.model.AgencyModel;
 import com.m1fonda.service_bank.model.BankModel;
 
 public record BankDTOResponse(
-                String name,
-                String logo,
-                String ownerEmail,
-                String type,
-                double capital,
-                String contact,
-                String bankNumber,
-                Set<AgencyModel> agencies,
-                double withdrawFee,
-                double transferFee,
-                Date createdAt) {
+        String name,
+        String logo,
+        String ownerEmail,
+        String type,
+        double capital,
+        String contact,
+        String bankNumber,
+        Set<AgencyModel> agencies,
+        double externalFee,
+        double withdrawFee,
+        double transferFee,
+        Date createdAt) {
 
-        public static BankDTOResponse fromBank(BankModel b){
-            return new BankDTOResponse(
+    public static BankDTOResponse fromBank(BankModel b) {
+        return new BankDTOResponse(
                 b.getName(),
                 b.getLogo(),
                 b.getOwnerEmail(),
@@ -29,10 +30,10 @@ public record BankDTOResponse(
                 b.getContact(),
                 b.getBankNumber(),
                 b.getAgencies(),
+                b.getExternalFee(),
                 b.getWithdrawFee(),
                 b.getTransferFee(),
-                b.getDateCreation()
-            );
-        }
+                b.getDateCreation());
+    }
 
 }

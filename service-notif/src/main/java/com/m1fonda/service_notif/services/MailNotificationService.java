@@ -1,9 +1,6 @@
 package com.m1fonda.service_notif.services;
 
-import java.util.Map;
-
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -15,25 +12,26 @@ import com.m1fonda.commons_libs.dto.NotificationRequest;
 import com.m1fonda.service_notif.entities.Notification;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
+@AllArgsConstructor
 public class MailNotificationService {
 
     private static final String DEMANDE_TRAITÉE = "Demande traitée";
     private static final String CODE_ACTIVATION = "Code d'activation";
     private static final String SEND_MAIL_FALLBACK = "sendMailFallback";
     private static final String SERVICE_NOTIFICATION_CIRCUIT_BREAKER = "serviceNotificationCircuitBreaker";
-    @Autowired
     private JavaMailSender javaMailSender;
 
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE)
-    public void sendActivationCodeMail(ActivationCodeRequest activationInfo) throws Exception {
+    public void sendActivationCodeMail(ActivationCodeRequest activationInfo) {
+        log.info("Message reçu depuis RabbitMQ : {}", activationInfo.toString());
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        String text = String.format(
-                "Salut Mr./Mme. %s, \n votre code d'activation est %s.\n Merci d'utiliser l'application et a bientôt.",
-                activationInfo.firstName(),
-                activationInfo.code());
+        String text = "Votre code d'activation est " + activationInfo.firstName();
         mailMessage.setTo(activationInfo.email());
         mailMessage.setSubject(CODE_ACTIVATION);
         mailMessage.setFrom("gedeon.ambomo@facsciences-uy1.cm"); // Optionnel si Gmail gère "From"
@@ -83,12 +81,12 @@ public class MailNotificationService {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom("gedeon.ambomo@facsciences-uy1.cm"); // Optionnel si Gmail gère "From"
         mailMessage.setTo(notification.getUserEmail());
-        mailMessage.setText(notification.toString());
+        mailMessage.setText(notification.getMessage());
         javaMailSender.send(mailMessage);
 
     }
 
-    public void sendMailFallback(Map<String, Object> infoMap, Throwable throwable) {
+    public void sendMailFallback(Object infoMap, Throwable throwable) {
         System.out.println("Fallback - Mail non envoyé : " + infoMap.toString());
         System.out.println("Cause de l'échec : " + throwable.getMessage());
     }

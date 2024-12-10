@@ -14,6 +14,7 @@ import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.AccountDTO;
 import com.m1fonda.commons_libs.dto.AccountRequestTransferDTO;
 import com.m1fonda.commons_libs.dto.AccountResponseTransferDTO;
+import com.m1fonda.commons_libs.dto.AccountTransactionDTO;
 import com.m1fonda.commons_libs.dto.AgencyDTO;
 import com.m1fonda.commons_libs.dto.NotificationRequest;
 import com.m1fonda.commons_libs.dto.UserRequest;
@@ -65,7 +66,7 @@ public class CompteService {
 
     @CircuitBreaker(name = SERVICE_COMPTE_CIRCUIT_BREAKER, fallbackMethod = UPDATE_COMPTE_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.ACCOUNT_UPDATE_QUEUE)
-    public void updateAccount(AccountDTO account) {
+    public void updateAccount(AccountTransactionDTO account) {
         Compte compte = compteRepository.findByNumAccount(account.numAccount())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
         double fees = Optional.ofNullable(account.fees()).orElse(0.0);
@@ -79,21 +80,20 @@ public class CompteService {
                     new NotificationRequest(null, compte.getUserEmail(), compte.getNumAgency(), "Transaction Réussie",
                             "Transaction effectuée avec succès.", new Date()));
             rabbitTemplate.convertAndSend(RabbitMQConstants.AGENCY_EXCHANGE, RabbitMQConstants.AGENCY_UPDATE_KEY,
-                    AgencyDTO.builder().numAgency(compte.getNumAgency()).numBank(compte.getNumBank())
+                    AgencyDTO.builder().numAgency(account.numAgency()).numBank(compte.getNumBank())
                             .capital(account.balance()).build());
         } else
             rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
                     RabbitMQConstants.NOTIFICATION_TRANSACTION_KEY,
                     new NotificationRequest(null, compte.getUserEmail(), compte.getNumAgency(), "Transaction Échouée",
-                            "Votre solde est insuffisant pour effectuer cette transaction.", new Date()));
-        compte.setNumAgency(Optional.ofNullable(account.numAgency()).orElse(compte.getNumAgency()));
+                            "Désolé, votre solde est insuffisant pour effectuer cette transaction.", new Date()));
         compte.setStatus(Optional.ofNullable(account.status()).orElse(compte.getStatus().name()));
         compteRepository.save(compte);
     }
 
     public List<AccountDTO> getAccount(String email) {
         List<AccountDTO> result = new ArrayList<AccountDTO>();
-        compteRepository.findByUserEmail(email).forEach(account -> result.add(AccountDTO.fromAccount(account, null)));
+        compteRepository.findByUserEmail(email).forEach(account -> result.add(AccountDTO.fromAccount(account)));
         return result;
     }
 

@@ -17,7 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
-import com.m1fonda.commons_libs.dto.AccountDTO;
+import com.m1fonda.commons_libs.dto.AccountTransactionDTO;
 
 @Slf4j
 @Service
@@ -45,7 +45,7 @@ public class WithdrawalService {
         withdrawalRepository.save(withdrawal);
 
         rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_UPDATE_KEY,
-                AccountDTO.builder()
+                AccountTransactionDTO.builder()
                         .numAccount(request.accountNum())
                         .numAgency(request.agencyNum())
                         .balance(-1 * (request.amount()))
