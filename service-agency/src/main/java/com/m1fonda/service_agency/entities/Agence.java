@@ -1,5 +1,7 @@
 package com.m1fonda.service_agency.entities;
 
+import java.util.Set;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -24,11 +26,13 @@ public class Agence extends Agency {
     @Indexed(unique = true)
     @Field("num_agency")
     private String numAgency;
+    private Set<String> agents;
 
     @Builder
     public Agence(String numAgency, String name, double capital,
-            String address, String numBank) {
+            String address, String numBank, Set<String> agents) {
         super(numAgency, name, capital, address, numBank);
         this.numAgency = numAgency;
+        this.agents = agents;
     }
 }

@@ -6,16 +6,14 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
-import com.m1fonda.commons_libs.dto.ActivationCodeRequest;
+import com.m1fonda.commons_libs.dto.ActivationRequest;
 import com.m1fonda.commons_libs.dto.DemandDTO;
 import com.m1fonda.commons_libs.dto.NotificationRequest;
 import com.m1fonda.service_notif.entities.Notification;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 @AllArgsConstructor
 public class MailNotificationService {
@@ -27,12 +25,11 @@ public class MailNotificationService {
     private JavaMailSender javaMailSender;
 
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
-    @RabbitListener(queues = RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE)
-    public void sendActivationCodeMail(ActivationCodeRequest activationInfo) {
-        log.info("Message reçu depuis RabbitMQ : {}", activationInfo.toString());
+    @RabbitListener(queues = RabbitMQConstants.EMAIL_NOTIFICATION_ACTIVATION_QUEUE)
+    public void sendActivationCodeMail(ActivationRequest request) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        String text = "Votre code d'activation est " + activationInfo.firstName();
-        mailMessage.setTo(activationInfo.email());
+        String text = "Votre code d'activation est: " + request.activationCode();
+        mailMessage.setTo(request.email());
         mailMessage.setSubject(CODE_ACTIVATION);
         mailMessage.setFrom("gedeon.ambomo@facsciences-uy1.cm"); // Optionnel si Gmail gère "From"
         mailMessage.setText(text);
@@ -44,7 +41,7 @@ public class MailNotificationService {
     public void sendApprovedDemandMail(DemandDTO demand) throws Exception {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         String text = String.format(
-                "Salut Mr./Mme. %s, \n votre demande de creation de compte a ete approuvée.\n Merci d'utiliser l'application et a bientôt.",
+                "Salut Mr./Mme. %s, \n votre demande de creation de compte a ete approuvée et votre compte créé.\nUn autre email vous a été envoyé pour activer votre, merci de procéder a l'activation pour utiliser l'application.",
                 demand.firstName());
         mailMessage.setTo(demand.email());
         mailMessage.setSubject(DEMANDE_TRAITÉE);
@@ -68,7 +65,7 @@ public class MailNotificationService {
     }
 
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
-    @RabbitListener(queues = RabbitMQConstants.NOTIFICATION_TRANSACTION_QUEUE)
+    @RabbitListener(queues = RabbitMQConstants.EMAIL_NOTIFICATION_TRANSACTION_QUEUE)
     public void newTransaction(NotificationRequest request) {
 
         Notification notification = Notification.builder()

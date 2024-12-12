@@ -19,7 +19,7 @@ public class Validation {
     @Column(unique = true)
     private String email;
 
-    private Long code;
+    private Long activationCode;
 
     private Instant expired;
 }

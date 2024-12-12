@@ -1,6 +1,7 @@
 package com.m1fonda.commons_libs.entities;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class Demand implements Serializable {
     private String urlVersoCni;
     private String numAgency;
     private String numBank;
+    private Date expireAt = new Date();
 
     protected Demand(String firstName, String lastName, String email, String password, String status, String cni,
             Long phoneNumber, Double balance, String urlRectoCni, String urlVersoCni, String numAgency,

@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
-import com.m1fonda.commons_libs.dto.ActivationCodeRequest;
+import com.m1fonda.commons_libs.dto.ActivationRequest;
 import com.m1fonda.commons_libs.dto.UserRequest;
 import com.m1fonda.service_auth.entities.Validation;
 import com.m1fonda.service_auth.entities.Role;
@@ -22,9 +22,7 @@ import com.m1fonda.service_auth.repositories.UserRepository;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 @AllArgsConstructor
 public class RegisterService {
@@ -65,15 +63,13 @@ public class RegisterService {
 
         // Génération et envoi du code d'activation
         Long code = generateActivationCode();
-        ActivationCodeRequest codeRequest = ActivationCodeRequest.builder()
-                .email(request.email())
-                .firstName(code.toString())
-                .code(code)
-                .build();
 
         rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
                 RabbitMQConstants.EMAIL_NOTIFICATION_ACTIVATION_KEY,
-                codeRequest);
+                ActivationRequest.builder()
+                        .email(request.email())
+                        .activationCode(code)
+                        .build());
         saveActivationCode(request.email(), code);
         rabbitTemplate.convertAndSend(RabbitMQConstants.USER_EXCHANGE, RabbitMQConstants.USER_CREATION_KEY,
                 request);
@@ -93,7 +89,7 @@ public class RegisterService {
             return "User already activated";
         }
 
-        if (activationCode.getCode().equals(code)) {
+        if (activationCode.getActivationCode().equals(code)) {
             user.setEnabled(true);
             user = userRepository.save(user);
             return "User activated successfully";
@@ -114,7 +110,7 @@ public class RegisterService {
         // Sauvegarde du nouveau code
         Validation activationCode = new Validation();
         activationCode.setEmail(email);
-        activationCode.setCode(code);
+        activationCode.setActivationCode(code);
         activationCode.setExpired(Instant.now().plusMillis(ACTIVATION_HOURS_VALIDITY));
         validationRepository.save(activationCode);
     }

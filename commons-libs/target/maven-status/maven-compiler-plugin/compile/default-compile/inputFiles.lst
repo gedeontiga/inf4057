@@ -1,4 +1,3 @@
-/home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/ActivationCodeRequest.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/entities/Bank.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/entities/Announce.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/entities/Agency.java
@@ -14,6 +13,7 @@
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/Main.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/config/RabbitMQConstants.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/TransferRequest.java
+/home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/ActivationRequest.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/ClientDTO.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/entities/Account.java
 /home/gedeon-tiga/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/AccountDepositWithdrawalResponse.java

@@ -21,6 +21,16 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    Queue mailActivationQueue() {
+        return new Queue(RabbitMQConstants.EMAIL_NOTIFICATION_ACTIVATION_QUEUE, false);
+    }
+
+    @Bean
+    Queue mailTransactionQueue() {
+        return new Queue(RabbitMQConstants.EMAIL_NOTIFICATION_TRANSACTION_QUEUE, false);
+    }
+
+    @Bean
     Queue transactionQueue() {
         return new Queue(RabbitMQConstants.NOTIFICATION_TRANSACTION_QUEUE, false);
     }
@@ -44,7 +54,7 @@ public class RabbitMQConfig {
 
     @Bean
     Binding bindingEmail() {
-        return BindingBuilder.bind(mailQueue()).to(notificationExchange())
+        return BindingBuilder.bind(mailActivationQueue()).to(notificationExchange())
                 .with(RabbitMQConstants.EMAIL_NOTIFICATION_ACTIVATION_KEY);
     }
 
@@ -52,6 +62,12 @@ public class RabbitMQConfig {
     Binding bindingTransaction() {
         return BindingBuilder.bind(transactionQueue()).to(notificationExchange())
                 .with(RabbitMQConstants.NOTIFICATION_TRANSACTION_KEY);
+    }
+
+    @Bean
+    Binding bindingEmailTransaction() {
+        return BindingBuilder.bind(mailTransactionQueue()).to(notificationExchange())
+                .with(RabbitMQConstants.EMAIL_NOTIFICATION_TRANSACTION_KEY);
     }
 
     @Bean

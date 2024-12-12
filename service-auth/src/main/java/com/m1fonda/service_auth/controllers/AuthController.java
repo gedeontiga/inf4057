@@ -2,8 +2,8 @@ package com.m1fonda.service_auth.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.m1fonda.commons_libs.dto.ActivationRequest;
 import com.m1fonda.commons_libs.dto.UserRequest;
-import com.m1fonda.service_auth.dto.ActivationRequest;
 import com.m1fonda.service_auth.dto.LoginRequest;
 import com.m1fonda.service_auth.entities.Users;
 import com.m1fonda.service_auth.services.JwtService;
@@ -67,6 +67,6 @@ public class AuthController {
 
     @PostMapping("/activate")
     public ResponseEntity<String> activate(@RequestBody ActivationRequest request) {
-        return ResponseEntity.ok(registerService.activate(request.email(), request.code()));
+        return ResponseEntity.ok(registerService.activate(request.email(), request.activationCode()));
     }
 }

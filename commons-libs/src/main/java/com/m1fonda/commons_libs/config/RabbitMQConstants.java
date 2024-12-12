@@ -51,14 +51,22 @@ public final class RabbitMQConstants {
 
     // Notification Queues & Routing Keys
     public static final String EMAIL_NOTIFICATION_QUEUE = "notification.email.queue";
+    public static final String EMAIL_NOTIFICATION_ACTIVATION_QUEUE = "notification.email.activation.queue";
+    public static final String EMAIL_NOTIFICATION_TRANSACTION_QUEUE = "notification.transaction.queue";
     public static final String EMAIL_NOTIFICATION_DEMAND_REJECTED_KEY = "notification.email.demand.rejected";
     public static final String EMAIL_NOTIFICATION_DEMAND_APPROVED_KEY = "notification.email.demand.approved";
     public static final String EMAIL_NOTIFICATION_ACTIVATION_KEY = "notification.email.activation.key";
-    public static final String EMAIL_NOTIFICATION_CREATION_KEY = "notification.email.creation.key";
-    public static final String EMAIL_DEPOSIT_NOTIFICATION_QUEUE = "notification.email.queue";
-    public static final String EMAIL_DEPOSIT_NOTIFICATION_KEY = "notification.email.deposit.key";
-    public static final String EMAIL_WITHDRAWAL_NOTIFICATION_QUEUE = "notification.email.queue";
-    public static final String EMAIL_WITHDRAWAL_NOTIFICATION_KEY = "notification.email.withdrawal.key";
+    public static final String EMAIL_NOTIFICATION_TRANSACTION_KEY = "notification.transaction.key";
+    // public static final String EMAIL_NOTIFICATION_CREATION_KEY =
+    // "notification.email.creation.key";
+    // public static final String EMAIL_DEPOSIT_NOTIFICATION_QUEUE =
+    // "notification.email.queue";
+    // public static final String EMAIL_DEPOSIT_NOTIFICATION_KEY =
+    // "notification.email.deposit.key";
+    // public static final String EMAIL_WITHDRAWAL_NOTIFICATION_QUEUE =
+    // "notification.email.queue";
+    // public static final String EMAIL_WITHDRAWAL_NOTIFICATION_KEY =
+    // "notification.email.withdrawal.key";
 
     // Deposit, Withdrawal and Transfer queues & routing keys
 
