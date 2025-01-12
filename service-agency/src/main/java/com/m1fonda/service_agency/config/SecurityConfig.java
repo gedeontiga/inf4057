@@ -21,8 +21,7 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(
                                                 authorize -> authorize
                                                                 .requestMatchers("/api/demande/**").permitAll()
-                                                                .requestMatchers("/api/agency/**")
-                                                                .hasAnyRole("MANAGER", "ADMIN"))
+                                                                .requestMatchers("/api/agency/**").authenticated())
                                 .sessionManagement(
                                                 httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
                                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

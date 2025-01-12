@@ -12,12 +12,14 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
-import com.m1fonda.commons_libs.dto.DemandDTO;
+import com.m1fonda.commons_libs.dto.NotificationDTO;
 import com.m1fonda.service_agency.dto.DemandeDTO;
 import com.m1fonda.service_agency.entities.Agence;
 import com.m1fonda.service_agency.entities.Demande;
+import com.m1fonda.service_agency.entities.Managers;
 import com.m1fonda.service_agency.repositories.AgencyRepository;
 import com.m1fonda.service_agency.repositories.DemandeRepository;
+import com.m1fonda.service_agency.repositories.ManagersRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -25,11 +27,13 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class AgencyAccountService {
-        private static final String APPROVED = "APPROVED";
-        private static final String PENDING = "PENDING";
+        private static final String REJETEE = "REJETEE";
+        private static final String APPROVED = "APPROUVEE";
+        private static final String PENDING = "EN_ATTENTE";
         private final RabbitTemplate rabbitTemplate;
         private final DemandeRepository demandeRepository;
         private final AgencyRepository agencyRepository;
+        private final ManagersRepository managerRepository;
 
         public void sendDemande(Demande demande) {
                 demande.setStatus(PENDING);
@@ -58,11 +62,11 @@ public class AgencyAccountService {
 
         public List<DemandeDTO> getDemandes() {
                 User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                Agence agence = agencyRepository.findByAgentsContaining(user.getUsername())
+                Managers managers = managerRepository.findByEmail(user.getUsername())
                                 .orElseThrow(() -> new EntityNotFoundException(
                                                 "Manager not found."));
                 List<DemandeDTO> demandes = new ArrayList<DemandeDTO>();
-                demandeRepository.findByStatusAndNumAgency(PENDING, agence.getNumAgency())
+                demandeRepository.findByStatusAndNumAgency(PENDING, managers.getNumAgency())
                                 .forEach(demande -> demandes.add(DemandeDTO.demandeFactory(demande)));
                 return demandes;
         }
@@ -79,14 +83,17 @@ public class AgencyAccountService {
                 agencyRepository.save(agence);
                 demandeRepository.save(demande);
                 rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
-                                RabbitMQConstants.EMAIL_NOTIFICATION_DEMAND_APPROVED_KEY,
-                                DemandDTO.demandeFactory(demande));
+                                RabbitMQConstants.DEMAND_MAIL_NOTIFICATION_KEY,
+                                NotificationDTO.notifDemandFactory(demande));
         }
 
         public void rejeterDemande(String demandeId) {
-                DemandeDTO demande = DemandeDTO.demandeFactory(demandeRepository.findById(demandeId).orElseThrow());
+
+                Demande demande = demandeRepository.findById(demandeId).orElseThrow();
+                demande.setStatus(REJETEE);
                 rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
-                                RabbitMQConstants.EMAIL_NOTIFICATION_DEMAND_REJECTED_KEY, demande);
+                                RabbitMQConstants.DEMAND_MAIL_NOTIFICATION_KEY,
+                                NotificationDTO.notifDemandFactory(demande));
                 demandeRepository.deleteById(demandeId);
         }
 

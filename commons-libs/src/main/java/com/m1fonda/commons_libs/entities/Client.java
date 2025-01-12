@@ -11,7 +11,7 @@ import lombok.Setter;
 @MappedSuperclass
 public class Client implements Serializable {
 
-    private String cni;
+    protected String cni;
     private String firstName;
     private String lastName;
     protected String email;

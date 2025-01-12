@@ -13,19 +13,19 @@ import com.m1fonda.service_bank.component.SecurityFilter;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Bean
-    SecurityFilterChain agencyFilterChain(HttpSecurity http,
-            SecurityFilter securityFilter) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/bank/**").permitAll()
-                        .requestMatchers("/api/bank-admin/**").hasRole("ADMIN")
-                        .anyRequest().permitAll())
-                .sessionManagement(
-                        httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
-                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
+        @Bean
+        SecurityFilterChain agencyFilterChain(HttpSecurity http,
+                        SecurityFilter securityFilter) throws Exception {
+                http
+                                .csrf(csrf -> csrf.disable())
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/api/bank/**").permitAll()
+                                                .requestMatchers("/api/owner-bank/**").hasRole("OWNER")
+                                                .anyRequest().permitAll())
+                                .sessionManagement(
+                                                httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
+                                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
+                return http.build();
+        }
 }

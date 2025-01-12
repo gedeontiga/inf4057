@@ -14,16 +14,15 @@ import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.AccountDTO;
 import com.m1fonda.commons_libs.dto.AccountRequestTransferDTO;
 import com.m1fonda.commons_libs.dto.AccountResponseTransferDTO;
-import com.m1fonda.commons_libs.dto.AccountTransactionDTO;
-import com.m1fonda.commons_libs.dto.AgencyDTO;
-import com.m1fonda.commons_libs.dto.NotificationRequest;
 import com.m1fonda.commons_libs.dto.UserRequest;
 import com.m1fonda.commons_libs.entities.Demand;
 import com.m1fonda.commons_libs.entities.Status;
+import com.m1fonda.service_account.dto.AccountUpdateDTO;
 import com.m1fonda.service_account.entities.Compte;
 import com.m1fonda.service_account.repositories.CompteRepository;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -40,11 +39,12 @@ public class CompteService {
     @RabbitListener(queues = RabbitMQConstants.ACCOUNT_CREATION_QUEUE)
     public void creerCompte(Demand demand) throws Exception {
         String numAgency = demand.getNumAgency();
-        String uuid = UUID.randomUUID().toString().replace("-", "");
-        String numAccount = uuid.substring(0, 8);
+        Integer uuid = (UUID.randomUUID().toString().replace("-", "")).hashCode();
+        Integer numAccount = uuid > 0 ? uuid : -1 * uuid;
+
         Compte compte = Compte.builder()
                 .userEmail(demand.getEmail())
-                .numAccount(numAccount)
+                .numAccount(numAccount.toString())
                 .balance(demand.getBalance())
                 .status(Status.ACTIF)
                 .createAt(new Date())
@@ -61,34 +61,20 @@ public class CompteService {
                         .firstName(demand.getFirstName())
                         .password(demand.getPassword())
                         .build());
+        rabbitTemplate.convertAndSend(RabbitMQConstants.DEPOSIT_EXCHANGE,
+                RabbitMQConstants.TRANSACTION_ACCOUNT_CREATION_KEY, compte);
+
         compteRepository.save(compte);
     }
 
     @CircuitBreaker(name = SERVICE_COMPTE_CIRCUIT_BREAKER, fallbackMethod = UPDATE_COMPTE_FALLBACK)
     @RabbitListener(queues = RabbitMQConstants.ACCOUNT_UPDATE_QUEUE)
-    public void updateAccount(AccountTransactionDTO account) {
+    public AccountUpdateDTO updateAccount(AccountUpdateDTO account) {
         Compte compte = compteRepository.findByNumAccount(account.numAccount())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
-        double fees = Optional.ofNullable(account.fees()).orElse(0.0);
-        double solde = Optional.ofNullable((account.balance())).orElse(0.0);
-        double newBalance = compte.getBalance() + solde + solde * fees;
-
-        if (newBalance >= 0) {
-            compte.setBalance(newBalance);
-            rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
-                    RabbitMQConstants.NOTIFICATION_TRANSACTION_KEY,
-                    new NotificationRequest(null, compte.getUserEmail(), compte.getNumAgency(), "Transaction Réussie",
-                            "Transaction effectuée avec succès.", new Date()));
-            rabbitTemplate.convertAndSend(RabbitMQConstants.AGENCY_EXCHANGE, RabbitMQConstants.AGENCY_UPDATE_KEY,
-                    AgencyDTO.builder().numAgency(account.numAgency()).numBank(compte.getNumBank())
-                            .capital(account.balance()).build());
-        } else
-            rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
-                    RabbitMQConstants.NOTIFICATION_TRANSACTION_KEY,
-                    new NotificationRequest(null, compte.getUserEmail(), compte.getNumAgency(), "Transaction Échouée",
-                            "Désolé, votre solde est insuffisant pour effectuer cette transaction.", new Date()));
+        compte.setBalance(account.balance());
         compte.setStatus(Optional.ofNullable(account.status()).orElse(compte.getStatus().name()));
-        compteRepository.save(compte);
+        return AccountUpdateDTO.fromAccount(compteRepository.save(compte));
     }
 
     public List<AccountDTO> getAccount(String email) {
@@ -103,9 +89,12 @@ public class CompteService {
         return new AccountResponseTransferDTO(sender.getNumBank(), receiver.getNumBank(), receiver.getUserEmail());
     }
 
-    @RabbitListener(queues = RabbitMQConstants.ACCOUNT_QUEUE)
-    public long countClientByAgency(String numAgency) throws Exception {
+    public long countClientByAgency(String numAgency) {
         return compteRepository.countByNumAgency(numAgency);
+    }
+
+    public long countClientByBank(String numBank) {
+        return compteRepository.countByNumBank(numBank);
     }
 
     public void creerCompteFallback(Demand demand, Throwable throwable) {
@@ -118,5 +107,10 @@ public class CompteService {
         // Logique de repli en cas d'échec du Circuit Breaker
         System.out.println("Fallback - Demande a échoué : " + accountDTO.toString());
         System.out.println("Cause de l'échec : " + throwable.getMessage());
+    }
+
+    public AccountDTO getAccountByAccountId(String numAccount) {
+        return AccountDTO.fromAccount(compteRepository.findByNumAccount(numAccount)
+                .orElseThrow(() -> new EntityNotFoundException("Account not found.")));
     }
 }

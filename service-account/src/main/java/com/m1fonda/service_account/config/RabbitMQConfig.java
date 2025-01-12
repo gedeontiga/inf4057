@@ -2,7 +2,7 @@ package com.m1fonda.service_account.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -23,7 +23,7 @@ public class RabbitMQConfig {
 
     @Bean
     Queue compteCreationQueue() {
-        return new Queue(RabbitMQConstants.ACCOUNT_CREATION_QUEUE, false);
+        return new Queue(RabbitMQConstants.ACCOUNT_CREATION_QUEUE);
     }
 
     @Bean
@@ -37,8 +37,8 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    TopicExchange compteExchange() {
-        return new TopicExchange(RabbitMQConstants.ACCOUNT_EXCHANGE);
+    DirectExchange compteExchange() {
+        return new DirectExchange(RabbitMQConstants.ACCOUNT_EXCHANGE);
     }
 
     Binding bindingCompte() {

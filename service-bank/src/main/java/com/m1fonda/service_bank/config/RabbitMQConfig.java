@@ -19,19 +19,19 @@ public class RabbitMQConfig {
 
     // @Bean
     // Queue bankQueue() {
-    //     return new Queue(RabbitMQConstants, true);
+    // return new Queue(RabbitMQConstants, true);
     // }
 
     // @Bean
-    // TopicExchange requestExchange() {
-    //     return new TopicExchange(request_exchange);
+    // DirectExchange requestExchange() {
+    // return new DirectExchange(request_exchange);
     // }
 
     // @Bean
     // Binding bindingBankQueue() {
-    //     return BindingBuilder.bind(bankQueue())
-    //         .to(requestExchange())
-    //         .with(bank_routing_key);
+    // return BindingBuilder.bind(bankQueue())
+    // .to(requestExchange())
+    // .with(bank_routing_key);
     // }
 
     @Bean
@@ -49,4 +49,3 @@ public class RabbitMQConfig {
         return factory;
     }
 }
-

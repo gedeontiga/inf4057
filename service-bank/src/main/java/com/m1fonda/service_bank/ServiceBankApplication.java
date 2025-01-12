@@ -43,7 +43,7 @@ public class ServiceBankApplication {
 									.contact("6" + rand.nextLong(99999999))
 									.logo(bank.getValue())
 									.type("GLOBAL")
-									.ownerEmail("admin." + bank.getKey().toLowerCase() + "@atg-bank.com")
+									.ownerEmail("owner." + bank.getKey().toLowerCase() + "@atg-bank.com")
 									.externalFee(0.1)
 									.transferFee(0.02)
 									.withdrawFee(0.05)
@@ -57,7 +57,8 @@ public class ServiceBankApplication {
 
 	public void createAgencies(BankModel bank, AgencyRepository agencyRepository) throws RuntimeException {
 		Stream.of("Bastos", "Omnisports", "Poste").forEach(address -> {
-			String numAgency = bank.getBankNumber() + DASH + address + DASH + address.hashCode();
+			Integer addressCode = address.hashCode() > 0 ? address.hashCode() : -1 * address.hashCode();
+			String numAgency = bank.getBankNumber() + DASH + address + DASH + addressCode.toString();
 			if (agencyRepository.findByAddressAndNumAgency(address, numAgency).isEmpty())
 				bank.addAgency(
 						agencyRepository.save(

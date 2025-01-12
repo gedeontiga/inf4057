@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.m1fonda.commons_libs.dto.UserRequest;
 import com.m1fonda.service_user.dto.UserResponse;
 import com.m1fonda.service_user.services.AdminService;
-import com.m1fonda.service_user.services.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,22 +17,16 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/admin")
 public class AdminController {
 
-    private final UserService userService;
     private final AdminService adminService;
 
-    @PostMapping("/update")
-    public ResponseEntity<UserResponse> update(@RequestBody UserRequest admin) {
-        return ResponseEntity.ok(userService.update(admin));
-    }
-
-    @PostMapping("/delete-manager")
+    @PostMapping("/delete-owner")
     public ResponseEntity<Void> deleteManager(@RequestBody String email) {
-        adminService.deleteManager(email);
+        adminService.deleteOwner(email);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/create-manager")
+    @PostMapping("/create-owner")
     public ResponseEntity<UserResponse> createManager(@RequestBody UserRequest request) {
-        return ResponseEntity.ok(adminService.createManager(request));
+        return ResponseEntity.ok(adminService.createOwner(request));
     }
 }

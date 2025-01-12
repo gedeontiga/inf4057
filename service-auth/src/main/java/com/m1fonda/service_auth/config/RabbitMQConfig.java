@@ -2,7 +2,7 @@ package com.m1fonda.service_auth.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -24,17 +24,17 @@ public class RabbitMQConfig {
 
     @Bean
     Queue authCreationQueue() {
-        return new Queue(RabbitMQConstants.AUTH_MANAGER_CREATION_QUEUE, false);
+        return new Queue(RabbitMQConstants.MANAGER_CREATION_QUEUE);
     }
 
     @Bean
     Queue authDeletionQueue() {
-        return new Queue(RabbitMQConstants.AUTH_MANAGER_DELETION_QUEUE, false);
+        return new Queue(RabbitMQConstants.MANAGER_DELETION_QUEUE);
     }
 
     @Bean
-    TopicExchange exchange() {
-        return new TopicExchange(RabbitMQConstants.AUTH_EXCHANGE);
+    DirectExchange exchange() {
+        return new DirectExchange(RabbitMQConstants.AUTH_EXCHANGE);
     }
 
     // Liaison entre l’échange et la file d'attente avec une cle de routage
@@ -46,13 +46,13 @@ public class RabbitMQConfig {
     @Bean
     Binding bindingAuthCreation() {
         return BindingBuilder.bind(authCreationQueue()).to(exchange())
-                .with(RabbitMQConstants.AUTH_MANAGER_CREATION_KEY);
+                .with(RabbitMQConstants.MANAGER_CREATION_KEY);
     }
 
     @Bean
     Binding bindingAuthDeletion() {
         return BindingBuilder.bind(authDeletionQueue()).to(exchange())
-                .with(RabbitMQConstants.AUTH_MANAGER_DELETION_KEY);
+                .with(RabbitMQConstants.MANAGER_DELETION_KEY);
     }
 
     @Bean

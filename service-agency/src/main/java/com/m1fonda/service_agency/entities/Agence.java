@@ -1,11 +1,9 @@
 package com.m1fonda.service_agency.entities;
 
-import java.util.Set;
-
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.m1fonda.commons_libs.entities.Agency;
 
@@ -24,15 +22,24 @@ public class Agence extends Agency {
     private String id;
 
     @Indexed(unique = true)
-    @Field("num_agency")
     private String numAgency;
-    private Set<String> agents;
+
+    @Override
+    @Transient
+    public String getNumAgency() {
+        return super.getNumAgency();
+    }
+
+    @Override
+    @Transient
+    public void setNumAgency(String numAgency) {
+        super.setNumAgency(numAgency);
+    }
 
     @Builder
     public Agence(String numAgency, String name, double capital,
-            String address, String numBank, Set<String> agents) {
+            String address, String numBank) {
         super(numAgency, name, capital, address, numBank);
         this.numAgency = numAgency;
-        this.agents = agents;
     }
 }

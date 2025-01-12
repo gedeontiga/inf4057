@@ -2,7 +2,7 @@ package com.m1fonda.service_user.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -23,13 +23,13 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    TopicExchange exchange() {
-        return new TopicExchange(RabbitMQConstants.USER_EXCHANGE);
+    DirectExchange exchange() {
+        return new DirectExchange(RabbitMQConstants.USER_EXCHANGE);
     }
 
     // Liaison entre l’échange et la file d'attente avec une cle de routage
     @Bean
-    Binding bindingUser(Queue userQueue, TopicExchange exchange) {
+    Binding bindingUser(Queue userQueue, DirectExchange exchange) {
         return BindingBuilder.bind(userQueue).to(exchange).with(RabbitMQConstants.USER_CREATION_KEY);
     }
 

@@ -3,7 +3,7 @@ package com.m1fonda.service_notif.config;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -16,8 +16,13 @@ import com.m1fonda.commons_libs.config.RabbitMQConstants;
 @Configuration
 public class RabbitMQConfig {
     @Bean
-    Queue mailQueue() {
-        return new Queue(RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE, false);
+    Queue mailDemandQueue() {
+        return new Queue(RabbitMQConstants.DEMAND_MAIL_NOTIFICATION_QUEUE, false);
+    }
+
+    @Bean
+    Queue mailManagerQueue() {
+        return new Queue(RabbitMQConstants.USER_MAIL_NOTIFICATION_QUEUE, false);
     }
 
     @Bean
@@ -36,20 +41,20 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    TopicExchange notificationExchange() {
-        return new TopicExchange(RabbitMQConstants.NOTIFICATION_EXCHANGE);
+    DirectExchange notificationExchange() {
+        return new DirectExchange(RabbitMQConstants.NOTIFICATION_EXCHANGE);
     }
 
     @Bean
-    Binding bindingDemandApproved() {
-        return BindingBuilder.bind(mailQueue()).to(notificationExchange())
-                .with(RabbitMQConstants.EMAIL_NOTIFICATION_DEMAND_APPROVED_KEY);
+    Binding bindingDemand() {
+        return BindingBuilder.bind(mailDemandQueue()).to(notificationExchange())
+                .with(RabbitMQConstants.DEMAND_MAIL_NOTIFICATION_KEY);
     }
 
     @Bean
-    Binding bindingDemandRejected() {
-        return BindingBuilder.bind(mailQueue()).to(notificationExchange())
-                .with(RabbitMQConstants.EMAIL_NOTIFICATION_DEMAND_REJECTED_KEY);
+    Binding bindingManager() {
+        return BindingBuilder.bind(mailManagerQueue()).to(notificationExchange())
+                .with(RabbitMQConstants.USER_MAIL_NOTIFICATION_KEY);
     }
 
     @Bean
@@ -68,6 +73,12 @@ public class RabbitMQConfig {
     Binding bindingEmailTransaction() {
         return BindingBuilder.bind(mailTransactionQueue()).to(notificationExchange())
                 .with(RabbitMQConstants.EMAIL_NOTIFICATION_TRANSACTION_KEY);
+    }
+
+    @Bean
+    Binding bindingCreationNotifManager() {
+        return BindingBuilder.bind(mailManagerQueue()).to(notificationExchange())
+                .with(RabbitMQConstants.MANAGER_CREATION_KEY);
     }
 
     @Bean

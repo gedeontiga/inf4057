@@ -16,9 +16,9 @@ import com.m1fonda.service_bank.service.BankService;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("/api/admin-bank")
+@RequestMapping("/api/owner-bank")
 @AllArgsConstructor
-public class AdminBankController {
+public class OwnerBankController {
 
     private final BankService bankService;
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.ActivationRequest;
-import com.m1fonda.commons_libs.dto.DemandDTO;
+import com.m1fonda.commons_libs.dto.NotificationDTO;
 import com.m1fonda.commons_libs.dto.NotificationRequest;
 import com.m1fonda.service_notif.entities.Notification;
 
@@ -37,30 +37,24 @@ public class MailNotificationService {
     }
 
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
-    @RabbitListener(queues = RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE)
-    public void sendApprovedDemandMail(DemandDTO demand) throws Exception {
+    @RabbitListener(queues = RabbitMQConstants.DEMAND_MAIL_NOTIFICATION_QUEUE)
+    public void sendDemandMail(NotificationDTO demand) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        String text = String.format(
-                "Salut Mr./Mme. %s, \n votre demande de creation de compte a ete approuvée et votre compte créé.\nUn autre email vous a été envoyé pour activer votre, merci de procéder a l'activation pour utiliser l'application.",
-                demand.firstName());
         mailMessage.setTo(demand.email());
         mailMessage.setSubject(DEMANDE_TRAITÉE);
         mailMessage.setFrom("gedeon.ambomo@facsciences-uy1.cm"); // Optionnel si Gmail gère "From"
-        mailMessage.setText(text);
+        mailMessage.setText(demand.message());
         javaMailSender.send(mailMessage);
     }
 
     @CircuitBreaker(name = SERVICE_NOTIFICATION_CIRCUIT_BREAKER, fallbackMethod = SEND_MAIL_FALLBACK)
-    @RabbitListener(queues = RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE)
-    public void sendRejectedDemandMail(DemandDTO demand) throws Exception {
+    @RabbitListener(queues = RabbitMQConstants.USER_MAIL_NOTIFICATION_QUEUE)
+    public void sendManagerMail(NotificationDTO demand) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        String text = String.format(
-                "Salut Mr./Mme. %s, \n votre demande de creation de compte a ete rejetée car les informations sur votre CNI ne correspondent pas.\n Merci d'utiliser l'application et a bientôt.",
-                demand.firstName());
         mailMessage.setTo(demand.email());
-        mailMessage.setSubject(DEMANDE_TRAITÉE);
+        mailMessage.setSubject("ALERT MANAGER");
         mailMessage.setFrom("gedeon.ambomo@facsciences-uy1.cm"); // Optionnel si Gmail gère "From"
-        mailMessage.setText(text);
+        mailMessage.setText(demand.message());
         javaMailSender.send(mailMessage);
     }
 

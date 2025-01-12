@@ -16,6 +16,8 @@ public final class RabbitMQConstants {
     // Account Queues & Routing Keys
     public static final String ACCOUNT_QUEUE = "account.queue";
     public static final String ACCOUNT_KEY = "account.key";
+    public static final String TRANSACTION_ACCOUNT_CREATION_QUEUE = "transaction.account.creation.queue";
+    public static final String TRANSACTION_ACCOUNT_CREATION_KEY = "transaction.account.creation.key";
     public static final String ACCOUNT_CREATION_QUEUE = "account.creation.queue";
     public static final String ACCOUNT_CREATION_KEY = "account.creation.key";
     public static final String ACCOUNT_UPDATE_QUEUE = "account.update.queue";
@@ -42,19 +44,24 @@ public final class RabbitMQConstants {
     public static final String USER_UPDATE_KEY = "user.update.key";
 
     // Authentication Queues & Routing Keys
-    public static final String AUTH_MANAGER_DELETION_QUEUE = "auth.manager.deletion.queue";
-    public static final String AUTH_MANAGER_DELETION_KEY = "auth.manager.deletion.key";
-    public static final String AUTH_MANAGER_CREATION_QUEUE = "auth.manager.creation.queue";
-    public static final String AUTH_MANAGER_CREATION_KEY = "auth.manager.creation.key";
+    public static final String AUTH_USER_CREATION_QUEUE = "auth.user.creation.queue";
+    public static final String AUTH_USER_CREATION_KEY = "auth.user.creation.key";
+    public static final String AUTH_USER_DELETION_QUEUE = "auth.user.deletion.queue";
+    public static final String AUTH_USER_DELETION_KEY = "auth.user.deletion.key";
+    public static final String MANAGER_DELETION_QUEUE = "manager.deletion.queue";
+    public static final String MANAGER_CREATION_QUEUE = "manager.creation.queue";
+    public static final String MANAGER_DELETION_KEY = "manager.deletion.key";
+    public static final String MANAGER_CREATION_KEY = "manager.creation.key";
     public static final String AUTH_REGISTER_QUEUE = "user.register.queue";
     public static final String AUTH_REGISTER_KEY = "user.register.key";
 
     // Notification Queues & Routing Keys
-    public static final String EMAIL_NOTIFICATION_QUEUE = "notification.email.queue";
+    public static final String USER_MAIL_NOTIFICATION_QUEUE = "user.mail.notification.queue";
+    public static final String USER_MAIL_NOTIFICATION_KEY = "user.mail.notification.key";
+    public static final String DEMAND_MAIL_NOTIFICATION_QUEUE = "demand.mail.notification.queue";
+    public static final String DEMAND_MAIL_NOTIFICATION_KEY = "notification.email.demand.key";
     public static final String EMAIL_NOTIFICATION_ACTIVATION_QUEUE = "notification.email.activation.queue";
     public static final String EMAIL_NOTIFICATION_TRANSACTION_QUEUE = "notification.transaction.queue";
-    public static final String EMAIL_NOTIFICATION_DEMAND_REJECTED_KEY = "notification.email.demand.rejected";
-    public static final String EMAIL_NOTIFICATION_DEMAND_APPROVED_KEY = "notification.email.demand.approved";
     public static final String EMAIL_NOTIFICATION_ACTIVATION_KEY = "notification.email.activation.key";
     public static final String EMAIL_NOTIFICATION_TRANSACTION_KEY = "notification.transaction.key";
     // public static final String EMAIL_NOTIFICATION_CREATION_KEY =

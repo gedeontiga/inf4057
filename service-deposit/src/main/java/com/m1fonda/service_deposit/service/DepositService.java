@@ -4,14 +4,23 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.amqp.core.ExchangeTypes;
+import org.springframework.amqp.rabbit.annotation.Exchange;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.QueueBinding;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.AccountDTO;
+import com.m1fonda.commons_libs.dto.AgencyUpdateTransaction;
+import com.m1fonda.commons_libs.dto.NotificationRequest;
 import com.m1fonda.service_deposit.dto.DepositRequest;
 import com.m1fonda.service_deposit.dto.DepositResponse;
+import com.m1fonda.service_deposit.model.Compte;
 import com.m1fonda.service_deposit.model.Deposit;
+import com.m1fonda.service_deposit.repository.CompteRepository;
 import com.m1fonda.service_deposit.repository.DepositRepository;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -25,11 +34,25 @@ public class DepositService {
 
     private final DepositRepository depositRepository;
     public final RabbitTemplate rabbitTemplate;
+    private final CompteRepository compteRepository;
+
+    @RabbitListener(bindings = @QueueBinding(value = @Queue(RabbitMQConstants.TRANSACTION_ACCOUNT_CREATION_QUEUE), exchange = @Exchange(value = RabbitMQConstants.DEPOSIT_EXCHANGE, type = ExchangeTypes.DIRECT), key = RabbitMQConstants.TRANSACTION_ACCOUNT_CREATION_KEY))
+    public void createAccount(Compte account) {
+        Compte compte = Compte.builder()
+                .userEmail(account.getUserEmail())
+                .numAccount(account.getNumAccount())
+                .balance(account.getBalance())
+                .numAgency(account.getNumAgency())
+                .build();
+        compteRepository.save(compte);
+    }
 
     @CircuitBreaker(name = "depositCircuitBreaker", fallbackMethod = "depositFallback")
     public DepositResponse newDeposit(DepositRequest request) {
 
         String transactionID = getId();
+        Compte compte = compteRepository.findByNumAccount(request.numAccount())
+                .orElseThrow(() -> new RuntimeException("Account not found"));
 
         Deposit deposit = Deposit.builder()
                 .amount(request.balance())
@@ -39,16 +62,26 @@ public class DepositService {
                 .createdAt(new Date())
                 .build();
 
+        compte.setBalance(compte.getBalance() + request.balance());
         depositRepository.save(deposit);
+        compteRepository.save(compte);
+
+        rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
+                RabbitMQConstants.NOTIFICATION_TRANSACTION_KEY,
+                new NotificationRequest(null, compte.getUserEmail(),
+                        compte.getNumAgency(),
+                        "Depot Réussie",
+                        "Dépot effectue avec succès : "
+                                + compte.getBalance(),
+                        new Date()));
 
         rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_UPDATE_KEY,
-                AccountDTO.builder()
-                        .numAccount(request.numAccount())
-                        .balance(request.balance())
-                        .build());
+                AccountDTO.builder().numAccount(request.numAccount()).balance(compte.getBalance()).build());
+        rabbitTemplate.convertAndSend(RabbitMQConstants.AGENCY_EXCHANGE, RabbitMQConstants.AGENCY_KEY,
+                new AgencyUpdateTransaction(compte.getNumAgency(), request.balance()));
 
         return new DepositResponse(request.numAccount(), request.numAgency(), deposit.getTransactionNum(),
-                deposit.getAmount(), deposit.getCreatedAt());
+                compte.getBalance(), deposit.getCreatedAt());
     }
 
     public List<DepositResponse> getAll() {

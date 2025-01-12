@@ -25,7 +25,8 @@ public class GatewayConfig {
                                                 .path("/api/bank/**")
                                                 .uri("lb://service-bank"))
                                 .route("service-user", r -> r
-                                                .path("/api/user/**", "/api/manager/**", "/api/admin/**")
+                                                .path("/api/user/**", "/api/manager/**", "/api/owner/**",
+                                                                "/api/admin/**")
                                                 .filters(f -> f.filter(authFilter))
                                                 .uri("lb://service-user"))
                                 .route("service-account", r -> r
@@ -41,7 +42,7 @@ public class GatewayConfig {
                                                 .filters(f -> f.filter(authFilter))
                                                 .uri("lb://service-deposit"))
                                 .route("service-bank", r -> r
-                                                .path("/api/admin-bank/**")
+                                                .path("/api/owner-bank/**")
                                                 .filters(f -> f.filter(authFilter))
                                                 .uri("lb://service-bank"))
                                 .route("service-withdrawal", r -> r

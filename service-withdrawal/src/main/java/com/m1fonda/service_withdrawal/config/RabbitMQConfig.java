@@ -3,7 +3,7 @@ package com.m1fonda.service_withdrawal.config;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -22,8 +22,8 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public TopicExchange transactionExchange() {
-        return new TopicExchange(RabbitMQConstants.WITHDRAW_EXCHANGE);
+    public DirectExchange transactionExchange() {
+        return new DirectExchange(RabbitMQConstants.WITHDRAW_EXCHANGE);
     }
 
     @Bean

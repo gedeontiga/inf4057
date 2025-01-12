@@ -1,6 +1,5 @@
 package com.m1fonda.service_agency;
 
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -11,7 +10,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 
 import com.m1fonda.service_agency.entities.Agence;
+import com.m1fonda.service_agency.entities.Managers;
 import com.m1fonda.service_agency.repositories.AgencyRepository;
+import com.m1fonda.service_agency.repositories.ManagersRepository;
 
 @EnableDiscoveryClient
 @SpringBootApplication
@@ -24,7 +25,8 @@ public class ServiceAgencyApplication {
 	}
 
 	@Bean
-	CommandLineRunner start(AgencyRepository agencyRepository) throws RuntimeException {
+	CommandLineRunner start(AgencyRepository agencyRepository, ManagersRepository managersRepository)
+			throws RuntimeException {
 
 		return args -> {
 			final String bankDomainName = "@atg-bank.com";
@@ -32,7 +34,22 @@ public class ServiceAgencyApplication {
 				String numBank = bank + DASH + bank.hashCode();
 				AtomicInteger index = new AtomicInteger(0);
 				Stream.of("Bastos", "Omnisports", "Poste").forEach(address -> {
-					String numAgency = numBank + DASH + address + DASH + address.hashCode();
+					Integer addressCode = address.hashCode() > 0 ? address.hashCode() : -1 * address.hashCode();
+					String numAgency = numBank + DASH + address + DASH + addressCode.toString();
+					String emailManager = "manager" + index.incrementAndGet() + "." + bank.toLowerCase()
+							+ bankDomainName;
+					String emailOwner = "owner." + bank.toLowerCase() + bankDomainName;
+					if (!managersRepository.findByEmail(emailManager).isPresent())
+						managersRepository.save(Managers.builder()
+								.email(emailManager)
+								.numAgency(numAgency)
+								.numCni((bank.hashCode() + address.hashCode() + emailManager.hashCode()) + "").build());
+					if (!managersRepository.findByEmail(emailOwner).isPresent())
+						managersRepository.save(Managers.builder()
+								.email(emailOwner)
+								.numAgency(numAgency)
+								.numCni((bank.hashCode() + address.hashCode() + emailOwner.hashCode()) + "").build());
+
 					if (agencyRepository.findByAddressAndNumAgency(address, numAgency).isEmpty()) {
 						agencyRepository.save(
 								Agence.builder()
@@ -41,8 +58,6 @@ public class ServiceAgencyApplication {
 										.address(address)
 										.name(bank + " " + address)
 										.numBank(numBank)
-										.agents(Set.of("manager" + index.incrementAndGet() + bankDomainName,
-												"admin." + bank.toLowerCase() + bankDomainName))
 										.build());
 					}
 				});

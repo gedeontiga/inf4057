@@ -34,10 +34,11 @@ public class ServiceUserApplication {
 		}
 
 		return args -> {
-			Stream<String> adminStream = Stream.of("admin.uba", "admin.cca");
-			defaultSaveUser(adminStream, userRepository, roleRepository.findByType(RoleType.ADMIN).orElseThrow(),
+			Stream<String> ownerStream = Stream.of("owner.uba", "owner.cca");
+			defaultSaveUser(ownerStream, userRepository, roleRepository.findByType(RoleType.OWNER).orElseThrow(),
 					passwordEncoder);
-			Stream<String> managerStream = Stream.of("manager1", "manager2", "manager3");
+			Stream<String> managerStream = Stream.of("manager1.uba", "manager2.uba", "manager3.uba", "manager1.cca",
+					"manager2.cca", "manager3.cca");
 			defaultSaveUser(managerStream, userRepository, roleRepository.findByType(RoleType.MANAGER).orElseThrow(),
 					passwordEncoder);
 		};
@@ -50,14 +51,17 @@ public class ServiceUserApplication {
 
 		stream.forEach(username -> {
 			String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+			String name = username.replace(".", " ");
+			String firstName = name.split(" ")[0];
+			String lastName = name.split(" ")[1];
 			StringBuilder result = new StringBuilder(11);
 			new Random().ints(11, 0, characters.length()).forEach(i -> result.append(characters.charAt(i)));
 			userRepository.save(userRepository.findByEmail(username + bankDomainName)
 					.orElse(
-							Users.builder().cni(result.toString())
+							Users.builder().numCni(result.toString())
 									.email(username + bankDomainName)
-									.firstName(username)
-									.lastName(username)
+									.firstName(firstName)
+									.lastName(lastName)
 									.phoneNumber(Long.parseLong("600000000") + random.nextLong(99999999))
 									.profilePicture(
 											"https://www.pngarts.com/files/10/Default-Profile-Picture-Transparent-Image.png")

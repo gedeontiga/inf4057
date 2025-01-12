@@ -2,7 +2,7 @@ package com.m1fonda.service_agency.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -31,18 +31,13 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Queue agencyFindAllQueue() {
-        return new Queue(RabbitMQConstants.AGENCY_FIND_ALL_QUEUE);
-    }
-
-    @Bean
     Queue agencyUpdateQueue() {
         return new Queue(RabbitMQConstants.AGENCY_UPDATE_QUEUE);
     }
 
     @Bean
-    TopicExchange agencyExchange() {
-        return new TopicExchange(RabbitMQConstants.AGENCY_EXCHANGE);
+    DirectExchange agencyExchange() {
+        return new DirectExchange(RabbitMQConstants.AGENCY_EXCHANGE);
     }
 
     @Bean
@@ -59,12 +54,6 @@ public class RabbitMQConfig {
     @Bean
     Binding bindingAgencyDelete() {
         return BindingBuilder.bind(agencyDeleteQueue()).to(agencyExchange()).with(RabbitMQConstants.AGENCY_DELETE_KEY);
-    }
-
-    @Bean
-    Binding bindingAgencyFindAll() {
-        return BindingBuilder.bind(agencyFindAllQueue()).to(agencyExchange())
-                .with(RabbitMQConstants.AGENCY_FIND_ALL_KEY);
     }
 
     @Bean

@@ -23,7 +23,9 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(authorize -> authorize
                                                 .requestMatchers("/api/user/**").authenticated()
                                                 .requestMatchers("/api/manager/**").hasRole("MANAGER")
-                                                .requestMatchers("/api/admin/**").hasRole("ADMIN"))
+                                                .requestMatchers("/api/owner/**").hasRole("OWNER")
+                                                .requestMatchers("/api/admin/**").hasRole(
+                                                                "ADMIN"))
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

@@ -1,10 +1,10 @@
 package com.m1fonda.service_user.entities;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.m1fonda.commons_libs.entities.Client;
 
@@ -21,16 +21,42 @@ public class Users extends Client {
 
     @Id
     private String id;
-    @Field("users_email")
     @Indexed(unique = true)
     private String email;
+    @Indexed(unique = true)
+    private String numCni;
     @DocumentReference
     private Role role;
 
+    @Override
+    @Transient
+    public String getEmail() {
+        return super.getEmail();
+    }
+
+    @Override
+    @Transient
+    public void setEmail(String email) {
+        super.setEmail(email);
+    }
+
+    @Override
+    @Transient
+    public String getCni() {
+        return super.getCni();
+    }
+
+    @Override
+    @Transient
+    public void setCni(String numCni) {
+        super.setCni(numCni);
+    }
+
     @Builder
     public Users(String cni, String firstName, String lastName, String email, Long phoneNumber, String profilePicture,
-            Role role, boolean enabled) {
+            String numCni, Role role, boolean enabled) {
         super(cni, firstName, lastName, email, phoneNumber, profilePicture);
+        this.numCni = numCni;
         this.email = email;
         this.role = role;
     }

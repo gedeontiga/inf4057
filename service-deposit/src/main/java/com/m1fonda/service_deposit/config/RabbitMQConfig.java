@@ -18,8 +18,8 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public TopicExchange transactionExchange() {
-        return new TopicExchange(RabbitMQConstants.DEPOSIT_EXCHANGE);
+    public DirectExchange transactionExchange() {
+        return new DirectExchange(RabbitMQConstants.DEPOSIT_EXCHANGE);
     }
 
     @Bean

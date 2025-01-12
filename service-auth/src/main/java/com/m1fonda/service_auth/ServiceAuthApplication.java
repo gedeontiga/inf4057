@@ -31,10 +31,14 @@ public class ServiceAuthApplication {
 		}
 
 		return args -> {
-			Stream<String> adminStream = Stream.of("admin.uba", "admin.cca");
+			Stream<String> adminStream = Stream.of("admin1", "admin2");
 			defaultSaveUser(adminStream, userRepository, roleRepository.findByType(RoleType.ADMIN).orElseThrow(),
 					passwordEncoder);
-			Stream<String> managerStream = Stream.of("manager1", "manager2", "manager3");
+			Stream<String> ownerStream = Stream.of("owner.uba", "owner.cca");
+			defaultSaveUser(ownerStream, userRepository, roleRepository.findByType(RoleType.OWNER).orElseThrow(),
+					passwordEncoder);
+			Stream<String> managerStream = Stream.of("manager1.uba", "manager2.uba", "manager3.uba", "manager1.cca",
+					"manager2.cca", "manager3.cca");
 			defaultSaveUser(managerStream, userRepository, roleRepository.findByType(RoleType.MANAGER).orElseThrow(),
 					passwordEncoder);
 		};

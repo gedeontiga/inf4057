@@ -21,6 +21,16 @@ public enum RoleType {
                                         PermissionType.ADMIN_READ_ALL,
                                         PermissionType.ADMIN_UPDATE_ALL,
                                         PermissionType.ADMIN_DELETE_ALL)),
+        OWNER(
+                        Set.of(
+                                        PermissionType.OWNER_CREATE_BANK,
+                                        PermissionType.OWNER_READ_BANK,
+                                        PermissionType.OWNER_UPDATE_BANK,
+                                        PermissionType.OWNER_DELETE_BANK,
+                                        PermissionType.OWNER_GET_ALL_AGENCIES,
+                                        PermissionType.OWNER_UPDATE_AGENCY,
+                                        PermissionType.OWNER_DELETE_AGENCY,
+                                        PermissionType.OWNER_CREATE_AGENCY)),
         MANAGER(
                         Set.of(
                                         PermissionType.MANAGER_CREATE_USER,

@@ -4,20 +4,30 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.amqp.core.ExchangeTypes;
+import org.springframework.amqp.rabbit.annotation.Exchange;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.QueueBinding;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import com.m1fonda.service_withdrawal.dto.WithdrawalRequest;
 import com.m1fonda.service_withdrawal.dto.WithdrawalResponse;
+import com.m1fonda.service_withdrawal.model.Compte;
 import com.m1fonda.service_withdrawal.model.Withdrawal;
+import com.m1fonda.service_withdrawal.repository.CompteRepository;
 import com.m1fonda.service_withdrawal.repository.WithdrawalRepository;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import com.m1fonda.commons_libs.config.RabbitMQConstants;
-import com.m1fonda.commons_libs.dto.AccountTransactionDTO;
+import com.m1fonda.commons_libs.dto.AccountDTO;
+import com.m1fonda.commons_libs.dto.AgencyUpdateTransaction;
+import com.m1fonda.commons_libs.dto.NotificationRequest;
 
 @Slf4j
 @Service
@@ -27,6 +37,18 @@ public class WithdrawalService {
 
     private final WithdrawalRepository withdrawalRepository;
     public final RabbitTemplate rabbitTemplate;
+    private final CompteRepository compteRepository;
+
+    @RabbitListener(bindings = @QueueBinding(value = @Queue(RabbitMQConstants.TRANSACTION_ACCOUNT_CREATION_QUEUE), exchange = @Exchange(value = RabbitMQConstants.WITHDRAW_EXCHANGE, type = ExchangeTypes.DIRECT), key = RabbitMQConstants.TRANSACTION_ACCOUNT_CREATION_KEY))
+    public void createAccount(Compte account) {
+        Compte compte = Compte.builder()
+                .userEmail(account.getUserEmail())
+                .numAccount(account.getNumAccount())
+                .balance(account.getBalance())
+                .numAgency(account.getNumAgency())
+                .build();
+        compteRepository.save(compte);
+    }
 
     @CircuitBreaker(name = "withdrawalCircuitBreaker", fallbackMethod = "withdrawalFallback")
     public WithdrawalResponse newWithdrawal(WithdrawalRequest request) {
@@ -42,15 +64,41 @@ public class WithdrawalService {
                 .createdAt(new Date())
                 .build();
 
-        withdrawalRepository.save(withdrawal);
+        Compte account = compteRepository.findByNumAccount(request.accountNum())
+                .orElseThrow(() -> new EntityNotFoundException("Reciever account not found"));
+        double newBalance = account.getBalance() - (request.amount() + request.amount() * request.fees());
 
-        rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_UPDATE_KEY,
-                AccountTransactionDTO.builder()
-                        .numAccount(request.accountNum())
-                        .numAgency(request.agencyNum())
-                        .balance(-1 * (request.amount()))
-                        .fees(request.fees())
-                        .build());
+        if (newBalance >= 0) {
+            account.setBalance(newBalance);
+            rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
+                    RabbitMQConstants.NOTIFICATION_TRANSACTION_KEY,
+                    new NotificationRequest(null, account.getUserEmail(),
+                            account.getNumAgency(),
+                            "Retrait Réussie",
+                            "Retrait effectuée avec succès, nouveau solde : " + account.getBalance(), new Date()));
+
+            rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE,
+                    RabbitMQConstants.ACCOUNT_UPDATE_KEY,
+                    AccountDTO.builder().numAccount(request.accountNum())
+                            .balance(account.getBalance()).build());
+
+            rabbitTemplate.convertAndSend(RabbitMQConstants.AGENCY_EXCHANGE, RabbitMQConstants.AGENCY_KEY,
+                    new AgencyUpdateTransaction(account.getNumAgency(),
+                            -1 * request.amount()));
+        } else {
+            rabbitTemplate.convertAndSend(RabbitMQConstants.NOTIFICATION_EXCHANGE,
+                    RabbitMQConstants.NOTIFICATION_TRANSACTION_KEY,
+                    new NotificationRequest(null, account.getUserEmail(),
+                            account.getNumAgency(),
+                            "Retrait Échouée",
+                            "Désolé, votre solde est insuffisant pour effectuer cette transaction.",
+                            new Date()));
+            throw new IllegalArgumentException("Balance Insuficient");
+        }
+
+        compteRepository.save(account);
+
+        withdrawalRepository.save(withdrawal);
 
         return WithdrawalResponse.fromWithdrawal(withdrawal);
     }
