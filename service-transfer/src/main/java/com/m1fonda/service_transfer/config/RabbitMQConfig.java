@@ -13,25 +13,42 @@ import com.m1fonda.commons_libs.config.*;
 public class RabbitMQConfig {
 
     @Bean
-    public Queue transferPendingQueue() {
+    Queue transferPendingQueue() {
         return new Queue(RabbitMQConstants.TRANSFER_QUEUE, true);
     }
 
     @Bean
-    public DirectExchange transactionExchange() {
+    DirectExchange transferExchange() {
         return new DirectExchange(RabbitMQConstants.TRANSFER_EXCHANGE);
     }
 
     @Bean
-    public Binding binding() {
+    Binding binding() {
         return BindingBuilder
                 .bind(transferPendingQueue())
-                .to(transactionExchange())
+                .to(transferExchange())
                 .with(RabbitMQConstants.TRANSFER_KEY);
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+    Queue transferQueue() {
+        return new Queue(RabbitMQConstants.TRANSFER_ACCOUNT_CREATION_QUEUE, false);
+    }
+
+    @Bean
+    FanoutExchange transactionExchange() {
+        return new FanoutExchange(RabbitMQConstants.TRANSACTION_EXCHANGE);
+    }
+
+    @Bean
+    Binding bindingTransaction() {
+        return BindingBuilder
+                .bind(transferQueue())
+                .to(transactionExchange());
+    }
+
+    @Bean
+    RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
         template.setMessageConverter(new Jackson2JsonMessageConverter());
         return template;

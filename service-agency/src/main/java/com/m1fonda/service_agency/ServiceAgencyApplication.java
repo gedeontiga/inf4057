@@ -47,7 +47,7 @@ public class ServiceAgencyApplication {
 					if (!managersRepository.findByEmail(emailOwner).isPresent())
 						managersRepository.save(Managers.builder()
 								.email(emailOwner)
-								.numAgency(numAgency)
+								.numAgency("ALL")
 								.numCni((bank.hashCode() + address.hashCode() + emailOwner.hashCode()) + "").build());
 
 					if (agencyRepository.findByAddressAndNumAgency(address, numAgency).isEmpty()) {

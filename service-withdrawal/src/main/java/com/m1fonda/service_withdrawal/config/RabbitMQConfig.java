@@ -4,6 +4,7 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -17,25 +18,42 @@ import com.m1fonda.commons_libs.config.RabbitMQConstants;
 public class RabbitMQConfig {
 
     @Bean
-    public Queue withdrawalPendingQueue() {
+    Queue withdrawalPendingQueue() {
         return new Queue(RabbitMQConstants.WITHDRAW_QUEUE, true);
     }
 
     @Bean
-    public DirectExchange transactionExchange() {
+    DirectExchange withdrawExchange() {
         return new DirectExchange(RabbitMQConstants.WITHDRAW_EXCHANGE);
     }
 
     @Bean
-    public Binding binding() {
+    Binding binding() {
         return BindingBuilder
                 .bind(withdrawalPendingQueue())
-                .to(transactionExchange())
+                .to(withdrawExchange())
                 .with(RabbitMQConstants.WITHDRAW_KEY);
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+    Queue withdrawalQueue() {
+        return new Queue(RabbitMQConstants.WITHDRAWAL_ACCOUNT_CREATION_QUEUE, false);
+    }
+
+    @Bean
+    FanoutExchange transactionExchange() {
+        return new FanoutExchange(RabbitMQConstants.TRANSACTION_EXCHANGE);
+    }
+
+    @Bean
+    Binding bindingTransaction() {
+        return BindingBuilder
+                .bind(withdrawalQueue())
+                .to(transactionExchange());
+    }
+
+    @Bean
+    RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
         template.setMessageConverter(new Jackson2JsonMessageConverter());
         return template;

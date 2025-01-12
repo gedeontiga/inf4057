@@ -4,10 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.amqp.core.ExchangeTypes;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
@@ -39,7 +35,7 @@ public class TransferService {
         private final RabbitTemplate rabbitTemplate;
         private final CompteRepository compteRepository;
 
-        @RabbitListener(bindings = @QueueBinding(value = @Queue(RabbitMQConstants.TRANSACTION_ACCOUNT_CREATION_QUEUE), exchange = @Exchange(value = RabbitMQConstants.TRANSFER_EXCHANGE, type = ExchangeTypes.DIRECT), key = RabbitMQConstants.TRANSACTION_ACCOUNT_CREATION_KEY))
+        @RabbitListener(queues = RabbitMQConstants.TRANSFER_ACCOUNT_CREATION_QUEUE)
         public void createAccount(Compte account) {
                 Compte compte = Compte.builder()
                                 .userEmail(account.getUserEmail())

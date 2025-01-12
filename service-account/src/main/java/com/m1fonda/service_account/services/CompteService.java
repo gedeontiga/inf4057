@@ -61,8 +61,8 @@ public class CompteService {
                         .firstName(demand.getFirstName())
                         .password(demand.getPassword())
                         .build());
-        rabbitTemplate.convertAndSend(RabbitMQConstants.DEPOSIT_EXCHANGE,
-                RabbitMQConstants.TRANSACTION_ACCOUNT_CREATION_KEY, compte);
+        rabbitTemplate.convertAndSend(RabbitMQConstants.TRANSACTION_EXCHANGE,
+                "", compte);
 
         compteRepository.save(compte);
     }

@@ -9,13 +9,15 @@ public record UserResponse(
         String firstName,
         String lastName,
         String email,
-        Long phoneNumber) {
+        Long phoneNumber,
+        String role) {
     public static UserResponse fromUser(Users user) {
         return new UserResponse(
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
-                user.getPhoneNumber());
+                user.getPhoneNumber(),
+                user.getRole().getType().name());
     }
 
 }

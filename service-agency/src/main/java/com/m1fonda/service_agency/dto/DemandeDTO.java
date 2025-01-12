@@ -10,10 +10,13 @@ public record DemandeDTO(
         String status,
         Long phoneNumber,
         Double balance,
+        String cni,
+        String urlRectoCni,
+        String urlVersoCni,
         String numAgency) {
     public static DemandeDTO demandeFactory(Demande demande) {
         return new DemandeDTO(demande.getId(), demande.getFirstName(), demande.getLastName(), demande.getEmail(),
-                demande.getStatus(),
-                demande.getPhoneNumber(), demande.getBalance(), demande.getNumAgency());
+                demande.getStatus(), demande.getPhoneNumber(), demande.getBalance(), demande.getCni(),
+                demande.getUrlRectoCni(), demande.getUrlVersoCni(), demande.getNumAgency());
     }
 }

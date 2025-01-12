@@ -8,6 +8,7 @@ public final class RabbitMQConstants {
     public static final String USER_EXCHANGE = "bank.user.exchange";
     public static final String NOTIFICATION_EXCHANGE = "bank.notification.exchange";
     public static final String AUTH_EXCHANGE = "bank.auth.exchange";
+    public static final String TRANSACTION_EXCHANGE = "bank.transaction.exchange";
 
     // Bank Queues & Routing Keys
     public static final String BANK_QUEUE = "bank.queue";
@@ -16,7 +17,9 @@ public final class RabbitMQConstants {
     // Account Queues & Routing Keys
     public static final String ACCOUNT_QUEUE = "account.queue";
     public static final String ACCOUNT_KEY = "account.key";
-    public static final String TRANSACTION_ACCOUNT_CREATION_QUEUE = "transaction.account.creation.queue";
+    public static final String DEPOSIT_ACCOUNT_CREATION_QUEUE = "deposit.account.creation.queue";
+    public static final String WITHDRAWAL_ACCOUNT_CREATION_QUEUE = "withdrawal.account.creation.queue";
+    public static final String TRANSFER_ACCOUNT_CREATION_QUEUE = "transfer.account.creation.queue";
     public static final String TRANSACTION_ACCOUNT_CREATION_KEY = "transaction.account.creation.key";
     public static final String ACCOUNT_CREATION_QUEUE = "account.creation.queue";
     public static final String ACCOUNT_CREATION_KEY = "account.creation.key";

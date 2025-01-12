@@ -23,7 +23,7 @@ public class RabbitMQConfig {
 
     @Bean
     Queue compteCreationQueue() {
-        return new Queue(RabbitMQConstants.ACCOUNT_CREATION_QUEUE);
+        return new Queue(RabbitMQConstants.ACCOUNT_CREATION_QUEUE, false);
     }
 
     @Bean
