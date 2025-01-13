@@ -84,6 +84,10 @@ services:
       - SPRING_APPLICATION_NAME=service-notif
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+    env_file:
+      - .env
     networks:
       - microservices_network
 

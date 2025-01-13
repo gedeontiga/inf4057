@@ -24,6 +24,7 @@ import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.AccountDTO;
 import com.m1fonda.commons_libs.dto.AgencyUpdateTransaction;
 import com.m1fonda.commons_libs.dto.NotificationRequest;
+import com.m1fonda.commons_libs.dto.TransactionUpdateAccount;
 
 @Slf4j
 @Service
@@ -43,6 +44,14 @@ public class WithdrawalService {
                 .balance(account.getBalance())
                 .numAgency(account.getNumAgency())
                 .build();
+        compteRepository.save(compte);
+    }
+
+    @RabbitListener(queues = RabbitMQConstants.WITHDRAWAL_ACCOUNT_UPDATE_QUEUE)
+    public void updateAccount(TransactionUpdateAccount account) {
+        Compte compte = compteRepository.findByNumAccount(account.numAccount())
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+        compte.setBalance(account.balance());
         compteRepository.save(compte);
     }
 
@@ -78,6 +87,8 @@ public class WithdrawalService {
                     AccountDTO.builder().numAccount(request.accountNum())
                             .balance(account.getBalance()).build());
 
+            rabbitTemplate.convertAndSend(RabbitMQConstants.TRANSACTION_UPDATE_EXCHANGE, "",
+                    new TransactionUpdateAccount(account.getNumAccount(), account.getBalance()));
             rabbitTemplate.convertAndSend(RabbitMQConstants.AGENCY_EXCHANGE, RabbitMQConstants.AGENCY_KEY,
                     new AgencyUpdateTransaction(account.getNumAgency(),
                             -1 * request.amount()));

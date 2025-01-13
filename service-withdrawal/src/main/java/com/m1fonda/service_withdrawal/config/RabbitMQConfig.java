@@ -53,6 +53,23 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    Queue accountUpdateQueue() {
+        return new Queue(RabbitMQConstants.WITHDRAWAL_ACCOUNT_UPDATE_QUEUE, false);
+    }
+
+    @Bean
+    FanoutExchange transactionAccountUpdateExchange() {
+        return new FanoutExchange(RabbitMQConstants.TRANSACTION_UPDATE_EXCHANGE);
+    }
+
+    @Bean
+    Binding bindingAccountUpdate() {
+        return BindingBuilder
+                .bind(accountUpdateQueue())
+                .to(transactionExchange());
+    }
+
+    @Bean
     RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
         template.setMessageConverter(new Jackson2JsonMessageConverter());

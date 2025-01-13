@@ -1,6 +1,7 @@
 com/m1fonda/commons_libs/dto/ActivationRequest$ActivationRequestBuilder.class
 com/m1fonda/commons_libs/dto/AccountDepositWithdrawalResponse.class
 com/m1fonda/commons_libs/dto/AccountResponseTransferDTO.class
+com/m1fonda/commons_libs/dto/TransactionUpdateAccount.class
 com/m1fonda/commons_libs/dto/AccountTransactionDTO$AccountTransactionDTOBuilder.class
 com/m1fonda/commons_libs/entities/Account.class
 com/m1fonda/commons_libs/dto/UserRequest$UserRequestBuilder.class

@@ -41,6 +41,23 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    Queue accountUpdateQueue() {
+        return new Queue(RabbitMQConstants.TRANSFER_ACCOUNT_UPDATE_QUEUE, false);
+    }
+
+    @Bean
+    FanoutExchange transactionAccountUpdateExchange() {
+        return new FanoutExchange(RabbitMQConstants.TRANSACTION_UPDATE_EXCHANGE);
+    }
+
+    @Bean
+    Binding bindingAccountUpdate() {
+        return BindingBuilder
+                .bind(accountUpdateQueue())
+                .to(transactionExchange());
+    }
+
+    @Bean
     Binding bindingTransaction() {
         return BindingBuilder
                 .bind(transferQueue())

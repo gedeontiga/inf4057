@@ -12,6 +12,7 @@ import com.m1fonda.commons_libs.config.RabbitMQConstants;
 import com.m1fonda.commons_libs.dto.AccountDTO;
 import com.m1fonda.commons_libs.dto.AgencyUpdateTransaction;
 import com.m1fonda.commons_libs.dto.NotificationRequest;
+import com.m1fonda.commons_libs.dto.TransactionUpdateAccount;
 import com.m1fonda.service_deposit.dto.DepositRequest;
 import com.m1fonda.service_deposit.dto.DepositResponse;
 import com.m1fonda.service_deposit.model.Compte;
@@ -40,6 +41,14 @@ public class DepositService {
                 .balance(account.getBalance())
                 .numAgency(account.getNumAgency())
                 .build();
+        compteRepository.save(compte);
+    }
+
+    @RabbitListener(queues = RabbitMQConstants.DEPOSIT_ACCOUNT_UPDATE_QUEUE)
+    public void updateAccount(TransactionUpdateAccount account) {
+        Compte compte = compteRepository.findByNumAccount(account.numAccount())
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+        compte.setBalance(account.balance());
         compteRepository.save(compte);
     }
 
@@ -73,6 +82,10 @@ public class DepositService {
 
         rabbitTemplate.convertAndSend(RabbitMQConstants.ACCOUNT_EXCHANGE, RabbitMQConstants.ACCOUNT_UPDATE_KEY,
                 AccountDTO.builder().numAccount(request.numAccount()).balance(compte.getBalance()).build());
+
+        rabbitTemplate.convertAndSend(RabbitMQConstants.TRANSACTION_UPDATE_EXCHANGE, "",
+                new TransactionUpdateAccount(compte.getNumAccount(), compte.getBalance()));
+
         rabbitTemplate.convertAndSend(RabbitMQConstants.AGENCY_EXCHANGE, RabbitMQConstants.AGENCY_KEY,
                 new AgencyUpdateTransaction(compte.getNumAgency(), request.balance()));
 

@@ -28,6 +28,7 @@
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/BankResponseDTO.java
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/AccountTransferRequest.java
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/NotificationRequest.java
+/home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/TransactionUpdateAccount.java
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/DemandDTO.java
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/config/RabbitMQConstants.java
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/UserCreationRequest.java
