@@ -31,7 +31,7 @@ public class CompteController {
     @GetMapping("/get-account")
     public List<AccountDTO> getAccount() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return accountService.getAccount(user.getUsername());
+        return accountService.getAccounts(user.getUsername());
     }
 
     @GetMapping("/get-account/{numAccount}")

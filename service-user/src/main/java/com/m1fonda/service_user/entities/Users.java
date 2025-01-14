@@ -1,10 +1,10 @@
 package com.m1fonda.service_user.entities;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.m1fonda.commons_libs.entities.Client;
 
@@ -21,41 +21,41 @@ public class Users extends Client {
 
     @Id
     private String id;
+    @Field(name = "Email")
     @Indexed(unique = true)
     private String email;
+    @Field(name = "NumCni")
     @Indexed(unique = true)
     private String numCni;
+    private String profilePicture;
     @DocumentReference
     private Role role;
 
     @Override
-    @Transient
     public String getEmail() {
-        return super.getEmail();
+        return this.email;
     }
 
     @Override
-    @Transient
     public void setEmail(String email) {
-        super.setEmail(email);
+        this.email = email;
     }
 
     @Override
-    @Transient
-    public String getCni() {
-        return super.getCni();
+    public String getNumCni() {
+        return this.numCni;
     }
 
     @Override
-    @Transient
-    public void setCni(String numCni) {
-        super.setCni(numCni);
+    public void setNumCni(String numCni) {
+        this.numCni = numCni;
     }
 
     @Builder
     public Users(String cni, String firstName, String lastName, String email, Long phoneNumber, String profilePicture,
             String numCni, Role role, boolean enabled) {
-        super(cni, firstName, lastName, email, phoneNumber, profilePicture);
+        super(firstName, lastName, phoneNumber);
+        this.profilePicture = profilePicture;
         this.numCni = numCni;
         this.email = email;
         this.role = role;

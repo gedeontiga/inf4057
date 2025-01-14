@@ -7,10 +7,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import com.m1fonda.service_account.entities.Compte;
+import com.m1fonda.service_account.entities.Users;
 
 @Repository
 public interface CompteRepository extends MongoRepository<Compte, String> {
-    List<Compte> findByUserEmail(String userEmail);
+    List<Compte> findByUser(Users user);
 
     long countByNumAgency(String numAgency);
 

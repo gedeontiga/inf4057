@@ -11,21 +11,16 @@ import lombok.Setter;
 @MappedSuperclass
 public class Client implements Serializable {
 
-    protected String cni;
+    protected String numCni;
     private String firstName;
     private String lastName;
     protected String email;
     private Long phoneNumber;
-    private String profilePicture;
 
-    protected Client(String cni, String firstName, String lastName, String email, Long phoneNumber,
-            String profilePicture) {
-        this.cni = cni;
+    protected Client(String firstName, String lastName, Long phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
         this.phoneNumber = phoneNumber;
-        this.profilePicture = profilePicture;
     }
 
     protected Client() {

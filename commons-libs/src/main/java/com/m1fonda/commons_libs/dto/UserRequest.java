@@ -13,14 +13,14 @@ public record UserRequest(
                 String lastName,
                 Long phoneNumber,
                 String profilePicture) {
-        public static UserRequest fromUser(Client user, String password) {
+        public static UserRequest fromUser(Client user, String password, String profilePicture) {
                 return new UserRequest(
                                 user.getEmail(),
                                 password,
-                                user.getCni(),
+                                user.getNumCni(),
                                 user.getFirstName(),
                                 user.getLastName(),
                                 user.getPhoneNumber(),
-                                user.getProfilePicture());
+                                profilePicture);
         }
 }

@@ -18,7 +18,7 @@ public record ManagerCreationRequest(
         return new ManagerCreationRequest(
                 user.getEmail(),
                 password,
-                user.getCni(),
+                user.getNumCni(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getPhoneNumber(),

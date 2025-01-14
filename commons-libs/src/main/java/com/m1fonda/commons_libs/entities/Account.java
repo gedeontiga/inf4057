@@ -12,7 +12,6 @@ public class Account implements Serializable {
     private String numAccount;
     private Double balance;
     protected String numAgency;
-    protected String userEmail;
 
     protected Account(String numAccount, Double balance, String numAgency) {
         this.numAccount = numAccount;

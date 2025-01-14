@@ -3,7 +3,6 @@ package com.m1fonda.service_transfer.model;
 // import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.m1fonda.commons_libs.entities.Account;
 
@@ -23,17 +22,12 @@ public class Compte extends Account {
     private String id;
 
     @Indexed(unique = true)
-    @Field(name = "userMail")
     private String userEmail;
 
-    @Override
-    // @Transient
     public String getUserEmail() {
         return this.userEmail;
     }
 
-    @Override
-    // @Transient
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }

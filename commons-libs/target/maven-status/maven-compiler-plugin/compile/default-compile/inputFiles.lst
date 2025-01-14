@@ -16,6 +16,7 @@
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/DepositResponse.java
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/UserResponse.java
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/AnnounceDTO.java
+/home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/ErrorResponse.java
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/entities/Announce.java
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/Main.java
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/UserRequest.java
@@ -25,6 +26,7 @@
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/AccountDepositWithdrawalResponse.java
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/AccountRequestTransferDTO.java
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/TransferRequestDTO.java
+/home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/UserInfoUpdate.java
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/BankResponseDTO.java
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/AccountTransferRequest.java
 /home/gedeon/Documents/App/inf4057/commons-libs/src/main/java/com/m1fonda/commons_libs/dto/NotificationRequest.java

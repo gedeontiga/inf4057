@@ -66,7 +66,7 @@ public class RabbitMQConfig {
     Binding bindingAccountUpdate() {
         return BindingBuilder
                 .bind(accountUpdateQueue())
-                .to(transactionExchange());
+                .to(transactionAccountUpdateExchange());
     }
 
     @Bean
