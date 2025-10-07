@@ -2,10 +2,28 @@
     "java.compile.nullAnalysis.mode": "disabled",
     "java.configuration.updateBuildConfiguration": "automatic",
     "cSpell.words": [
+        "configserver",
+        "customexceptions",
+        "datname",
+        "dblink",
+        "dbname",
+        "exceptionshandler",
         "firstname",
+        "gedeon",
+        "healthcheck",
+        "INITDB",
         "lastname",
+        "mockito",
+        "mongodb",
+        "mysql",
+        "nullable",
         "rabbitmq",
+        "rnwood",
         "routingkey",
+        "springframework",
         "urlbank"
     ],
+    "cSpell.enabledFileTypes": {
+        "xml": false
+    },
 }

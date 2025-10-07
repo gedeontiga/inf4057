@@ -1,8 +1,21 @@
 package com.m1fonda.service_user;
 
+import java.io.IOException;
+import java.util.Random;
+import java.util.stream.Stream;
+
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.m1fonda.service_user.entities.Role;
+import com.m1fonda.service_user.entities.RoleType;
+import com.m1fonda.service_user.entities.Users;
+import com.m1fonda.service_user.repositories.RoleRepository;
+import com.m1fonda.service_user.repositories.UserRepository;
 
 @EnableDiscoveryClient
 @SpringBootApplication
@@ -12,20 +25,51 @@ public class ServiceUserApplication {
 		SpringApplication.run(ServiceUserApplication.class, args);
 	}
 
-	// @Bean
-	// CommandLineRunner start(UserRepository userRepository) {
-	// Random random = new Random();
-	// return args -> {
-	// Stream.of("Test", "Try", "Catch").forEach(username -> {
-	// String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-	// StringBuilder result = new StringBuilder(9);
-	// new Random().ints(9, 0, characters.length()).forEach(i ->
-	// result.append(characters.charAt(i)));
-	// userRepository.save(new Users(null, username, result.toString(), username +
-	// "@example.com",
-	// random.nextLong(999999999)));
-	// });
-	// userRepository.findAll().forEach(System.out::println);
-	// };
-	// }
+	@Bean
+	CommandLineRunner start(UserRepository userRepository, RoleRepository roleRepository,
+			PasswordEncoder passwordEncoder) throws Exception {
+		// Step 1: Ensure roles are present
+		for (RoleType roleType : RoleType.values()) {
+			roleRepository.save(roleRepository.findByType(roleType).orElse(new Role(roleType)));
+		}
+
+		return args -> {
+			Stream<String> ownerStream = Stream.of("owner.uba", "owner.cca");
+			defaultSaveUser(ownerStream, userRepository, roleRepository.findByType(RoleType.OWNER).orElseThrow(),
+					passwordEncoder);
+			Stream<String> managerStream = Stream.of("manager1.uba", "manager2.uba", "manager3.uba", "manager1.cca",
+					"manager2.cca", "manager3.cca");
+			defaultSaveUser(managerStream, userRepository, roleRepository.findByType(RoleType.MANAGER).orElseThrow(),
+					passwordEncoder);
+		};
+	}
+
+	public void defaultSaveUser(Stream<String> stream, UserRepository userRepository, Role role,
+			PasswordEncoder passwordEncoder) throws IOException {
+		Random random = new Random();
+		final String bankDomainName = "@atg-bank.com";
+
+		stream.forEach(username -> {
+			String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+			String name = username.replace(".", " ");
+			String firstName = name.split(" ")[0];
+			String lastName = name.split(" ")[1];
+			StringBuilder result = new StringBuilder(11);
+			new Random().ints(11, 0, characters.length()).forEach(i -> result.append(characters.charAt(i)));
+			userRepository.save(userRepository.findByEmail(username + bankDomainName)
+					.orElse(
+							Users.builder().numCni(result.toString())
+									.email(username + bankDomainName)
+									.firstName(firstName)
+									.lastName(lastName)
+									.phoneNumber(Long.parseLong("600000000") + random.nextLong(99999999))
+									.profilePicture(
+											"https://www.pngarts.com/files/10/Default-Profile-Picture-Transparent-Image.png")
+									.role(role)
+									.build()));
+		});
+		userRepository.findAll().forEach(System.out::println);
+
+	}
+
 }

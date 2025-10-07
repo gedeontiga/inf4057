@@ -1,4 +1,4 @@
 FROM openjdk:21
-EXPOSE 8888
-ADD target/service_account.jar service_account.jar
-ENTRYPOINT [ "java", "-jar", "/service_account.jar"]
+EXPOSE 8085
+ADD target/service-account.jar service-account.jar
+ENTRYPOINT [ "java", "-jar", "/service-account.jar"]

@@ -11,21 +11,54 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.m1fonda.commons_libs.config.RabbitMQConstants;
+
 @Configuration
 public class RabbitMQConfig {
     @Bean
     Queue agencyQueue() {
-        return new Queue("agencyQueue", true);
+        return new Queue(RabbitMQConstants.AGENCY_QUEUE);
     }
 
     @Bean
-    DirectExchange demandeExchange() {
-        return new DirectExchange("demandeExchange");
+    Queue agencyCreationQueue() {
+        return new Queue(RabbitMQConstants.AGENCY_CREATION_QUEUE);
     }
 
     @Bean
-    Binding bindingAgencyQueue() {
-        return BindingBuilder.bind(agencyQueue()).to(demandeExchange()).with("agency.routing.key");
+    Queue agencyDeleteQueue() {
+        return new Queue(RabbitMQConstants.AGENCY_DELETE_QUEUE);
+    }
+
+    @Bean
+    Queue agencyUpdateQueue() {
+        return new Queue(RabbitMQConstants.AGENCY_UPDATE_QUEUE);
+    }
+
+    @Bean
+    DirectExchange agencyExchange() {
+        return new DirectExchange(RabbitMQConstants.AGENCY_EXCHANGE);
+    }
+
+    @Bean
+    Binding bindingAgency() {
+        return BindingBuilder.bind(agencyQueue()).to(agencyExchange()).with(RabbitMQConstants.AGENCY_KEY);
+    }
+
+    @Bean
+    Binding bindingAgencyCreation() {
+        return BindingBuilder.bind(agencyCreationQueue()).to(agencyExchange())
+                .with(RabbitMQConstants.AGENCY_CREATION_KEY);
+    }
+
+    @Bean
+    Binding bindingAgencyDelete() {
+        return BindingBuilder.bind(agencyDeleteQueue()).to(agencyExchange()).with(RabbitMQConstants.AGENCY_DELETE_KEY);
+    }
+
+    @Bean
+    Binding bindingAgencyUpdate() {
+        return BindingBuilder.bind(agencyUpdateQueue()).to(agencyExchange()).with(RabbitMQConstants.AGENCY_UPDATE_KEY);
     }
 
     @Bean

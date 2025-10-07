@@ -11,22 +11,45 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.m1fonda.commons_libs.config.RabbitMQConstants;
+
 @Configuration
 public class RabbitMQConfig {
 
     @Bean
-    Queue compteQueue() {
-        return new Queue("compteQueue", true);
+    Queue compteCreationQueue() {
+        return new Queue(RabbitMQConstants.ACCOUNT_CREATION_QUEUE, false);
+    }
+
+    @Bean
+    Queue compteUpdateQueue() {
+        return new Queue(RabbitMQConstants.ACCOUNT_UPDATE_QUEUE, false);
+    }
+
+    @Bean
+    Queue userInfoQueue() {
+        return new Queue(RabbitMQConstants.USER_INFO_UPDATE_QUEUE, false);
     }
 
     @Bean
     DirectExchange compteExchange() {
-        return new DirectExchange("compteExchange");
+        return new DirectExchange(RabbitMQConstants.ACCOUNT_EXCHANGE);
     }
 
     @Bean
-    Binding bindingCompte() {
-        return BindingBuilder.bind(compteQueue()).to(compteExchange()).with("compte.routing.key");
+    Binding bindingCompteCreation() {
+        return BindingBuilder.bind(compteCreationQueue()).to(compteExchange())
+                .with(RabbitMQConstants.ACCOUNT_CREATION_KEY);
+    }
+
+    @Bean
+    Binding bindingCompteUpdate() {
+        return BindingBuilder.bind(compteUpdateQueue()).to(compteExchange()).with(RabbitMQConstants.ACCOUNT_UPDATE_KEY);
+    }
+
+    @Bean
+    Binding userInfoUpdate() {
+        return BindingBuilder.bind(userInfoQueue()).to(compteExchange()).with(RabbitMQConstants.USER_INFO_UPDATE_KEY);
     }
 
     @Bean

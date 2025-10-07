@@ -1,25 +1,27 @@
 package com.m1fonda.service_agency.entities;
 
-import com.m1fonda.entities.Demand;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.m1fonda.commons_libs.entities.Demand;
+
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @NoArgsConstructor
+@Document(collection = "demandes")
 public class Demande extends Demand {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Getter
+    private String id;
 
     @Builder
-    public Demande(String nom, String prenom, String email, String password, String status, String cni, Long tel,
-            Double solde) {
-        super(nom, prenom, email, password, status, cni, tel, solde);
+    public Demande(String firstName, String lastName, String email, String password, String status, String cni,
+            Long phoneNumber, Double balance, String urlRectoCni, String urlVersoCni, String numAgency,
+            String numBank) {
+        super(firstName, lastName, email, password, status, cni, phoneNumber, balance, urlRectoCni, urlVersoCni,
+                numAgency, numBank);
     }
 }

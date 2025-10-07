@@ -1,26 +1,45 @@
 package com.m1fonda.service_agency.entities;
 
-import com.m1fonda.entities.Agency;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.m1fonda.commons_libs.entities.Agency;
+
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Entity
+@Getter
+@Setter
 @NoArgsConstructor
+@Document(collection = "agences")
 public class Agence extends Agency {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
+
+    @Indexed(unique = true)
+    private String numAgency;
+
+    @Override
+    @Transient
+    public String getNumAgency() {
+        return super.getNumAgency();
+    }
+
+    @Override
+    @Transient
+    public void setNumAgency(String numAgency) {
+        super.setNumAgency(numAgency);
+    }
 
     @Builder
-    public Agence(String nom, double capital, double tauxDepotOperateur, double tauxDepotAutreOperateur,
-            double tauxRetrait, String urlbank) {
-
-        super(nom, capital, tauxDepotOperateur, tauxDepotAutreOperateur, tauxRetrait, urlbank);
+    public Agence(String numAgency, String name, double capital,
+            String address, String numBank) {
+        super(numAgency, name, capital, address, numBank);
+        this.numAgency = numAgency;
     }
 }

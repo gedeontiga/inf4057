@@ -1,0 +1,235 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "Bank App",
+    "collectionId": "1e05721e-7508-414d-b0b4-e72c9db342ba",
+    "dateExported": "2025-01-12T22:13:29.353Z",
+    "version": "1.2",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "cb74f80b-7b4e-42b2-a227-5742bef7c983",
+            "colId": "1e05721e-7508-414d-b0b4-e72c9db342ba",
+            "containerId": "",
+            "name": "Register Demand",
+            "url": "",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2025-01-12T08:57:55.992Z",
+            "modified": "2025-01-12T09:21:25.075Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"depositRequestExample\": {\n    \"numAccount\": \"ACC123456789\",\n    \"numAgency\": \"AG001\",\n    \"balance\": 1500.50\n  },\n\n  \"activationRequestExample\": {\n    \"email\": \"user@example.com\",\n    \"activationCode\": 123456\n  },\n\n  \"userRequestExample\": {\n    \"email\": \"john.doe@example.com\",\n    \"password\": \"StrongPass456!\",\n    \"cni\": \"CNI789456123\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"phoneNumber\": 1234567890,\n    \"profilePicture\": \"https://example.com/profiles/john-doe.jpg\"\n  },\n\n  \"accountUpdateDTOExample\": {\n    \"numAccount\": \"ACC987654321\",\n    \"numAgency\": \"AG002\",\n    \"balance\": 2750.75,\n    \"status\": \"ACTIVE\"\n  },\n\n  \"demandExample\": {\n    \"firstName\": \"Jane\",\n    \"lastName\": \"Smith\",\n    \"email\": \"jane.smith@example.com\",\n    \"password\": \"SecurePass789!\",\n    \"status\": \"PENDING\",\n    \"cni\": \"CNI456789123\",\n    \"phoneNumber\": 9876543210,\n    \"balance\": 1000.00,\n    \"urlRectoCni\": \"https://example.com/documents/cni-recto.jpg\",\n    \"urlVersoCni\": \"https://example.com/documents/cni-verso.jpg\",\n    \"numAgency\": \"AG003\",\n    \"numBank\": \"BK001\",\n    \"expireAt\": \"2025-01-15T14:30:00Z\"\n  },\n\n  \"accountRequestTransferDTOExample\": {\n    \"numAccountSender\": \"ACC123456789\",\n    \"numAccountReceiver\": \"ACC987654321\"\n  },\n\n  \"bankDTOExample\": {\n    \"name\": \"Global Bank\",\n    \"logo\": \"https://example.com/bank-logo.png\",\n    \"ownerEmail\": \"owner@globalbank.com\",\n    \"type\": \"COMMERCIAL\",\n    \"capital\": 10000000.00,\n    \"contact\": \"+1-555-0123\",\n    \"withdrawFee\": 2.50,\n    \"transferFee\": 1.75,\n    \"externalFee\": 3.00\n  },\n\n  \"agencyDTOExample\": {\n    \"numAgency\": \"AG004\",\n    \"name\": \"Downtown Branch\",\n    \"capital\": 500000.00,\n    \"address\": \"123 Main Street, City, Country\",\n    \"numBank\": \"BK001\"\n  },\n\n  \"transferRequestExample\": {\n    \"senderAccountNum\": \"ACC123456789\",\n    \"receiverAccountNum\": \"ACC987654321\",\n    \"agencyNum\": \"AG001\",\n    \"amount\": 1000.00,\n    \"fees\": 1.75\n  },\n\n  \"managerCreationRequestExample\": {\n    \"email\": \"manager@example.com\",\n    \"password\": \"ManagePass123!\",\n    \"cni\": \"CNI159753456\",\n    \"firstName\": \"Robert\",\n    \"lastName\": \"Johnson\",\n    \"phoneNumber\": 5551234567,\n    \"profilePicture\": \"https://example.com/profiles/robert-johnson.jpg\",\n    \"numAgency\": \"AG005\"\n  },\n\n  \"withdrawalRequestExample\": {\n    \"accountNum\": \"ACC123456789\",\n    \"agencyNum\": \"AG001\",\n    \"amount\": 500.00,\n    \"fees\": 2.50\n  }\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "13d251ae-5c86-4cf3-a33c-868aa45683a8",
+            "colId": "1e05721e-7508-414d-b0b4-e72c9db342ba",
+            "containerId": "",
+            "name": "Login Manager",
+            "url": "http://localhost:8075/api/auth/login",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2025-01-12T09:18:19.904Z",
+            "modified": "2025-01-12T14:55:17.502Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"email\": \"manager2.uba@atg-bank.com\",\n    \"password\": \"manager2.uba.password\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "a1ea23be-063d-4651-9d05-2120feb9398f",
+            "colId": "1e05721e-7508-414d-b0b4-e72c9db342ba",
+            "containerId": "",
+            "name": "All Banks",
+            "url": "http://localhost:8075/api/bank/all",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2025-01-12T09:39:02.154Z",
+            "modified": "2025-01-12T10:16:38.576Z",
+            "headers": [
+                {
+                    "name": "Accept",
+                    "value": "*/*",
+                    "isDisabled": true
+                },
+                {
+                    "name": "User-Agent",
+                    "value": "Thunder Client (https://www.thunderclient.com)",
+                    "isDisabled": true
+                }
+            ]
+        },
+        {
+            "_id": "547c1070-7e50-47ed-a994-52ac6bfe49ba",
+            "colId": "1e05721e-7508-414d-b0b4-e72c9db342ba",
+            "containerId": "",
+            "name": "Login User",
+            "url": "http://localhost:8075/api/auth/login",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2025-01-12T17:00:01.792Z",
+            "modified": "2025-01-12T17:01:42.599Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"email\": \"assaffart@gmail.com\",\n    \"password\": \"1234\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "0ae603dc-cb35-4e89-b2b0-a104e8fc3f39",
+            "colId": "1e05721e-7508-414d-b0b4-e72c9db342ba",
+            "containerId": "",
+            "name": "Withdrawal",
+            "url": "http://localhost:8075/api/withdrawal/",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2025-01-12T17:12:06.113Z",
+            "modified": "2025-01-12T17:21:46.660Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"accountNum\": \"997934289\",\n    \"agencyNum\": \"CCA-66529-Poste-77302693\",\n    \"amount\": 150,\n    \"fees\": 0.05\n  }",
+                "form": []
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzM4NCJ9.eyJpYXQiOjE3MzY2OTg3NDYsImV4cCI6MTczNjc0MTk0NiwianRpIjoiYXNzYWZmYXJ0QGdtYWlsLmNvbSIsInN1YiI6IlVTRVIifQ.TL5DWoHaBGpA53d-tO_vbp-RPJKTBNW8KuUKCvg6NVUyElq2NtTHQJGOZxmQPkHP"
+            }
+        },
+        {
+            "_id": "3902baee-22cb-4b21-ba4b-e190b49be199",
+            "colId": "1e05721e-7508-414d-b0b4-e72c9db342ba",
+            "containerId": "",
+            "name": "Get User Info",
+            "url": "http://localhost:8075/api/user/read",
+            "method": "GET",
+            "sortNum": 25000,
+            "created": "2025-01-12T14:50:44.087Z",
+            "modified": "2025-01-12T14:56:50.246Z",
+            "headers": [
+                {
+                    "name": "Accept",
+                    "value": "*/*",
+                    "isDisabled": true
+                },
+                {
+                    "name": "User-Agent",
+                    "value": "Thunder Client (https://www.thunderclient.com)",
+                    "isDisabled": true
+                }
+            ],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzM4NCJ9.eyJpYXQiOjE3MzY2OTE4MjgsImV4cCI6MTczNjczNTAyOCwianRpIjoibWFuYWdlcjIudWJhQGF0Zy1iYW5rLmNvbSIsInN1YiI6Ik1BTkFHRVIifQ.hXW7drFx8ZC_wKOVq_BuiV59QeFVy0c0QHPNhJVZrzSWwyOWmVdqEKAx-at1d_Am"
+            }
+        },
+        {
+            "_id": "ac46f295-a826-4a78-9a52-a161dbce325a",
+            "colId": "1e05721e-7508-414d-b0b4-e72c9db342ba",
+            "containerId": "",
+            "name": "Get Account",
+            "url": "http://localhost:8075/api/account/get-account",
+            "method": "GET",
+            "sortNum": 27500,
+            "created": "2025-01-12T16:49:56.752Z",
+            "modified": "2025-01-12T17:01:59.408Z",
+            "headers": [
+                {
+                    "name": "Accept",
+                    "value": "*/*",
+                    "isDisabled": true
+                },
+                {
+                    "name": "User-Agent",
+                    "value": "Thunder Client (https://www.thunderclient.com)",
+                    "isDisabled": true
+                }
+            ],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzM4NCJ9.eyJpYXQiOjE3MzY2OTg3NDYsImV4cCI6MTczNjc0MTk0NiwianRpIjoiYXNzYWZmYXJ0QGdtYWlsLmNvbSIsInN1YiI6IlVTRVIifQ.TL5DWoHaBGpA53d-tO_vbp-RPJKTBNW8KuUKCvg6NVUyElq2NtTHQJGOZxmQPkHP"
+            }
+        },
+        {
+            "_id": "2e265638-8eaa-4cdf-a375-f9f0602cc2ce",
+            "colId": "1e05721e-7508-414d-b0b4-e72c9db342ba",
+            "containerId": "",
+            "name": "All Demands",
+            "url": "http://localhost:8075/api/agency/all-demands",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2025-01-12T11:08:42.091Z",
+            "modified": "2025-01-12T14:55:38.259Z",
+            "headers": [
+                {
+                    "name": "Accept",
+                    "value": "*/*",
+                    "isDisabled": true
+                },
+                {
+                    "name": "User-Agent",
+                    "value": "Thunder Client (https://www.thunderclient.com)",
+                    "isDisabled": true
+                }
+            ],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzM4NCJ9.eyJpYXQiOjE3MzY2OTE4MjgsImV4cCI6MTczNjczNTAyOCwianRpIjoibWFuYWdlcjIudWJhQGF0Zy1iYW5rLmNvbSIsInN1YiI6Ik1BTkFHRVIifQ.hXW7drFx8ZC_wKOVq_BuiV59QeFVy0c0QHPNhJVZrzSWwyOWmVdqEKAx-at1d_Am"
+            }
+        },
+        {
+            "_id": "b4d58ad6-f4ad-409a-b65a-ce2703c3102e",
+            "colId": "1e05721e-7508-414d-b0b4-e72c9db342ba",
+            "containerId": "",
+            "name": "Transfer",
+            "url": "http://localhost:8075/api/withdrawal/",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2025-01-12T17:24:18.023Z",
+            "modified": "2025-01-12T17:24:18.023Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"accountNum\": \"997934289\",\n    \"agencyNum\": \"CCA-66529-Poste-77302693\",\n    \"amount\": 150,\n    \"fees\": 0.05\n  }",
+                "form": []
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzM4NCJ9.eyJpYXQiOjE3MzY2OTg3NDYsImV4cCI6MTczNjc0MTk0NiwianRpIjoiYXNzYWZmYXJ0QGdtYWlsLmNvbSIsInN1YiI6IlVTRVIifQ.TL5DWoHaBGpA53d-tO_vbp-RPJKTBNW8KuUKCvg6NVUyElq2NtTHQJGOZxmQPkHP"
+            }
+        },
+        {
+            "_id": "177a9d56-8648-44cc-83d3-c0513f0849ef",
+            "colId": "1e05721e-7508-414d-b0b4-e72c9db342ba",
+            "containerId": "",
+            "name": "Approve Demand",
+            "url": "http://localhost:8075/api/agency/approve-demand/6783d3489d608077de2be03a",
+            "method": "POST",
+            "sortNum": 40000,
+            "created": "2025-01-12T11:18:44.685Z",
+            "modified": "2025-01-12T14:37:24.658Z",
+            "headers": [
+                {
+                    "name": "Accept",
+                    "value": "*/*",
+                    "isDisabled": true
+                },
+                {
+                    "name": "User-Agent",
+                    "value": "Thunder Client (https://www.thunderclient.com)",
+                    "isDisabled": true
+                }
+            ],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzM4NCJ9.eyJpYXQiOjE3MzY2OTE2NTYsImV4cCI6MTczNjczNDg1NiwianRpIjoibWFuYWdlcjIuY2NhQGF0Zy1iYW5rLmNvbSIsInN1YiI6Ik1BTkFHRVIifQ.mIlxBY-8uXRTDyMSqv5Ned6A_drLSVTZmoy9m5JBp8rnvAMxJ-JQVvn1NkNz_rlF"
+            }
+        }
+    ],
+    "ref": "vGE-nLWLbfP4KNCVi8YXiVNS5fs69_8Zv2z8D48SPrUIUFjX_br0By-DQ_e4nzm2tvfy4mPHFYSVCfRcUGBnBg"
+}
