@@ -36,23 +36,6 @@ services:
       timeout: 5s
       retries: 3
 
-  service-auth:
-    build: ./service-auth
-    image: gedeontiga/inf4057-service-auth:latest
-    depends_on:
-      service-config:
-        condition: service_healthy
-      service-registry:
-        condition: service_healthy
-    ports:
-      - "9090"
-    environment:
-      - SPRING_APPLICATION_NAME=service-auth
-      - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
-      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
-    networks:
-      - microservices_network
-
   service-user:
     build: ./service-user
     image: gedeontiga/inf4057-service-user:latest
@@ -64,9 +47,11 @@ services:
     ports:
       - "8081"
     environment:
+      - GATEWAY_SECRET=${GATEWAY_SECRET}
       - SPRING_APPLICATION_NAME=service-user
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
-      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+      # - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+      - SPRING_CONFIG_IMPORT=configserver:file://${HOME}/Documents/App/inf4057/cloud-conf-inf4057
     networks:
       - microservices_network
 
@@ -81,6 +66,7 @@ services:
     ports:
       - "3025"
     environment:
+      - GATEWAY_SECRET=${GATEWAY_SECRET}
       - SPRING_APPLICATION_NAME=service-notif
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
@@ -102,6 +88,7 @@ services:
     ports:
       - "8088"
     environment:
+      - GATEWAY_SECRET=${GATEWAY_SECRET}
       - SPRING_APPLICATION_NAME=service-agency
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
@@ -119,6 +106,7 @@ services:
     ports:
       - "8088"
     environment:
+      - GATEWAY_SECRET=${GATEWAY_SECRET}
       - SPRING_APPLICATION_NAME=service-bank
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
@@ -136,6 +124,7 @@ services:
     ports:
       - "8088"
     environment:
+      - GATEWAY_SECRET=${GATEWAY_SECRET}
       - SPRING_APPLICATION_NAME=service-deposit
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
@@ -153,6 +142,7 @@ services:
     ports:
       - "8088"
     environment:
+      - GATEWAY_SECRET=${GATEWAY_SECRET}
       - SPRING_APPLICATION_NAME=service-withdrawal
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
@@ -170,6 +160,7 @@ services:
     ports:
       - "8088"
     environment:
+      - GATEWAY_SECRET=${GATEWAY_SECRET}
       - SPRING_APPLICATION_NAME=service-transfer
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
@@ -187,6 +178,7 @@ services:
     ports:
       - "8085"
     environment:
+      - GATEWAY_SECRET=${GATEWAY_SECRET}
       - SPRING_APPLICATION_NAME=service-account
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
@@ -204,6 +196,7 @@ services:
     ports:
       - "8075:8075"
     environment:
+      - GATEWAY_SECRET=${GATEWAY_SECRET}
       - SPRING_APPLICATION_NAME=service-proxy
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888

@@ -84,47 +84,6 @@ spec:
     app: service-registry
 ---
 apiVersion: apps/v1
-king: Deployment
-metadata:
-  name: service-auth
-  namespace: microservices
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: service-auth
-  template:
-    metadata:
-      labels:
-        app: service-auth
-    spec:
-      containers:
-        - name: service-auth
-          image: gedeontiga/inf4057-service-auth:latest
-          ports:
-            - containerPort: 9090
-          env:
-            - name: SPRING_APPLICATION_NAME
-              value: "service-auth"
-            - name: SPRING_CLOUD_CONFIG_URI
-              value: "http://service-config:8888"
-            - name: SPRING_CONFIG_IMPORT
-              value: "configserver:http://service-config:8888"
----
-apiVersion:
-kind: Service
-metadata:
-  name: service-auth
-  namespace: microservices
-spec:
-  type: LoadBalancer
-  ports:
-    - port: 9090
-      targetPort: 9090
-  selector:
-    app: service-auth
----
-apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: service-user
@@ -145,6 +104,8 @@ spec:
           ports:
             - containerPort: 8081
           env:
+            - name: GATEWAY_SECRET
+            - value: ${GATEWAY_SECRET}
             - name: SPRING_APPLICATION_NAME
               value: "service-user"
             - name: SPRING_CLOUD_CONFIG_URI
@@ -186,6 +147,8 @@ spec:
           ports:
             - containerPort: 3025
           env:
+            - name: GATEWAY_SECRET
+            - value: ${GATEWAY_SECRET}
             - name: SPRING_APPLICATION_NAME
               value: "service-notif"
             - name: SPRING_CLOUD_CONFIG_URI
@@ -227,6 +190,8 @@ spec:
           ports:
             - containerPort: 8088
           env:
+            - name: GATEWAY_SECRET
+            - value: ${GATEWAY_SECRET}
             - name: SPRING_APPLICATION_NAME
               value: "service-agency"
             - name: SPRING_CLOUD_CONFIG_URI
@@ -268,6 +233,8 @@ spec:
           ports:
             - containerPort: 8085
           env:
+            - name: GATEWAY_SECRET
+            - value: ${GATEWAY_SECRET}
             - name: SPRING_APPLICATION_NAME
               value: "service-account"
             - name: SPRING_CLOUD_CONFIG_URI
@@ -309,6 +276,8 @@ spec:
           ports:
             - containerPort: 8075
           env:
+            - name: GATEWAY_SECRET
+            - value: ${GATEWAY_SECRET}
             - name: SPRING_APPLICATION_NAME
               value: "service-proxy"
             - name: SPRING_CLOUD_CONFIG_URI
