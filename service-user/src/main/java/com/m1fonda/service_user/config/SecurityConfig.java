@@ -2,33 +2,48 @@ package com.m1fonda.service_user.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.m1fonda.service_user.components.SecurityFilter;
+import com.m1fonda.service_user.components.GatewayAuthenticationFilter;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
+@EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-        @Bean
-        SecurityFilterChain publicFilterChain(HttpSecurity http, SecurityFilter securityFilter) throws Exception {
-                return http
-                                .csrf(csrf -> csrf.disable())
-                                .authorizeHttpRequests(authorize -> authorize
-                                                .requestMatchers("/api/user/**").authenticated()
-                                                .requestMatchers("/api/manager/**").hasRole("MANAGER")
-                                                .requestMatchers("/api/owner/**").hasRole("OWNER")
-                                                .requestMatchers("/api/admin/**").hasRole(
-                                                                "ADMIN"))
-                                .sessionManagement(session -> session
-                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                                .build();
-        }
+
+	private final GatewayAuthenticationFilter gatewayAuthenticationFilter;
+
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		return http
+				.csrf(csrf -> csrf.disable())
+				.cors(cors -> cors.disable())
+
+				.authorizeHttpRequests(authorize -> authorize
+
+						.requestMatchers("/actuator/health", "/actuator/info").permitAll()
+
+						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
+						.requestMatchers("/api/manager/**").hasRole("MANAGER")
+						.requestMatchers("/api/owner/**").hasRole("OWNER")
+						.requestMatchers("/api/admin/**").hasRole(
+								"ADMIN")
+						.anyRequest().authenticated())
+
+				.sessionManagement(session -> session
+						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+				.addFilterBefore(gatewayAuthenticationFilter,
+						UsernamePasswordAuthenticationFilter.class)
+
+				.build();
+	}
 }

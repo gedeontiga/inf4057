@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "gateway.secret",
+      "type": "java.lang.String",
+      "description": "A description for 'gateway.secret'"
+    },
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "A description for 'jwt.secret'"
+    },
+    {
+      "name": "cors.allowed-origins",
+      "type": "java.lang.String",
+      "description": "A description for 'cors.allowed-origins'"
+    }
+  ]
+}

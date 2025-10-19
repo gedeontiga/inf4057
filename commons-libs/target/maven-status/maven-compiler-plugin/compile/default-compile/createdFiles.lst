@@ -24,8 +24,8 @@ com/m1fonda/commons_libs/dto/AgencyUpdateTransaction.class
 com/m1fonda/commons_libs/dto/ErrorResponse$ErrorResponseBuilder.class
 com/m1fonda/commons_libs/dto/ErrorResponse.class
 com/m1fonda/commons_libs/entities/Status.class
-com/m1fonda/commons_libs/dto/AgencyDTO$AgencyDTOBuilder.class
 com/m1fonda/commons_libs/dto/UserCreationRequest.class
+com/m1fonda/commons_libs/dto/AgencyDTO$AgencyDTOBuilder.class
 com/m1fonda/commons_libs/entities/Announce.class
 com/m1fonda/commons_libs/dto/NotificationRequest.class
 com/m1fonda/commons_libs/dto/TransferResponse.class
@@ -38,10 +38,10 @@ com/m1fonda/commons_libs/dto/AgencyDTO.class
 com/m1fonda/commons_libs/dto/AccountTransferResponse.class
 com/m1fonda/commons_libs/dto/TransferRequest.class
 com/m1fonda/commons_libs/dto/ManagerRequestDTO.class
-com/m1fonda/commons_libs/dto/BankResponseDTO.class
 com/m1fonda/commons_libs/dto/DepositRequest.class
-com/m1fonda/commons_libs/entities/Client.class
+com/m1fonda/commons_libs/dto/BankResponseDTO.class
 com/m1fonda/commons_libs/config/RabbitMQConstants.class
-com/m1fonda/commons_libs/dto/NotificationDTO.class
+com/m1fonda/commons_libs/entities/Client.class
 com/m1fonda/commons_libs/dto/ClientDTO.class
+com/m1fonda/commons_libs/dto/NotificationDTO.class
 com/m1fonda/commons_libs/dto/AnnounceDTO.class
