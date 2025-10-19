@@ -28,6 +28,7 @@ public class Jwt {
 
     private String token;
     private Instant expiredAt;
+    private Instant createdAt;
 
     @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE })
     private Users user;

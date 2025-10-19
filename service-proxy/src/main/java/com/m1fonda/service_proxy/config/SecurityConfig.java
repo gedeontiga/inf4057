@@ -1,73 +1,76 @@
 package com.m1fonda.service_proxy.config;
 
-import java.util.Arrays;
-
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
-import com.m1fonda.service_proxy.services.JwtFilter;
+import com.m1fonda.service_proxy.components.JwtAuthenticationWebFilter;
 
-import lombok.AllArgsConstructor;
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
-@EnableWebSecurity
-@AllArgsConstructor
+@EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtFilter jwtFilter;
+	private final JwtAuthenticationWebFilter jwtAuthenticationWebFilter;
+	@Value("${cors.allowed-origins}")
+	private String allowedOrigins;
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(
-                        authorize -> authorize
-                                .requestMatchers("/api/auth/**").permitAll()
-                                .requestMatchers("/api/demande/**").permitAll()
-                                .requestMatchers("/api/bank/**").permitAll()
-                                .anyRequest().authenticated())
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
-    }
+	@Bean
+	SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+		return http
+				.csrf(ServerHttpSecurity.CsrfSpec::disable)
+				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+				.httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+				.formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+				.logout(ServerHttpSecurity.LogoutSpec::disable)
+				.authorizeExchange(exchanges -> exchanges
+						.pathMatchers("/api/auth/**").permitAll()
+						.pathMatchers("/api/demande/**").permitAll()
+						.pathMatchers("/api/bank/**").permitAll()
+						.anyExchange().authenticated())
+				.exceptionHandling(exception -> exception
+						.authenticationEntryPoint((exchange, ex) -> {
+							exchange.getResponse().setStatusCode(
+									org.springframework.http.HttpStatus.UNAUTHORIZED);
+							return exchange.getResponse().setComplete();
+						}))
+				.securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+				.addFilterAt(jwtAuthenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+				.build();
+	}
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
 
-        // Parse allowed origins from properties
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "http://localhost:3001"));
+		String[] origins = allowedOrigins.split(",");
+		configuration.setAllowedOriginPatterns(Arrays.asList(origins));
 
-        configuration.setAllowedMethods(Arrays.asList(
-                "GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
+		configuration.setAllowedMethods(Arrays.asList(
+				"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"));
 
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
-        configuration.setExposedHeaders(Arrays.asList(
-                "Authorization",
-                "Content-Type",
-                "X-Total-Count"));
-        configuration.setMaxAge(3600L);
+		configuration.setAllowedHeaders(List.of("*"));
+		configuration.setAllowCredentials(true);
+		configuration.setExposedHeaders(Arrays.asList(
+				"Authorization", "Content-Type", "X-Total-Count"));
+		configuration.setMaxAge(3600L);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        // Apply to all endpoints
-        source.registerCorsConfiguration("/**", configuration);
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
 
-        return source;
-    }
-
-    @Bean
-    AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+		return source;
+	}
 }

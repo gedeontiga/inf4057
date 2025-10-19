@@ -50,8 +50,7 @@ services:
       - GATEWAY_SECRET=${GATEWAY_SECRET}
       - SPRING_APPLICATION_NAME=service-user
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
-      # - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
-      - SPRING_CONFIG_IMPORT=configserver:file://${HOME}/Documents/App/inf4057/cloud-conf-inf4057
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
     networks:
       - microservices_network
 
@@ -196,10 +195,12 @@ services:
     ports:
       - "8075:8075"
     environment:
+      - JWT_SECRET=${JWT_SECRET}
       - GATEWAY_SECRET=${GATEWAY_SECRET}
       - SPRING_APPLICATION_NAME=service-proxy
       - SPRING_CLOUD_CONFIG_URI=http://service-config:8888
       - SPRING_CONFIG_IMPORT=configserver:http://service-config:8888
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
     networks:
       - microservices_network
 

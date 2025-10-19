@@ -11,7 +11,7 @@ import com.m1fonda.service_proxy.entities.Validation;
 @Repository
 public interface ValidationRepository extends JpaRepository<Validation, Long> {
 
-    Optional<Validation> findByEmailAndExpiredAfter(String email, Instant now);
+    Optional<Validation> findByActivationCodeAndExpiredAfter(Long code, Instant now);
 
     Optional<Validation> findByEmail(String email);
 

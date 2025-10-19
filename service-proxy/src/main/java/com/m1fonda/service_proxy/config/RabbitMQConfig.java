@@ -17,6 +17,16 @@ import com.m1fonda.commons_libs.config.RabbitMQConstants;
 public class RabbitMQConfig {
 
     @Bean
+    Queue authOwnerCreationQueue() {
+        return new Queue(RabbitMQConstants.AUTH_USER_CREATION_QUEUE);
+    }
+
+    @Bean
+    Queue authOwnerDeletionQueue() {
+        return new Queue(RabbitMQConstants.AUTH_USER_DELETION_QUEUE);
+    }
+
+    @Bean
     Queue authCreationQueue() {
         return new Queue(RabbitMQConstants.MANAGER_CREATION_QUEUE);
     }
@@ -32,9 +42,21 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Binding bindingAuthCreation() {
+    Binding bindingOwnerCreation() {
         return BindingBuilder.bind(authCreationQueue()).to(exchange())
                 .with(RabbitMQConstants.MANAGER_CREATION_KEY);
+    }
+
+    @Bean
+    Binding bindingOwnerDeletion() {
+        return BindingBuilder.bind(authOwnerCreationQueue()).to(exchange())
+                .with(RabbitMQConstants.AUTH_USER_CREATION_KEY);
+    }
+
+    @Bean
+    Binding bindingAuthCreation() {
+        return BindingBuilder.bind(authOwnerDeletionQueue()).to(exchange())
+                .with(RabbitMQConstants.AUTH_USER_DELETION_KEY);
     }
 
     @Bean

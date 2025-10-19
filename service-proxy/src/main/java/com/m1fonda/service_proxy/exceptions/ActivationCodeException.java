@@ -1,4 +1,4 @@
-package com.m1fonda.service_proxy.customexceptions;
+package com.m1fonda.service_proxy.exceptions;
 
 public class ActivationCodeException extends RuntimeException {
     public ActivationCodeException(String message) {

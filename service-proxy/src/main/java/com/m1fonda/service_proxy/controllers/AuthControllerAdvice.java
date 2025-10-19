@@ -7,11 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import com.m1fonda.service_proxy.customexceptions.ActivationCodeException;
-import com.m1fonda.service_proxy.customexceptions.EmailAlreadyExistsException;
-import com.m1fonda.service_proxy.customexceptions.TokenExpiredException;
-import com.m1fonda.service_proxy.customexceptions.UserNotFoundException;
 import com.m1fonda.service_proxy.dto.ErrorResponse;
+import com.m1fonda.service_proxy.exceptions.ActivationCodeException;
+import com.m1fonda.service_proxy.exceptions.EmailAlreadyExistsException;
+import com.m1fonda.service_proxy.exceptions.TokenExpiredException;
+import com.m1fonda.service_proxy.exceptions.UserNotFoundException;
 
 @ControllerAdvice
 public class AuthControllerAdvice {

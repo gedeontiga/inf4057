@@ -1,4 +1,4 @@
-package com.m1fonda.service_proxy.customexceptions;
+package com.m1fonda.service_proxy.exceptions;
 
 public class EmailAlreadyExistsException extends RuntimeException {
     public EmailAlreadyExistsException(String message) {

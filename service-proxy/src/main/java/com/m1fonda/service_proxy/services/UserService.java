@@ -1,54 +1,36 @@
 package com.m1fonda.service_proxy.services;
 
-import org.springframework.amqp.core.ExchangeTypes;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import com.m1fonda.commons_libs.config.RabbitMQConstants;
-import com.m1fonda.commons_libs.dto.UserCreationRequest;
-import com.m1fonda.service_proxy.customexceptions.UserNotFoundException;
-import com.m1fonda.service_proxy.entities.Role;
-import com.m1fonda.service_proxy.entities.RoleType;
 import com.m1fonda.service_proxy.entities.Users;
-import com.m1fonda.service_proxy.repositories.RoleRepository;
 import com.m1fonda.service_proxy.repositories.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
 
-    public Users getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found."));
-    }
-
-    @RabbitListener(bindings = @QueueBinding(value = @Queue(RabbitMQConstants.AUTH_USER_CREATION_QUEUE), exchange = @Exchange(value = RabbitMQConstants.AUTH_EXCHANGE, type = ExchangeTypes.DIRECT), key = RabbitMQConstants.AUTH_USER_CREATION_KEY))
-    public void createManager(UserCreationRequest request) {
-        // Validation
-        Users user = userRepository.findByEmail(request.email()).orElse(Users.builder()
-                .password(passwordEncoder.encode(request.password()))
-                .email(request.email())
-                .enabled(true)
-                .build());
-
-        Role role = roleRepository.findByType(RoleType.valueOf(request.role())).orElseThrow();
-        user.setRole(role);
-
-        userRepository.save(user);
-    }
-
-    @RabbitListener(bindings = @QueueBinding(value = @Queue(RabbitMQConstants.AUTH_USER_DELETION_QUEUE), exchange = @Exchange(value = RabbitMQConstants.AUTH_EXCHANGE, type = ExchangeTypes.DIRECT), key = RabbitMQConstants.AUTH_USER_DELETION_KEY))
-    public void deleteManager(String email) {
-        userRepository.deleteByEmail(email);
+    @Override
+    @Transactional
+    public UserDetails loadUserByUsername(String email) {
+        try {
+            return userRepository.findByEmailAndEnabledIsTrue(email)
+                    .orElseThrow(() -> new DisabledException("User is not activated"));
+        } catch (Exception e) {
+            Users user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
+            if (!user.isEnabled()) {
+                throw new DisabledException("User is not activated");
+            }
+            throw new EntityNotFoundException("User not found");
+        }
     }
 }

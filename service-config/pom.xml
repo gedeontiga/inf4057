@@ -10,9 +10,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.m1fonda</groupId>
-	<artifactId>service_config</artifactId>
+	<artifactId>service-config</artifactId>
 	<version>1.0.0</version>
-	<name>service_config</name>
+	<name>service-config</name>
 	<description>Demo project for Spring Boot</description>
 	<url />
 	<licenses>
